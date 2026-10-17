@@ -1,3 +1,7 @@
+<p align="center">
+  <img src=".github/assets/banner.png" alt="Tag Agent: a coding-agent harness for the terminal, written in Swift" width="100%">
+</p>
+
 # Tag Agent
 
 [![CI](https://github.com/telip007/tag-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/telip007/tag-agent/actions/workflows/ci.yml)

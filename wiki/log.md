@@ -40,3 +40,6 @@ Tag Agent is now public at github.com/telip007/tag-agent under Apache 2.0, with 
 
 ## [2026-10-18] decision | Conventional Commits
 Decision 0007: the SDK's Conventional Commits format and checker, enforced by a `commit-msg` hook and a CI PR-title job. release-please is deferred until something is releasable.
+
+## [2026-10-18] update | README banner
+Added `.github/assets/banner.png`: a text-free background generated with Codex (Ottoman girih and Iznik motifs with circuit traces) plus exact text and a sample session drawn by `.github/assets/compose-banner.swift`, as in the SDK.
