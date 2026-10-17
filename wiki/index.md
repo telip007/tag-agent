@@ -6,14 +6,18 @@ Start here. Conventions: [SCHEMA.md](SCHEMA.md). Timeline: [log.md](log.md).
 
 - [Backpressure setup](concepts/backpressure-setup.md): every automated check in this repo, where it runs, and the traps we hit wiring it up.
 - [Agent workflow](concepts/agent-workflow.md): how hooks, skills, AGENTS.md and the wiki make every agent session follow the same rules.
+- [Agent loop and tools](concepts/tools.md): How the agent loop runs tool calls, the five built-in tools, and where they differ from their Go originals.
 - [OpenRouter SDK](concepts/openrouter-sdk.md): how Tag Agent consumes the swift-openrouter submodule and where its own docs live.
 
 ## Decisions
 
-- [0001 Agent code is written by hand](decisions/0001-hand-written-agent-code.md): agents teach and review; the human writes `Sources/Tag`.
+- [0001 Agent code is written by hand](decisions/0001-hand-written-agent-code.md): superseded by 0006.
 - [0002 Maximum backpressure](decisions/0002-maximum-backpressure.md): warnings are errors, strict lint, coverage gate, hooks.
 - [0003 OpenRouter SDK as a separate repo and submodule](decisions/0003-openrouter-sdk-submodule.md): published on its own, developed in place.
 - [0004 LLM-maintained wiki](decisions/0004-llm-wiki.md): project memory lives in `wiki/`, enforced by hooks.
+- [0005 Tag and TagKit targets](decisions/0005-tag-and-tagkit-targets.md): a thin executable over a testable library.
+- [0006 Agents build the harness](decisions/0006-agents-build-the-harness.md): after the hand-written first loop, agents write `Sources/` code too.
+- [0007 Conventional Commits](decisions/0007-conventional-commits.md): Commit messages and PR titles use the same Conventional Commits format as the SDK; no release tooling yet.
 
 ## Sources
 

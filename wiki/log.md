@@ -19,3 +19,24 @@ The SDK was published as its own public repository and added here as a git submo
 
 ## [2026-10-17] update | SDK 0.1.0
 Submodule moved to the swift-openrouter 0.1.0 release (Linux fix, release tooling). The SDK's pre-push hook now also runs its Linux tests in Docker.
+
+## [2026-10-17] decision | Tag and TagKit targets
+Split Package.swift into a thin `Tag` executable and a `TagKit` library that owns the OpenRouter dependency (decision 0005).
+
+## [2026-10-17] update | SwiftLint in Xcode
+Added the SwiftLintPlugins build tool plugin (pinned to 0.65.1) to both targets, so lint runs on every build and shows inline in Xcode. Documented Xcode's built-in swift-format and the whitespace settings.
+
+## [2026-10-17] decision | Agents build the harness
+Decision 0006 supersedes 0001: after the hand-written first loop, agents write `Sources/` code too. Updated AGENTS.md, CLAUDE.md and README.md.
+
+## [2026-10-18] update | Tools: read_file, list_files, edit_file
+Finished the "How to build an agent" port: the loop now runs tool calls and feeds results back, with the tutorial's three file tools. Added the `TagKitTests` target (loop with a scripted model, tools in a temp directory), so tests and the coverage gate now run.
+
+## [2026-10-18] update | Tools: bash and code_search
+Added the workshop's `bash` and `code_search` tools, running processes through swift-subprocess 1.0. ripgrep is now installed by `make bootstrap` and CI; the real-rg test is skipped without it.
+
+## [2026-10-18] update | Published on GitHub
+Tag Agent is now public at github.com/telip007/tag-agent under Apache 2.0, with the same community files as the SDK (CONTRIBUTING, SECURITY, CODE_OF_CONDUCT, issue/PR templates, Dependabot). `.swiftpm/` is ignored: Xcode schemes store environment variables such as API keys there.
+
+## [2026-10-18] decision | Conventional Commits
+Decision 0007: the SDK's Conventional Commits format and checker, enforced by a `commit-msg` hook and a CI PR-title job. release-please is deferred until something is releasable.

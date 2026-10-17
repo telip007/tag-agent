@@ -5,3 +5,11 @@ DerivedData/
 .swiftpm/configuration/registries.json
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 .netrc
+
+# Xcode stores scheme environment variables (API keys) and per-user state here.
+.swiftpm/
+# Local, per-machine Claude Code settings.
+.claude/settings.local.json
+# Secrets.
+.env
+.env.*

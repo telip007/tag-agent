@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Enforce Conventional Commits (same format as swift-openrouter). See
+# wiki/decisions/0007-conventional-commits.md.
+exec python3 -I "$(git rev-parse --show-toplevel)/Scripts/check-commit-message.py" "$1"

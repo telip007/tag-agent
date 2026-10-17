@@ -4,21 +4,14 @@ Instructions for coding agents (and humans) working on Tag Agent.
 
 ## What this is
 
-Tag Agent is a coding-agent harness CLI written in Swift. **It's a learning
-project: the harness code is written by hand.** See
-`wiki/decisions/0001-hand-written-agent-code.md`.
+Tag Agent is a coding-agent harness CLI written in Swift. It started as a
+learning project with a hand-written core; agents now build it together with
+the maintainer. See `wiki/decisions/0006-agents-build-the-harness.md`.
 
-- `Sources/Tag/`: the CLI (hand-written by the maintainer).
+- `Sources/Tag/`: the command-line entry point (argument parsing, terminal I/O).
+- `Sources/TagKit/`: the agent itself (loop, model access, tools).
 - `Packages/OpenRouter/`: the swift-openrouter SDK, a git submodule with its
   own `AGENTS.md`, rules and wiki. Work inside it follows *its* instructions.
-
-## The one rule that's different here
-
-**Do not write or change code under `Sources/` unless the maintainer asks for
-that specific change in their current message.** Instead, explain concepts,
-review their code, point to APIs (SDK, Swift, OpenRouter docs) and suggest
-approaches. Tooling, configuration, CI, scripts, docs and the wiki are fair
-game.
 
 ## Before you start
 
@@ -33,7 +26,7 @@ game.
 
 | Command | What |
 | --- | --- |
-| `make bootstrap` | install SwiftLint, enable git hooks, fetch the SDK submodule |
+| `make bootstrap` | install SwiftLint and ripgrep, enable git hooks, fetch the SDK submodule |
 | `make fix` | auto-format |
 | `make check` | wiki lint + swift-format + SwiftLint + build (warnings are errors) + tests + coverage |
 | `make sdk-check` / `make check-all` | the SDK's own checks / both |
@@ -46,7 +39,10 @@ game.
   and record a decision in `wiki/decisions/`.
 - SDK changes are committed and pushed in the submodule first, then the
   submodule pointer is committed here.
-- This repository may become public: no personal data, local paths or
+- Commit messages and PR titles follow [Conventional Commits](https://www.conventionalcommits.org/)
+  (`feat(tools): …`, `fix: …`, `feat!: …` for breaking changes; checked by
+  the `commit-msg` hook and CI), the same format as the SDK.
+- This repository is public: no personal data, local paths or
   machine details in code, docs, wiki or commit messages.
 
 ## Wiki duties
@@ -58,8 +54,7 @@ After any change to code, configuration, tooling or decisions:
 3. Append `## [YYYY-MM-DD] update | <what>` to `wiki/log.md`.
 4. `make wiki-lint`.
 
-When the maintainer changes `Sources/` by hand, record what was learned
-(concepts, mistakes, design choices) in the wiki too. That's the point of the
-project.
+Record what was learned while building (concepts, mistakes, design choices)
+in the wiki too, whoever wrote the code.
 
 Conventions: `wiki/SCHEMA.md`. Workflow: `.claude/skills/wiki/SKILL.md`.
