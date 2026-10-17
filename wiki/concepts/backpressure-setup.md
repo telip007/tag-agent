@@ -39,6 +39,10 @@ strict settings and lint plugin as the sources.
 
 ## Gotchas
 
+- **`swift-tools-version` must not exceed CI's toolchain.** New Xcode
+  templates write the local toolchain's version (6.4 here), and CI's
+  `macos-26` image had Swift 6.3, so the first CI run failed on the first
+  line of `Package.swift`. It is 6.2, matching the README and the SDK.
 - **Xcode schemes can leak API keys.** Environment variables set in a scheme
   (e.g. `OPENROUTER_API_KEY`) are saved in
   `.swiftpm/xcode/xcshareddata/xcschemes/`. The whole `.swiftpm/` directory is

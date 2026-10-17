@@ -43,3 +43,6 @@ Decision 0007: the SDK's Conventional Commits format and checker, enforced by a 
 
 ## [2026-10-18] update | README banner
 Added `.github/assets/banner.png`: a text-free background generated with Codex (Ottoman girih and Iznik motifs with circuit traces) plus exact text and a sample session drawn by `.github/assets/compose-banner.swift`, as in the SDK.
+
+## [2026-10-18] update | swift-tools-version 6.2
+First CI run failed: `Package.swift` declared tools 6.4, CI has Swift 6.3. Lowered to 6.2 (the documented minimum, same as the SDK).
