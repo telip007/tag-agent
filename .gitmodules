@@ -1,0 +1,3 @@
+[submodule "Packages/OpenRouter"]
+	path = Packages/OpenRouter
+	url = https://github.com/telip007/swift-openrouter.git

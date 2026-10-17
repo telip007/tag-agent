@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Fast feedback: formatting, lint and wiki structure. The full gate runs on pre-push.
+set -euo pipefail
+python3 -I Scripts/wiki-lint.py --staged
+exec make lint

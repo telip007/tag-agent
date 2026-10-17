@@ -1,0 +1,114 @@
+# SwiftLint covers semantics; layout is owned by swift-format (.swift-format).
+# Run with `make lint`. `--strict` turns every warning into an error.
+
+strict: true
+
+included:
+  - Sources
+  - Tests
+  - Package.swift
+
+excluded:
+  - .build
+  - "**/.build"
+  - "**/Generated"
+  - Packages
+
+# Rules that fight swift-format's output.
+disabled_rules:
+  - trailing_comma
+  - opening_brace
+  - closure_parameter_position
+  - vertical_parameter_alignment
+  - statement_position
+  - line_length # swift-format wraps at 120; long string literals are fine
+  - todo # tracked in the issue tracker, not enforced here
+
+opt_in_rules:
+  - array_init
+  - async_without_await
+  - closure_body_length
+  - collection_alignment
+  - comment_spacing
+  - contains_over_filter_count
+  - contains_over_filter_is_empty
+  - contains_over_first_not_nil
+  - contains_over_range_nil_comparison
+  - convenience_type
+  - direct_return
+  - discarded_notification_center_observer
+  - discouraged_assert
+  - discouraged_none_name
+  - discouraged_object_literal
+  - empty_collection_literal
+  - empty_count
+  - empty_string
+  - enum_case_associated_values_count
+  - explicit_init
+  - fallthrough
+  - fatal_error_message
+  - file_name_no_space
+  - final_test_case
+  - first_where
+  - flatmap_over_map_reduce
+  - force_unwrapping
+  - identical_operands
+  - implicitly_unwrapped_optional
+  - joined_default_parameter
+  - last_where
+  - legacy_multiple
+  - legacy_objc_type
+  - local_doc_comment
+  - lower_acl_than_parent
+  - non_overridable_class_declaration
+  - overridden_super_call
+  - prefer_self_in_static_references
+  - prefer_self_type_over_type_of_self
+  - prefer_zero_over_explicit_init
+  - private_swiftui_state
+  - prohibited_super_call
+  - reduce_into
+  - redundant_nil_coalescing
+  - redundant_type_annotation
+  - return_value_from_void_function
+  - shorthand_optional_binding
+  - single_test_class
+  - sorted_first_last
+  - static_operator
+  - superfluous_else
+  - test_case_accessibility
+  - toggle_bool
+  - unavailable_function
+  - unhandled_throwing_task
+  - unneeded_parentheses_in_closure_argument
+  - unowned_variable_capture
+  - untyped_error_in_catch
+  - weak_delegate
+  - yoda_condition
+
+# Tighter than the defaults: small units are easier for humans and agents.
+function_body_length:
+  warning: 40
+  error: 60
+type_body_length:
+  warning: 200
+  error: 300
+file_length:
+  warning: 400
+  error: 500
+  ignore_comment_only_lines: true
+closure_body_length:
+  warning: 30
+  error: 40
+cyclomatic_complexity:
+  warning: 10
+  error: 15
+  ignores_case_statements: true
+function_parameter_count:
+  warning: 6
+  error: 8
+nesting:
+  type_level: 2
+  function_level: 2
+identifier_name:
+  excluded: [id, ok, to, x, y]

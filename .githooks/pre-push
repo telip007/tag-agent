@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Nothing leaves the machine unless the full gate passes.
+set -euo pipefail
+exec make check
