@@ -1,6 +1,6 @@
 # Backpressure for humans and agents: `make check` must pass before every push.
 #
-#   make bootstrap  install tools, enable git hooks, fetch the SDK submodule
+#   make bootstrap  install tools (SwiftLint, ripgrep), enable git hooks, fetch the SDK submodule
 #   make fix        auto-format
 #   make check      lint + build (warnings are errors) + tests + coverage gate
 
@@ -11,6 +11,7 @@ MIN_COVERAGE ?= 80
 
 bootstrap:
 	@command -v swiftlint >/dev/null || brew install swiftlint
+	@command -v rg >/dev/null || brew install ripgrep
 	git config core.hooksPath .githooks
 	git submodule update --init --recursive
 

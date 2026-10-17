@@ -8,5 +8,3 @@
   enables the repository's git hooks, every Swift edit is linted (violations
   come back to you), and a Stop hook asks for a wiki update when files changed
   without one.
-- Remember the one rule: explain and review, don't write `Sources/` code
-  unless explicitly asked.

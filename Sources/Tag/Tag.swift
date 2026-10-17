@@ -1,14 +1,15 @@
-// The Swift Programming Language
-// https://docs.swift.org/swift-book
-//
-// Swift Argument Parser
-// https://swiftpackageindex.com/apple/swift-argument-parser/documentation
-
 import ArgumentParser
+import Foundation
+import TagKit
 
 @main
-struct Tag: ParsableCommand {
-    mutating func run() throws {
-        print("Hello, world!")
+struct Tag: AsyncParsableCommand {
+    mutating func run() async throws {
+        let workingDirectory = URL(filePath: FileManager.default.currentDirectoryPath, directoryHint: .isDirectory)
+        let agent = try Agent(
+            model: OpenRouterChatModel(),
+            tools: ToolDefinition.builtIn(workingDirectory: workingDirectory),
+        ) { readLine() }
+        try await agent.run()
     }
 }

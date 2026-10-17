@@ -1,8 +1,10 @@
 ---
 title: Agent code is written by hand
-summary: Agents teach and review; the human writes Sources/Tag.
+summary: Superseded by 0006.
 updated: 2026-10-17
 ---
+
+Superseded by [0006](0006-agents-build-the-harness.md)
 
 # 0001 Agent code is written by hand
 

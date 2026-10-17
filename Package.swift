@@ -16,6 +16,12 @@ let strictSettings: [SwiftSetting] = [
     .treatAllWarnings(as: .error),
 ]
 
+/// SwiftLint on every build, so violations show up inline in Xcode. Pinned to
+/// the same version CI installs. See wiki/concepts/backpressure-setup.md.
+let lintPlugins: [Target.PluginUsage] = [
+    .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")
+]
+
 let package = Package(
     name: "Tag",
     platforms: [.macOS(.v15)],
@@ -23,15 +29,39 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.2.0"),
         // Git submodule; see wiki/concepts/openrouter-sdk.md.
         .package(path: "Packages/OpenRouter"),
+        .package(url: "https://github.com/swiftlang/swift-subprocess.git", from: "1.0.0"),
+        .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins.git", exact: "0.65.1"),
     ],
     targets: [
+        // Thin command-line entry point: argument parsing and terminal I/O.
         .executableTarget(
             name: "Tag",
             dependencies: [
+                "TagKit",
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
+            ],
+            swiftSettings: strictSettings,
+            plugins: lintPlugins,
+        ),
+        // The agent itself (loop, model access, tools), kept in a library so
+        // tests can import it.
+        .target(
+            name: "TagKit",
+            dependencies: [
+                .product(name: "OpenRouter", package: "OpenRouter"),
+                .product(name: "Subprocess", package: "swift-subprocess"),
+            ],
+            swiftSettings: strictSettings,
+            plugins: lintPlugins,
+        ),
+        .testTarget(
+            name: "TagKitTests",
+            dependencies: [
+                "TagKit",
                 .product(name: "OpenRouter", package: "OpenRouter"),
             ],
             swiftSettings: strictSettings,
-        )
+            plugins: lintPlugins,
+        ),
     ]
 )
