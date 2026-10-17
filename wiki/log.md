@@ -16,3 +16,6 @@ Documented the strict compiler settings, swift-format/SwiftLint configs, coverag
 
 ## [2026-10-17] update | SDK published, submodule, CI, rename
 The SDK was published as its own public repository and added here as a git submodule. Added CI (macOS, `make check`), README, AGENTS.md/CLAUDE.md; the project is now called Tag Agent. Wiki lint now also rejects home paths and emails.
+
+## [2026-10-17] update | SDK 0.1.0
+Submodule moved to the swift-openrouter 0.1.0 release (Linux fix, release tooling). The SDK's pre-push hook now also runs its Linux tests in Docker.
