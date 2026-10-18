@@ -31,6 +31,8 @@ let package = Package(
         .package(path: "Packages/OpenRouter"),
         .package(url: "https://github.com/swiftlang/swift-subprocess.git", from: "1.0.0"),
         .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins.git", exact: "0.65.1"),
+        // SwiftUI-shaped terminal UI; see wiki/concepts/terminal-ui.md.
+        .package(url: "https://github.com/telip007/stipple.git", from: "0.1.1"),
     ],
     targets: [
         // Thin command-line entry point: argument parsing and terminal I/O.
@@ -39,6 +41,7 @@ let package = Package(
             dependencies: [
                 "TagKit",
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
+                .product(name: "Stipple", package: "stipple"),
             ],
             swiftSettings: strictSettings,
             plugins: lintPlugins,
@@ -50,6 +53,7 @@ let package = Package(
             dependencies: [
                 .product(name: "OpenRouter", package: "OpenRouter"),
                 .product(name: "Subprocess", package: "swift-subprocess"),
+                .product(name: "Stipple", package: "stipple"),
             ],
             swiftSettings: strictSettings,
             plugins: lintPlugins,
@@ -59,6 +63,7 @@ let package = Package(
             dependencies: [
                 "TagKit",
                 .product(name: "OpenRouter", package: "OpenRouter"),
+                .product(name: "Stipple", package: "stipple"),
             ],
             swiftSettings: strictSettings,
             plugins: lintPlugins,

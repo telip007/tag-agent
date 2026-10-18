@@ -16,14 +16,18 @@ by an agent ([0006](../decisions/0006-agents-build-the-harness.md)).
 
 [Agent.swift](../../Sources/TagKit/Agent.swift):
 
-1. If `readUserInput` is set, print `You:` and read a line (`nil` ends the
-   session). Append it as a user message.
-2. Send the whole conversation plus the tool definitions to the
-   [`ChatModel`](../../Sources/TagKit/ChatModel.swift). Append the assistant
-   message as returned (text, tool calls and any reasoning fields).
-3. Print the text, if any.
-4. Run every tool call in order and append each result as a `tool` message
-   with the call's `id`.
+1. If `readUserInput` is set, emit `.status` with the
+   [status line](#the-status-line) and await `getUserMessage()` (`nil` ends
+   the session). Append it as a user message.
+2. Emit `.thinking`, then send the whole conversation plus the tool
+   definitions to the [`ChatModel`](../../Sources/TagKit/ChatModel.swift).
+   Append the assistant message as returned (text, tool calls and any
+   reasoning fields).
+3. Emit `.reply` with the text, if any.
+4. Run every tool call in order, emitting `.toolStarted` before and
+   `.toolFinished` (with `failed` for an unknown tool or a thrown error)
+   after each, and append each result as a `tool` message with the call's
+   `id`.
 5. If there were tool calls, clear `readUserInput` so the model sees the
    results straight away; otherwise ask the user again.
 
@@ -36,9 +40,36 @@ error becomes the tool result (`error: …`), so the model can read it and try
 again. OpenAI-style tool messages have no `is_error` flag, unlike Anthropic's
 `tool_result`, so the `error:` prefix is the only signal.
 
-Output goes through an injected `output` closure and input through
-`getUserMessage`, so [the tests](../../Tests/TagKitTests/AgentTests.swift) drive
-the loop with a scripted model and capture what the user would see.
+The agent formats nothing. It reports `AgentEvent`s through an injected
+`output` closure and reads input through the async `getUserMessage`; the
+[terminal UI](terminal-ui.md) turns events into what the user sees.
+[The tests](../../Tests/TagKitTests/AgentTests.swift) drive the loop with a
+scripted model and assert on the events. `Agent` is `@MainActor`, next to that
+UI ([why](terminal-ui.md#why-the-main-actor)).
+
+## The status line
+
+Before each prompt the loop emits one line as a `.status` event, and the
+[chat view](terminal-ui.md) styles it below the input, with a context meter
+and fields dropped on narrow terminals
+([StatusLine.swift](../../Sources/TagKit/StatusLine.swift)):
+
+```text
+~/developer/tag · DeepSeek V4.1 Flash · ctx 12.3k/200k (6%) · $0.0012
+```
+
+- **Folder**: the working directory the CLI was started in, with the home
+  directory shortened to `~`.
+- **Model**: the catalogue's display name. `Agent` asks the `ChatModel` for a
+  [`ModelDescription`](../../Sources/TagKit/ChatModel.swift) once at startup;
+  `OpenRouterChatModel` resolves it from `GET /models/{author}/{slug}` and
+  falls back to the model id (with no context window) if that call fails.
+- **Context**: the `total_tokens` of the latest reply against the model's
+  `context_length`. It grows with the conversation, tool results included.
+- **Cost**: the running sum of `usage.cost` across the whole session.
+
+`Agent` keeps the token count and cost, updates them after every reply, and
+sends the line as an event, so the tests assert on it.
 
 ## The file tools
 
@@ -90,8 +121,8 @@ pipe.
 
 Differences from the Go originals:
 
-- **Standard input is empty.** The agent reads the user's messages from its
-  own stdin; in Go a command like `cat` would swallow them.
+- **Standard input is empty.** The UI reads the user's keys from the
+  agent's own stdin; in Go a command like `cat` would swallow them.
 - **Output is capped at 1 MB** per run. Beyond that the tool returns an error
   telling the model to narrow the command (`head`, `grep`). Go has no limit.
 - **`code_search` passes `--` before the pattern**, so a pattern starting with
@@ -118,6 +149,15 @@ it: their executables are only available to build plugins, not at runtime.
   members of a type from that module. The same goes for `localizedDescription`
   (needs `import Foundation`) and for test files, whose target therefore
   depends on the `OpenRouter` product explicitly.
+- **Public API using `URL` needs `public import Foundation`.** With
+  `InternalImportsByDefault`, a plain `import Foundation` makes `URL` internal,
+  so the compiler rejects a `public init` (or property) that mentions it.
+- **`URL(filePath:directoryHint: .isDirectory)` keeps a trailing slash** in
+  `path`, so `/work/tag` becomes `/work/tag/`. `StatusLine.folder` trims it
+  before shortening the home directory.
+- **`String(format:)` trips `strictMemorySafety`** ("uses unsafe constructs").
+  The status line's token and cost formatters use integer maths instead of
+  `CVarArg` format strings.
 - **`strictMemorySafety` flags `FileManager.fileExists(atPath:isDirectory:)`**
   because of its `inout ObjCBool` pointer. Use
   `URL.resourceValues(forKeys: [.isDirectoryKey])` instead.

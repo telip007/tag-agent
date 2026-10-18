@@ -17,10 +17,11 @@ what needs testing.
 
 [Package.swift](../../Package.swift) has two targets:
 
-- `Tag` (executable, `Sources/Tag/`): `@main`, argument parsing, terminal I/O.
-  Depends on `TagKit` and ArgumentParser.
-- `TagKit` (library, `Sources/TagKit/`): the agent. Depends on the
-  [OpenRouter SDK](../concepts/openrouter-sdk.md).
+- `Tag` (executable, `Sources/Tag/`): `@main`, argument parsing, and wiring
+  the agent to the UI. Depends on `TagKit`, ArgumentParser and Stipple.
+- `TagKit` (library, `Sources/TagKit/`): the agent and, since
+  [0008](0008-stipple-terminal-ui.md), its terminal UI. Depends on the
+  [OpenRouter SDK](../concepts/openrouter-sdk.md) and Stipple.
 
 Both use the same strict compiler settings.
 

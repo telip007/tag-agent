@@ -37,6 +37,31 @@ submodule in `Packages/OpenRouter`).
 > The agent edits files and runs shell commands in the directory you start it
 > in, without asking first. Use it in a directory under version control.
 
+## The terminal UI
+
+The chat runs in the terminal with
+[Stipple](https://github.com/telip007/stipple). It looks like a plain prompt:
+messages and tool calls (with their key argument, and their time when slow)
+scroll into your terminal's history, each turn ends with its tool count, time
+and cost, and below the `›` prompt one status line shows the folder, the
+model's display name, a context meter with how much of the model's window the
+conversation uses, and what the session has cost so far. Narrow terminals
+drop the folder, then the model, then the meter.
+
+```text
+~/developer/tag · DeepSeek V4.1 Flash · ▰▱▱▱▱▱▱▱ · 12.3k/200k · $0.0012
+```
+
+| Key | What |
+| --- | --- |
+| Enter | send; while the agent works, queue the message (type-ahead) |
+| ↑ / ↓ | recall sent messages; ↓ past the newest restores your draft |
+| Ctrl-C | clear the line; on an empty line, press twice to quit |
+| Ctrl-D | quit, on an empty line |
+
+Input needs an interactive terminal; piping messages on stdin is not
+supported.
+
 ## Setup
 
 ```sh

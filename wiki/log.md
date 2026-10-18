@@ -46,3 +46,25 @@ Added `.github/assets/banner.png`: a text-free background generated with Codex (
 
 ## [2026-10-18] update | swift-tools-version 6.2
 First CI run failed: `Package.swift` declared tools 6.4, CI has Swift 6.3. Lowered to 6.2 (the documented minimum, same as the SDK).
+
+## [2026-10-18] update | Status line
+Added `StatusLine` (`Sources/TagKit/StatusLine.swift`) and gave `ChatModel` a
+`modelDescription()` method. Before each prompt Tag prints the working folder,
+the model's catalogue display name, the context use against its window and the
+session cost. Documented the loop change and the new compiler traps in
+[tools](concepts/tools.md).
+
+## [2026-10-18] update | Terminal UI on Stipple
+The chat UI moved from print/readLine with raw ANSI escapes to a Stipple view (decision 0008). `Agent` is now `@MainActor` and emits `AgentEvent`s; `ChatSession` holds the UI state and `ChatView` renders it, both in TagKit so they are testable. Piped stdin input no longer works. See [terminal UI](concepts/terminal-ui.md).
+
+## [2026-10-18] update | Terminal UI design pass
+Restyled the chat for "a simple look that reveals hidden aha moments; retro but state of the art": amber accent, banner, `›` prompt, tool summaries and durations, turn summaries, braille spinner, a status bar with a context meter that narrows with the terminal. Added type-ahead, ↑/↓ history, Ctrl-C/Ctrl-D handling, and split tool events into started/finished. Two Stipple fixes (colour-depth downsampling, Ctrl-D in an empty TextField) are being made upstream.
+
+## [2026-10-18] update | Stipple 0.1.1
+
+Three Stipple bugs found while building the terminal UI were fixed upstream and
+released as Stipple 0.1.1: colour-depth detection with RGB downsampling, Ctrl-D
+reaching ancestors on an empty `TextField`, and the caret moving to the end
+after outside text changes. `Package.swift` now requires 0.1.1; the gotchas in
+[terminal UI](concepts/terminal-ui.md) say which version fixed what. The model's
+catalogue name is shown without its author prefix (`ModelDescription.displayName`).
