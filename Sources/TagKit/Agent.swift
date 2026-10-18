@@ -33,7 +33,8 @@ public struct Agent {
 
     let model: any ChatModel
     let tools: [ToolDefinition]
-    let workingDirectory: URL
+    let environment: SessionEnvironment
+    let now: () -> Date
     let getUserMessage: () async -> String?
     let output: (AgentEvent) -> Void
 
@@ -42,29 +43,35 @@ public struct Agent {
     /// - Parameters:
     ///   - model: The model that writes the replies.
     ///   - tools: The tools the model may call.
-    ///   - workingDirectory: The folder shown in the status line.
+    ///   - environment: The machine and project, for the system prompt and
+    ///     the status line.
+    ///   - now: The clock that dates user messages.
     ///   - output: Receives what happens in the conversation, for display.
     ///   - getUserMessage: Reads the next user message, or `nil` to end the session.
     public init(
         model: any ChatModel,
         tools: [ToolDefinition] = [],
-        workingDirectory: URL,
+        environment: SessionEnvironment,
+        now: @escaping () -> Date = Date.init,
         output: @escaping (AgentEvent) -> Void,
         getUserMessage: @escaping () async -> String?,
     ) {
         self.model = model
         self.tools = tools
-        self.workingDirectory = workingDirectory
+        self.environment = environment
+        self.now = now
         self.output = output
         self.getUserMessage = getUserMessage
     }
 
     /// Runs the conversation until ``getUserMessage`` returns `nil`.
     public func run() async throws {
-        var conversation: [ChatMessage] = []
-
-        // A catalogue call for the status line.
+        // A catalogue call for the status line and the system prompt.
         let modelDescription = await model.modelDescription()
+
+        // Rendered once: changing it mid-session would invalidate the cache.
+        var conversation = [systemMessage(model: modelDescription)]
+        var dater = UserMessageDater()
 
         // After tool calls the model gets the results straight away, without
         // waiting for the user.
@@ -76,7 +83,7 @@ public struct Agent {
                 output(
                     .status(
                         StatusLine(
-                            directory: workingDirectory,
+                            directory: environment.workingDirectory,
                             model: modelDescription,
                             contextTokens: contextTokens,
                             cost: cost,
@@ -89,7 +96,7 @@ public struct Agent {
                     break
                 }
 
-                conversation.append(.user(userInput))
+                conversation.append(.user(dater.message(userInput, at: now())))
             }
 
             output(.thinking)
@@ -110,6 +117,10 @@ public struct Agent {
             }
             readUserInput = toolCalls.isEmpty
         }
+    }
+
+    private func systemMessage(model: ModelDescription) -> ChatMessage {
+        .system(SystemPrompt.render(tools: tools, environment: environment, model: model.name))
     }
 
     private func runInference(

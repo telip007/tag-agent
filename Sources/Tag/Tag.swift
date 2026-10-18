@@ -14,10 +14,10 @@ struct Tag: AsyncParsableCommand {
     private static func chat() async throws {
         let workingDirectory = URL(filePath: FileManager.default.currentDirectoryPath, directoryHint: .isDirectory)
         let session = ChatSession()
-        let agent = try Agent(
+        let agent = try await Agent(
             model: OpenRouterChatModel(),
             tools: ToolDefinition.builtIn(workingDirectory: workingDirectory),
-            workingDirectory: workingDirectory,
+            environment: SessionEnvironment.probe(workingDirectory: workingDirectory),
             output: session.handle,
             getUserMessage: session.nextMessage,
         )

@@ -68,3 +68,15 @@ reaching ancestors on an empty `TextField`, and the caret moving to the end
 after outside text changes. `Package.swift` now requires 0.1.1; the gotchas in
 [terminal UI](concepts/terminal-ui.md) say which version fixed what. The model's
 catalogue name is shown without its author prefix (`ModelDescription.displayName`).
+
+## [2026-10-18] ingest | System prompt and caching sources
+Captured mini-swe-agent, OpenAI's prompt engineering best practices, Tetrate's system prompts guide, pi's system prompt builder and OpenRouter's prompt caching guide. mini-swe-agent's page lists 18 things Tag can borrow.
+
+## [2026-10-18] query | System prompt and prompt caching
+New pages [system prompt](concepts/system-prompt.md) (best practices, draft, runtime environment, open questions) and [prompt caching](concepts/prompt-caching.md) (current state, gaps, steps). Tag has neither a system prompt nor explicit caching yet; no decision recorded.
+
+## [2026-10-18] update | System prompt
+Tag now sends a system prompt (decision 0009): `SystemPrompt.render` builds it from sections, each `ToolDefinition` adds a `summary` and `guidelines`, `SessionEnvironment.probe` supplies folder, OS, shell, git and `AGENTS.md` once at startup, and `UserMessageDater` puts the date on user messages instead. `Agent` takes a `SessionEnvironment` instead of a working directory. See [system prompt](concepts/system-prompt.md).
+
+## [2026-10-18] update | Hook tests and GIT_DIR
+The pre-push hook failed a probe test that `make check` passed: hook-run tests inherit `GIT_DIR`, so a command in a temporary folder answers for this repository. The test no longer checks the repository field; gotcha in [backpressure setup](concepts/backpressure-setup.md).

@@ -18,6 +18,13 @@ extension ToolDefinition {
                 ],
                 "required": ["command"],
             ],
+            summary: "run a command in the project folder",
+            guidelines: [
+                """
+                Each bash call is a fresh shell in the project folder with no input: cd and export don't carry \
+                over, so chain commands with && and use non-interactive flags.
+                """
+            ],
         ) { json in
             struct Input: Decodable { var command: String }
             let input = try decodeInput(json, as: Input.self)
@@ -44,6 +51,8 @@ extension ToolDefinition {
                 You can search by pattern, file type, or directory.
                 """,
             parameters: codeSearchParameters,
+            summary: "search file contents (ripgrep)",
+            guidelines: ["Use code_search to find code instead of reading files one by one."],
         ) { json in
             let input = try decodeInput(json, as: CodeSearchInput.self)
             guard !input.pattern.isEmpty else {
