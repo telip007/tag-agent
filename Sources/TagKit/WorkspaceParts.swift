@@ -24,13 +24,15 @@ extension View {
     }
 }
 
-/// The conversation in a scroll view that stays on the newest block until
-/// the user scrolls up (wheel, Page Up) and pins again at the bottom. A click
-/// on a block expands or collapses it.
+/// The conversation in a scroll view. A short conversation starts at the top;
+/// once it fills the pane, the view follows the newest block until the user
+/// scrolls up (wheel, Page Up), and pins again back at the bottom. A click on
+/// a block expands or collapses it.
 struct TranscriptPane: View {
     let session: ChatSession
     let selected: Int?
     @Binding var position: ScrollPosition
+    @State private var hovered: Int?
 
     var body: some View {
         ScrollView {
@@ -39,15 +41,23 @@ struct TranscriptPane: View {
                     BlockView(
                         block: block,
                         isExpanded: session.expanded.contains(block.id),
-                        isSelected: block.id == selected,
+                        isSelected: block.id == selected || (block.isExpandable && block.id == hovered),
                     )
                     .id(block.id)
                     .onTapGesture { session.toggle(block.id) }
+                    .onHover { isHovering in
+                        if isHovering {
+                            hovered = block.id
+                        } else if hovered == block.id {
+                            hovered = nil
+                        }
+                    }
                 }
             }
             .padding(.bottom, 1)
         }
-        .defaultScrollAnchor(.bottom)
+        .defaultScrollAnchor(.bottom, for: .initialOffset)
+        .defaultScrollAnchor(.bottom, for: .sizeChanges)
         .scrollPosition($position)
         .scrollOnPageKeys()
     }
@@ -309,10 +319,23 @@ struct Footer: View {
                     if offset > 0 {
                         Text(" · ").dim()
                     }
-                    (Text(key.key) + Text(" \(key.label)").dim()).onTapGesture(perform: key.action)
+                    FooterKey(key: key)
                 }
             }
         }
+    }
+}
+
+/// One clickable hint, lit up while the pointer is over it.
+struct FooterKey: View {
+    let key: Footer.Key
+    @State private var isHovered = false
+
+    var body: some View {
+        (Text(key.key).foregroundStyle(isHovered ? Theme.accent : nil)
+            + Text(" \(key.label)").foregroundStyle(isHovered ? Theme.accent : nil).dim(!isHovered))
+            .onTapGesture(perform: key.action)
+            .onHover { isHovered = $0 }
     }
 }
 
@@ -362,6 +385,14 @@ struct CommandPalette: View {
 }
 
 extension TranscriptBlock {
+    /// Whether a click changes the block: trays and edits expand.
+    var isExpandable: Bool {
+        switch content {
+        case .tools, .edit: true
+        case .user, .reply: false
+        }
+    }
+
     /// The block as plain text, for copying.
     var plainText: String {
         switch content {

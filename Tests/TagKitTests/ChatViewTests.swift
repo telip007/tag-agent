@@ -116,6 +116,15 @@ struct ChatViewTests {
         #expect(workspace().contains("│ connecting…"))
     }
 
+    @Test func aShortConversationStartsAtTheTop() {
+        let lines = workspace { session in
+            session.handle(.reply("first reply"))
+        }
+        .split(separator: "\n", omittingEmptySubsequences: false)
+        // Line 0 is the top border; the reply's blank line comes before it.
+        #expect(lines[2].hasPrefix("│   first reply"))
+    }
+
     @Test func narrowTerminalsHideThePanel() {
         let screen = workspace(width: 60)
         #expect(!screen.contains("session"))
@@ -195,6 +204,17 @@ struct ChatViewTests {
         #expect(!text.contains("reply 1\n") && !text.contains("reply 1 "))
         // The scroll indicator's thumb shows the content overflows.
         #expect(text.contains("┃"))
+    }
+
+    @Test func onlyTraysAndEditsExpand() {
+        #expect(TranscriptBlock(id: 0, content: .tools([])).isExpandable)
+        #expect(TranscriptBlock(id: 0, content: .edit(FileEdit(path: "p", lines: []))).isExpandable)
+        #expect(!TranscriptBlock(id: 0, content: .user("u")).isExpandable)
+        #expect(!TranscriptBlock(id: 0, content: .reply("r")).isExpandable)
+    }
+
+    @Test func footerKeysReadAsKeyAndLabel() {
+        #expect(plainText(FooterKey(key: Footer.Key(key: "tab", label: "panel") {})) == "tab panel")
     }
 
     @Test func blocksCopyAsPlainText() {

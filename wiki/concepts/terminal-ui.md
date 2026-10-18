@@ -110,9 +110,11 @@ handling; the parts are in
 
 - `pane(title:isActive:)`: a rounded border with the title set into its top
   edge (an `overlay` at `.topLeading`); gold while active.
-- `TranscriptPane`: the blocks in a Stipple `ScrollView` with
-  `.defaultScrollAnchor(.bottom)`, so it starts at and follows the newest
-  block, and `.scrollOnPageKeys()`, so Page Up/Down scroll while the input has
+- `TranscriptPane`: the blocks in a Stipple `ScrollView` anchored to the
+  bottom for `.initialOffset` and `.sizeChanges` but not `.alignment`: a short
+  conversation starts at the top of the pane (the maintainer's choice, rather
+  than a messaging app's bottom-up layout), and once it overflows the view
+  follows the newest block. Also `.scrollOnPageKeys()`, so Page Up/Down scroll while the input has
   focus. The `ScrollPosition` lives in `ChatView`: browse mode calls
   `scrollTo(id:)` on the selected block (each block has `.id(block.id)`), and
   leaving it calls `scrollTo(edge: .bottom)`. Once the user scrolls away
@@ -134,7 +136,9 @@ handling; the parts are in
 - `CommandPalette`: an overlay with a `SelectionList` of `PaletteCommand`s.
 - Mouse (`renderOptions.mouseReporting`): the wheel scrolls the pane under the
   pointer, a click on a block expands or collapses it, and footer hints and
-  palette rows are clickable (`.onTapGesture`). Footer hints carry their
+  palette rows are clickable (`.onTapGesture`). Clicking the input box focuses
+  it. Hover (Stipple 0.3.0): a tool tray or diff under the pointer gets the
+  selection tint, to show it can be clicked, and a footer hint lights up gold. Footer hints carry their
   action (`Footer.Key`), so the key and the click do the same thing. With
   mouse reporting on, selecting text in the terminal needs Shift (Option in
   some macOS terminals).
@@ -238,7 +242,9 @@ static helper (`chat()`) that builds everything and runs the view.
   workspace: `ScrollView`, `ScrollPosition`, `.defaultScrollAnchor`,
   `.scrollOnPageKeys()`, `.id(_:)`, `.onTapGesture` and
   `RenderOptions.mouseReporting`. Taps and wheel hit-testing need the
-  alternate screen. `Package.swift` requires 0.2.0.
+  alternate screen. Stipple 0.3.0 added focus on click, double-click and
+  `.onHover` (motion reporting is only switched on while a view has a hover
+  handler). `Package.swift` requires 0.3.0.
 - **SwiftLint's `type_body_length` (200 lines)** applies to `ChatView` and to
   test suites. Helpers live in an `extension ChatView` in the same file
   (`fileprivate`, so they still reach the `private` state), and the key-map

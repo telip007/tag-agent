@@ -108,3 +108,10 @@ work while typing, and with mouse reporting on, the wheel scrolls, clicks
 expand blocks, and footer hints and palette rows are clickable. A `↓ latest`
 hint appears after scrolling away. See [terminal UI](concepts/terminal-ui.md).
 
+## [2026-10-18] update | Hover, and short conversations start at the top
+
+Stipple 0.3.0: clicking the input focuses it, hovering a tool tray or diff
+tints it and hovering a footer hint lights it up. At the maintainer's request a
+short conversation now starts at the top of the pane; the scroll view is
+anchored to the bottom only for its initial offset and for growth.
+
