@@ -10,6 +10,7 @@ Start here. Conventions: [SCHEMA.md](SCHEMA.md). Timeline: [log.md](log.md).
 - [Terminal UI](concepts/terminal-ui.md): How the chat UI is built on Stipple: the design intent, the agent's event seam, the observable session, the view and its hidden keys, why it runs on the main actor, and how it is tested.
 - [System prompt](concepts/system-prompt.md): How Tag's system prompt is built (sections in Swift, tool rules on each tool, a probed environment, AGENTS.md, the date on user messages) and the best practices behind it.
 - [Prompt caching](concepts/prompt-caching.md): What Tag does about OpenRouter prompt caching today, what it leaves unused, and the steps to use all of it.
+- [Evaluation loop](concepts/evaluation-loop.md): A plan for measuring system prompt changes across frontier, cheap and open-weight models, so the prompt works as well on non-frontier models as on frontier ones. Not built yet.
 - [OpenRouter SDK](concepts/openrouter-sdk.md): how Tag Agent consumes the swift-openrouter submodule and where its own docs live.
 
 ## Decisions

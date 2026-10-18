@@ -129,3 +129,6 @@ The pre-push hook failed a probe test that `make check` passed: hook-run tests i
 
 ## [2026-10-18] ingest | Karpathy guidelines
 Captured the Karpathy guidelines skill and took three of its ideas into the system prompt's rules: write the simplest code with nothing speculative, mention unrelated problems instead of fixing them and remove only your own leftovers, and name the readings of an ambiguous request instead of picking one. The style, persona check, plan template and general "stop and ask" were left out; see [Karpathy guidelines](sources/karpathy-guidelines.md).
+
+## [2026-10-18] update | Evaluation loop plan
+New page [evaluation loop](concepts/evaluation-loop.md): model tiers, what Tag needs first (headless mode, saved trajectories), task set, grading, the change-one-thing loop, and open questions for a working session. Nothing built or decided yet.
