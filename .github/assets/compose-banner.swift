@@ -1,6 +1,7 @@
 // Composes .github/assets/banner.png from a text-free background illustration
 // (banner-background.png, generated with Codex) and exact text: the title and
-// a Tag Agent session in the colours the CLI uses.
+// a Tag Agent session in the colours the CLI uses, with logo.png (the mascot,
+// from the same folder as the background) beside the title.
 //
 //   swift .github/assets/compose-banner.swift .github/assets/banner-background.png .github/assets/banner.png
 //
@@ -47,13 +48,23 @@ func draw(_ text: String, at point: NSPoint, font: NSFont, color: NSColor) {
 
 background.draw(in: NSRect(x: 0, y: 0, width: width, height: height))
 
+// Mascot tile beside the title.
+let logoURL = URL(filePath: arguments[1]).deletingLastPathComponent().appending(path: "logo.png")
+if let logo = NSImage(contentsOf: logoURL) {
+    let tile = rect(x: 60, y: 34, width: 84, height: 84)
+    NSGraphicsContext.saveGraphicsState()
+    NSBezierPath(roundedRect: tile, xRadius: 18, yRadius: 18).addClip()
+    logo.draw(in: tile)
+    NSGraphicsContext.restoreGraphicsState()
+}
+
 // Title.
 draw(
-    "Tag Agent", at: NSPoint(x: 64, y: 44),
+    "Tag Agent", at: NSPoint(x: 164, y: 42),
     font: .systemFont(ofSize: 46, weight: .bold), color: color(0xF4F6FB)
 )
 draw(
-    "A coding-agent harness for the terminal, written in Swift", at: NSPoint(x: 66, y: 104),
+    "A coding-agent harness for the terminal, written in Swift", at: NSPoint(x: 166, y: 98),
     font: .systemFont(ofSize: 19, weight: .regular), color: color(0xA9B1CC)
 )
 

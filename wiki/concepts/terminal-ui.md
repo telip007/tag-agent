@@ -41,7 +41,7 @@ How it got here (all on 2026-10-18), so the next redesign doesn't repeat it:
 2. A copy of Claude Code's layout (header, rules around the input, a status
    bar) with a pixel mascot: rejected as a copy, and the mascot, Claude's body
    in a hat, as too similar to Claude's.
-3. Three sketched directions themed on Islamic and Ottoman terms: rejected.
+3. Three sketched directions themed on vocabulary: rejected.
    Names in the UI are plain words; theming by vocabulary reads as a gimmick.
 4. Research into 2026 agent CLIs: they are full-screen apps, not REPLs. Amp
    went fullscreen with mouse support, overlays and clickable buttons; Toad

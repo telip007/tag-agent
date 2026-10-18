@@ -24,6 +24,7 @@ Start here. Conventions: [SCHEMA.md](SCHEMA.md). Timeline: [log.md](log.md).
 - [0007 Conventional Commits](decisions/0007-conventional-commits.md): Commit messages and PR titles use the same Conventional Commits format as the SDK; no release tooling yet.
 - [0008 Stipple for the terminal UI](decisions/0008-stipple-terminal-ui.md): The chat UI is a Stipple view instead of print/readLine with raw ANSI escapes, and the views live in TagKit so they can be tested.
 - [0009 System prompt](decisions/0009-system-prompt.md): A short system prompt built in Swift from sections, with tool rules on each ToolDefinition, a probed environment and AGENTS.md; the date rides on user messages.
+- [0010 Street cat branding](decisions/0010-street-cat-branding.md): Tag Agent keeps its name and gets a tabby street cat in a fez as a quiet mascot, used in the README banner and logo, not as UI decoration.
 
 ## Sources
 

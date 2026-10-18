@@ -42,7 +42,7 @@ Tag Agent is now public at github.com/telip007/tag-agent under Apache 2.0, with 
 Decision 0007: the SDK's Conventional Commits format and checker, enforced by a `commit-msg` hook and a CI PR-title job. release-please is deferred until something is releasable.
 
 ## [2026-10-18] update | README banner
-Added `.github/assets/banner.png`: a text-free background generated with Codex (Ottoman girih and Iznik motifs with circuit traces) plus exact text and a sample session drawn by `.github/assets/compose-banner.swift`, as in the SDK.
+Added `.github/assets/banner.png`: a text-free background generated with Codex (geometric ornament with circuit traces) plus exact text and a sample session drawn by `.github/assets/compose-banner.swift`, as in the SDK.
 
 ## [2026-10-18] update | swift-tools-version 6.2
 First CI run failed: `Package.swift` declared tools 6.4, CI has Swift 6.3. Lowered to 6.2 (the documented minimum, same as the SDK).
@@ -72,18 +72,18 @@ catalogue name is shown without its author prefix (`ModelDescription.displayName
 ## [2026-10-18] update | Terminal UI redesign
 
 The first look was flat and cramped next to current agent CLIs. Redesigned
-after Claude Code and Pi: a header with a pixel-art mascot (a turquoise creature in a turban with a
-gold jewel and cobalt plume; a fez variant is drawn too), user
+after Claude Code and Pi: a header with a pixel-art mascot (a turquoise creature with a gold jewel and
+cobalt plume; a second variant is drawn too), user
 messages on a tinted band, replies indented to the message text, the input
 between two rules, and a two-sided status bar. Dropped the ` TAG ` badge, the
 `▰▱` meter and the summary line for turns without tools. Replies now render a
 light Markdown subset (`Markdown.swift`). Palette moved from amber phosphor to
-manuscript gold and İznik turquoise. See [terminal UI](concepts/terminal-ui.md).
+gold and turquoise. See [terminal UI](concepts/terminal-ui.md).
 
 ## [2026-10-18] update | Mascot
 
 Replaced the star logo with a mascot drawn by `PixelArt` (half blocks, two
-colours per cell): `Mascot.turban` by default, `Mascot.fez` as the alternative.
+colours per cell): two variants, one the default.
 Why a character and not a star, and what was dropped, is in
 [terminal UI](concepts/terminal-ui.md#the-mascot).
 
@@ -138,3 +138,6 @@ Replies stream into the workspace: `ChatModel.reply(to:tools:onText:)` streams t
 
 ## [2026-10-18] update | Streamed reasoning and tool-call names
 `ChatModel` streams `ReplyDelta`s (text, reasoning, tool-call names). Reasoning gets its own transcript block (`◌ thinking` with its latest lines, then `▸ thought · 3.1s`, expandable), and the footer shows `writing <tool>` while a tool call streams. Needed Stipple 0.3.1, where head truncation keeps the last lines of a line-limited text.
+
+## [2026-10-18] update | Street cat branding
+Light rebrand ([0010](decisions/0010-street-cat-branding.md)): new `logo.png` and banner background generated with Codex (a tabby street cat in a fez over lamp-lit rooftops), `compose-banner.swift` places the logo beside the title, README gets a short Mascot section. Public wiki wording about the old ornament and palette was made neutral.

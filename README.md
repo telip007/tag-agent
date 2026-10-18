@@ -85,6 +85,13 @@ wiki: start at [wiki/index.md](wiki/index.md).
 Working with a coding agent? See [AGENTS.md](AGENTS.md). Contributing? See
 [CONTRIBUTING.md](CONTRIBUTING.md).
 
+## Mascot
+
+Tag's mascot is a tabby street cat in a fez. The logo
+([`.github/assets/logo.png`](.github/assets/logo.png)) and the banner
+illustration were generated with Codex; the banner is composed by
+[`compose-banner.swift`](.github/assets/compose-banner.swift).
+
 ## License
 
 [Apache 2.0](LICENSE).
