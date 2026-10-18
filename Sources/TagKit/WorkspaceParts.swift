@@ -69,6 +69,8 @@ struct BlockView: View {
     static let collapsedEditLines = 8
     /// Lines of a tool's output an expanded tray shows.
     static let outputLines = 6
+    /// Lines of reasoning shown while the model is still reasoning.
+    static let reasoningLines = 3
 
     let block: TranscriptBlock
     let isExpanded: Bool
@@ -90,6 +92,8 @@ struct BlockView: View {
                 Text(text).bold()
             }
             .padding(.top, 1)
+        case .reasoning(let reasoning):
+            ReasoningView(reasoning: reasoning, isExpanded: isExpanded).padding(.leading, 2).padding(.top, 1)
         case .reply(let text):
             Markdown.text(text).padding(.leading, 2).padding(.top, 1)
         case .tools(let runs):
@@ -155,6 +159,33 @@ struct ToolTray: View {
         let shown = lines.prefix(BlockView.outputLines).joined(separator: "\n")
         let rest = lines.count - BlockView.outputLines
         return rest > 0 ? shown + "\n… \(rest) more lines" : shown
+    }
+}
+
+/// The model's reasoning, dim: its latest lines while it reasons, then one
+/// line with how long it took, all of it when expanded.
+struct ReasoningView: View {
+    let reasoning: Reasoning
+    let isExpanded: Bool
+
+    var body: some View {
+        let text = reasoning.text.trimmingCharacters(in: .whitespacesAndNewlines)
+        VStack(alignment: .leading) {
+            header
+            if isExpanded {
+                Text(text).dim().padding(.leading, 2)
+            } else if reasoning.duration == nil {
+                Text(text).dim().lineLimit(BlockView.reasoningLines).truncationMode(.head).padding(.leading, 2)
+            }
+        }
+    }
+
+    /// `◌ thinking` while it reasons, then `▸ thought · 3.1s`.
+    private var header: Text {
+        guard let duration = reasoning.duration else {
+            return Text("◌ ").foregroundStyle(Theme.accent) + Text("thinking").dim()
+        }
+        return Text("▸ ").foregroundStyle(Theme.rule) + Text("thought · \(ChatSession.seconds(duration))").dim()
     }
 }
 
@@ -385,10 +416,10 @@ struct CommandPalette: View {
 }
 
 extension TranscriptBlock {
-    /// Whether a click changes the block: trays and edits expand.
+    /// Whether a click changes the block: trays, edits and reasoning expand.
     var isExpandable: Bool {
         switch content {
-        case .tools, .edit: true
+        case .tools, .edit, .reasoning: true
         case .user, .reply: false
         }
     }
@@ -398,6 +429,8 @@ extension TranscriptBlock {
         switch content {
         case .user(let text), .reply(let text):
             return text
+        case .reasoning(let reasoning):
+            return reasoning.text
         case .tools(let runs):
             return runs.map { "\($0.name) \($0.summary)\n\($0.output)" }.joined(separator: "\n\n")
         case .edit(let edit):

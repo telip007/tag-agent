@@ -7,6 +7,8 @@ public struct TranscriptBlock: Identifiable, Sendable, Equatable {
     public enum Content: Sendable, Equatable {
         /// A message the user sent.
         case user(String)
+        /// What the model reasoned before writing.
+        case reasoning(Reasoning)
         /// Text the model wrote.
         case reply(String)
         /// The tool calls between two replies, in order.
@@ -19,6 +21,14 @@ public struct TranscriptBlock: Identifiable, Sendable, Equatable {
     public let id: Int
     /// What the block shows.
     public var content: Content
+}
+
+/// The model's reasoning before a reply or tool calls.
+public struct Reasoning: Sendable, Equatable {
+    /// The reasoning text, as the model wrote it.
+    public var text: String
+    /// How long the model reasoned, once it stopped; `nil` while it still does.
+    public var duration: Duration?
 }
 
 /// One tool call in a tray.

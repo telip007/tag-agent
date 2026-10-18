@@ -69,8 +69,11 @@ Agent ──AgentEvent──▶ ChatSession ──observed by──▶ ChatView
 
 - `.status(StatusLine)` before each prompt ([status line](tools.md#the-status-line)),
 - `.thinking` before each model call,
+- `.reasoningDelta(String)` for each piece of the model's reasoning,
 - `.replyDelta(String)` for each piece of the model's text as it streams in,
   then `.reply(String)` with all of it,
+- `.toolCallWriting(name:)` when the model starts writing a tool call (its
+  arguments still streaming; the tool runs once the reply is complete),
 - `.toolStarted(name:arguments:)` before a tool runs, and
   `.toolFinished(name:arguments:output:failed:)` after it, with what the model
   sees; `failed` is set for an unknown tool or a thrown error.
@@ -81,10 +84,13 @@ Agent ──AgentEvent──▶ ChatSession ──observed by──▶ ChatView
 `@MainActor @Observable` class. `handle(_:)` turns events into:
 
 - `transcript`, [`TranscriptBlock`](../../Sources/TagKit/Transcript.swift)s
-  whose `content` is `user`, `reply`, `tools([ToolRun])` or `edit(FileEdit)`.
+  whose `content` is `user`, `reasoning(Reasoning)`, `reply`,
+  `tools([ToolRun])` or `edit(FileEdit)`.
   Blocks can change after they appear: a reply grows with each
   `.replyDelta` (the first one sets the activity to `writing`) and `.reply`
-  settles it on the full text; tool calls between two replies share
+  settles it on the full text; a reasoning block grows with each
+  `.reasoningDelta` and gets its `duration` when the model moves on (text,
+  a tool call, a tool run or the next prompt); tool calls between two replies share
   one tray, which grows while the agent works; each `ToolRun` goes from
   `running` to `succeeded` or `failed` with its duration and output.
 - `edit` blocks: a successful `edit_file` call becomes a `FileEdit`, its
@@ -124,6 +130,10 @@ handling; the parts are in
   (`isPositionedByUser` and `edge != .bottom`), the footer offers `↓ latest`.
   A scroll indicator takes the rightmost column when the content overflows. `BlockView` draws each: user messages bold after a gold `▌`;
   replies through [`Markdown`](../../Sources/TagKit/Markdown.swift);
+  `ReasoningView`, dim: `◌ thinking` and the last three lines of the
+  reasoning while it streams (`.lineLimit(3)` with `.truncationMode(.head)`,
+  which keeps the end of the text since Stipple 0.3.1), then one line,
+  `▸ thought · 3.1s`, that expands to all of it;
   `ToolTray`, one summary line (`▸ 3 tools · 4.2s  read_file · bash`, the `▸`
   red if one failed) that lists every call while running or when expanded,
   with the first six lines of each output; `EditCard`, a bordered diff with
@@ -191,7 +201,11 @@ static helper (`chat()`) that builds everything and runs the view.
 
 Replies stream: the text appears as the model writes it instead of all at
 once when the reply is complete, so the agent feels responsive even when a
-long answer takes many seconds. Every delta changes `transcript`, which
+long answer takes many seconds. Reasoning streams into its own block before
+the text, and while the model writes a tool call (a long `edit_file` can
+take seconds) the footer says `writing edit_file` instead of `thinking`.
+The tool's arguments are not shown while they stream: the tray and the diff
+card parse complete JSON, and the tool only runs once they are complete. Every delta changes `transcript`, which
 Stipple observes; Stipple's runtime batches the changes in one main-actor turn
 and draws at most `RenderOptions.maxFps` (30) frames a second, so a fast model
 doesn't redraw the screen per token. Checked live by timing when words of a
@@ -257,7 +271,11 @@ long reply first reached the pseudo-terminal: they arrived across many frames.
   `RenderOptions.mouseReporting`. Taps and wheel hit-testing need the
   alternate screen. Stipple 0.3.0 added focus on click, double-click and
   `.onHover` (motion reporting is only switched on while a view has a hover
-  handler). `Package.swift` requires 0.3.0.
+  handler).
+- **`lineLimit` kept the first lines even under head truncation** in Stipple
+  0.3.0, so the reasoning preview showed the start of the reasoning, not the
+  latest lines. Fixed upstream in 0.3.1, as in SwiftUI; `Package.swift`
+  requires it.
 - **SwiftLint's `type_body_length` (200 lines)** applies to `ChatView` and to
   test suites. Helpers live in an `extension ChatView` in the same file
   (`fileprivate`, so they still reach the `private` state), and the key-map

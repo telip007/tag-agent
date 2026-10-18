@@ -43,6 +43,16 @@ struct ChatViewTests {
         #expect(block(.reply("Use `make`.")) == "\n  Use make.")
     }
 
+    @Test func reasoningShowsItsLatestLinesThenCollapses() {
+        let text = "one\ntwo\nthree\nfour"
+        #expect(block(.reasoning(Reasoning(text: text))) == "\n  ◌ thinking\n    …two\n    three\n    four")
+        let done = Reasoning(text: text, duration: .milliseconds(3100))
+        #expect(block(.reasoning(done)) == "\n  ▸ thought · 3.1s")
+        #expect(
+            block(.reasoning(done), expanded: true) == "\n  ▸ thought · 3.1s\n    one\n    two\n    three\n    four")
+        #expect(TranscriptBlock(id: 0, content: .reasoning(done)).plainText == text)
+    }
+
     @Test func aFinishedTrayCollapsesToOneLine() {
         let runs = [
             ToolRun(name: "read_file", summary: "a", state: .succeeded, duration: .seconds(1), output: "x"),
@@ -206,8 +216,9 @@ struct ChatViewTests {
         #expect(text.contains("┃"))
     }
 
-    @Test func onlyTraysAndEditsExpand() {
+    @Test func onlyTraysEditsAndReasoningExpand() {
         #expect(TranscriptBlock(id: 0, content: .tools([])).isExpandable)
+        #expect(TranscriptBlock(id: 0, content: .reasoning(Reasoning(text: "t"))).isExpandable)
         #expect(TranscriptBlock(id: 0, content: .edit(FileEdit(path: "p", lines: []))).isExpandable)
         #expect(!TranscriptBlock(id: 0, content: .user("u")).isExpandable)
         #expect(!TranscriptBlock(id: 0, content: .reply("r")).isExpandable)

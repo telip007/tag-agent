@@ -135,3 +135,6 @@ New page [evaluation loop](concepts/evaluation-loop.md): model tiers, what Tag n
 
 ## [2026-10-18] update | Reply streaming
 Replies stream into the workspace: `ChatModel.reply(to:tools:onText:)` streams through the SDK's `chat.stream`, the agent emits `.replyDelta` per piece and `.reply` at the end, and `ChatSession` grows one reply block. The SDK's stream accumulator now keeps reasoning on the message.
+
+## [2026-10-18] update | Streamed reasoning and tool-call names
+`ChatModel` streams `ReplyDelta`s (text, reasoning, tool-call names). Reasoning gets its own transcript block (`◌ thinking` with its latest lines, then `▸ thought · 3.1s`, expandable), and the footer shows `writing <tool>` while a tool call streams. Needed Stipple 0.3.1, where head truncation keeps the last lines of a line-limited text.

@@ -21,8 +21,9 @@ by an agent ([0006](../decisions/0006-agents-build-the-harness.md)).
    the session). Append it as a user message.
 2. Emit `.thinking`, then send the whole conversation plus the tool
    definitions to the [`ChatModel`](../../Sources/TagKit/ChatModel.swift),
-   which streams the reply: each piece of text is emitted as `.replyDelta`
-   while it arrives. Append the complete assistant message (text, tool calls
+   which streams the reply as `ReplyDelta`s: each piece of reasoning is
+   emitted as `.reasoningDelta`, each piece of text as `.replyDelta`, and the
+   name of each tool call the model starts writing as `.toolCallWriting`. Append the complete assistant message (text, tool calls
    and any reasoning fields). A reply with neither text nor tool calls throws
    `emptyReply`.
 3. Emit `.reply` with the full text, if any.

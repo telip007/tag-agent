@@ -7,8 +7,13 @@ public enum AgentEvent: Sendable, Equatable {
     case status(StatusLine)
     /// The agent is waiting for the model's next reply.
     case thinking
+    /// The next piece of the model's reasoning, as it streams in.
+    case reasoningDelta(String)
     /// The next piece of the model's text, as it streams in.
     case replyDelta(String)
+    /// The model started writing a call to the tool `name`; it runs once the
+    /// reply is complete (``toolStarted(name:arguments:)``).
+    case toolCallWriting(name: String)
     /// The model finished writing text: all of it, the deltas joined.
     case reply(String)
     /// A tool started running, with the raw JSON arguments the model sent.
@@ -129,8 +134,12 @@ public struct Agent {
     private func runInference(
         conversation: [ChatMessage]
     ) async throws -> (message: ChatAssistantMessage, usage: ChatUsage?) {
-        let result = try await model.reply(to: conversation, tools: tools.map(\.chatTool)) { text in
-            output(.replyDelta(text))
+        let result = try await model.reply(to: conversation, tools: tools.map(\.chatTool)) { delta in
+            switch delta {
+            case .text(let text): output(.replyDelta(text))
+            case .reasoning(let text): output(.reasoningDelta(text))
+            case .toolCall(let name): output(.toolCallWriting(name: name))
+            }
         }
 
         let message = result.message

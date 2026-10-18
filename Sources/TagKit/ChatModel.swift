@@ -9,19 +9,29 @@ public protocol ChatModel {
     ///   knows it, its context window.
     func modelDescription() async -> ModelDescription
 
-    /// Generates the next reply to a conversation, streaming its text.
+    /// Generates the next reply to a conversation, streaming it.
     ///
     /// - Parameters:
     ///   - conversation: The conversation history.
     ///   - tools: The tools the model may call.
-    ///   - onText: Receives the reply's text piece by piece, as it arrives.
+    ///   - onDelta: Receives the reply piece by piece, as it arrives.
     /// - Returns: The complete reply.
     /// - Throws: Whatever the model API throws, also after streaming started.
     func reply(
         to conversation: [ChatMessage],
         tools: [ChatTool],
-        onText: (String) -> Void,
+        onDelta: (ReplyDelta) -> Void,
     ) async throws -> ModelReply
+}
+
+/// A piece of a reply that is still streaming.
+public enum ReplyDelta: Sendable, Equatable {
+    /// More of the reply's text.
+    case text(String)
+    /// More of the model's reasoning, before or between its text.
+    case reasoning(String)
+    /// The model started writing a call to the tool `name`; its arguments follow.
+    case toolCall(name: String)
 }
 
 /// A complete reply from a ``ChatModel``.
@@ -104,7 +114,7 @@ public struct OpenRouterChatModel: ChatModel {
     public func reply(
         to conversation: [ChatMessage],
         tools: [ChatTool],
-        onText: (String) -> Void,
+        onDelta: (ReplyDelta) -> Void,
     ) async throws -> ModelReply {
         let request = ChatRequest(
             messages: conversation,
@@ -115,10 +125,28 @@ public struct OpenRouterChatModel: ChatModel {
         var accumulator = ChatStreamAccumulator()
         for try await chunk in try await openRouterClient.chat.stream(request) {
             accumulator.add(chunk)
-            if let text = chunk.textDelta, !text.isEmpty {
-                onText(text)
+            for delta in Self.deltas(in: chunk) {
+                onDelta(delta)
             }
         }
         return ModelReply(message: accumulator.message, usage: accumulator.usage)
+    }
+
+    /// What a streamed chunk adds: reasoning, text, and the names of tool
+    /// calls it starts (a call's first fragment carries its name).
+    static func deltas(in chunk: ChatStreamChunk) -> [ReplyDelta] {
+        var deltas: [ReplyDelta] = []
+        if let reasoning = chunk.reasoningDelta, !reasoning.isEmpty {
+            deltas.append(.reasoning(reasoning))
+        }
+        if let text = chunk.textDelta, !text.isEmpty {
+            deltas.append(.text(text))
+        }
+        for fragment in chunk.choices.first?.delta.toolCalls ?? [] {
+            if let name = fragment.function?.name, !name.isEmpty {
+                deltas.append(.toolCall(name: name))
+            }
+        }
+        return deltas
     }
 }

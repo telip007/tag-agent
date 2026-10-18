@@ -163,6 +163,37 @@ struct ChatSessionTests {
         #expect(session.transcript.map(\.content) == [.reply("Looking."), .reply("Next")])
     }
 
+    @Test func reasoningGrowsAndIsTimedUntilTheReplyStarts() {
+        session.handle(.thinking)
+        session.handle(.reasoningDelta("Read "))
+        clock.advance(.seconds(2))
+        session.handle(.reasoningDelta("first."))
+        #expect(session.transcript.map(\.content) == [.reasoning(Reasoning(text: "Read first."))])
+        #expect(session.activity == "thinking")
+
+        clock.advance(.seconds(1))
+        session.handle(.replyDelta("Ok"))
+        let reasoning = Reasoning(text: "Read first.", duration: .seconds(3))
+        #expect(session.transcript.map(\.content) == [.reasoning(reasoning), .reply("Ok")])
+    }
+
+    @Test func writingAToolCallEndsReasoningAndShowsTheTool() {
+        session.handle(.reasoningDelta("Hm."))
+        clock.advance(.seconds(1))
+        session.handle(.toolCallWriting(name: "edit_file"))
+        #expect(session.activity == "writing edit_file")
+        #expect(session.transcript.first?.content == .reasoning(Reasoning(text: "Hm.", duration: .seconds(1))))
+
+        session.handle(.reasoningDelta("Next."))
+        runTool("echo")
+        #expect(session.transcript.count == 3)
+        guard case .reasoning(let second) = session.transcript[1].content else {
+            Issue.record("expected reasoning")
+            return
+        }
+        #expect(second.duration == .zero)
+    }
+
     @Test func aStreamedReplyClosesTheTray() {
         runTool("echo")
         session.handle(.replyDelta("Done"))

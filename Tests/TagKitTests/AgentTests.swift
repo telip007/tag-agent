@@ -5,7 +5,7 @@ import Testing
 @testable import TagKit
 
 /// A model that plays back scripted replies and records what it was sent.
-/// Text streams word by word, each word with the space after it.
+/// Reasoning and text stream word by word, then each tool call's name.
 final class ScriptedModel: ChatModel {
     var replies: [ChatAssistantMessage]
     var description = ModelDescription(name: "Scripted Model", contextLength: 8_000)
@@ -21,12 +21,22 @@ final class ScriptedModel: ChatModel {
         description
     }
 
-    func reply(to conversation: [ChatMessage], tools: [ChatTool], onText: (String) -> Void) throws -> ModelReply {
+    func reply(
+        to conversation: [ChatMessage],
+        tools: [ChatTool],
+        onDelta: (ReplyDelta) -> Void,
+    ) throws -> ModelReply {
         conversations.append(conversation)
         toolNames.append(tools.compactMap { $0.value1?.function.name })
         let message = replies.isEmpty ? ChatAssistantMessage(text: nil, toolCalls: nil) : replies.removeFirst()
+        for piece in Self.pieces(of: message.reasoning ?? "") {
+            onDelta(.reasoning(piece))
+        }
         for piece in Self.pieces(of: message.text ?? "") {
-            onText(piece)
+            onDelta(.text(piece))
+        }
+        for call in message.toolCalls ?? [] {
+            onDelta(.toolCall(name: call.function.name))
         }
         return ModelReply(message: message, usage: usage)
     }
@@ -129,6 +139,21 @@ struct AgentTests {
         #expect(terminal.statusLines.first == "/work/tag · Scripted Model · ctx 0/8k (0%) · $0.00")
     }
 
+    @Test func streamsReasoningThenTextThenToolNames() async throws {
+        var message = ChatAssistantMessage(text: "On it.", toolCalls: [toolCall("1", "echo", "{}")])
+        message.reasoning = "Need echo."
+        let model = ScriptedModel([message, .init(text: "Done.", toolCalls: nil)])
+        let terminal = Terminal(["Go"])
+        try await terminal.agent(model: model, tools: [echo]).run()
+
+        let streamed = terminal.events.drop { $0 != .thinking }.dropFirst().prefix(6)
+        let expected: [AgentEvent] = [
+            .reasoningDelta("Need"), .reasoningDelta(" echo."), .replyDelta("On"), .replyDelta(" it."),
+            .toolCallWriting(name: "echo"), .reply("On it."),
+        ]
+        #expect(Array(streamed) == expected)
+    }
+
     @Test func streamsTheReplyBeforeReportingAllOfIt() async throws {
         let model = ScriptedModel([.init(text: "Hi there, you.", toolCalls: nil)])
         let terminal = Terminal(["Hello"])
@@ -227,5 +252,27 @@ struct AgentTests {
                 "<environment_update>date: \(next)</environment_update>\n\nc",
             ]
         )
+    }
+}
+
+struct ReplyDeltaTests {
+    private func chunk(_ delta: String) throws -> ChatStreamChunk {
+        let json = """
+            {"id":"g","object":"chat.completion.chunk","created":0,"model":"m",\
+            "choices":[{"index":0,"delta":\(delta),"finish_reason":null}]}
+            """
+        return try JSONDecoder().decode(ChatStreamChunk.self, from: Data(json.utf8))
+    }
+
+    @Test func aChunkBecomesReasoningTextAndToolNames() throws {
+        let call = #"{"index":0,"id":"a","type":"function","function":{"name":"bash","arguments":""}}"#
+        let delta = #"{"reasoning":"Hm.","content":"Ok","tool_calls":["# + call + "]}"
+        let deltas = OpenRouterChatModel.deltas(in: try chunk(delta))
+        #expect(deltas == [.reasoning("Hm."), .text("Ok"), .toolCall(name: "bash")])
+    }
+
+    @Test func argumentFragmentsAndEmptyPiecesAreSkipped() throws {
+        let delta = #"{"content":"","tool_calls":[{"index":0,"function":{"arguments":"{}"}}]}"#
+        #expect(OpenRouterChatModel.deltas(in: try chunk(delta)).isEmpty)
     }
 }

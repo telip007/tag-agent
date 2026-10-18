@@ -42,6 +42,8 @@ public final class ChatSession {
     @ObservationIgnored private var openTray: Int?
     /// The reply block the model is still writing, if any.
     @ObservationIgnored private var openReply: Int?
+    /// The reasoning block the model is still writing, and when it started.
+    @ObservationIgnored private var openReasoning: (block: Int, start: ContinuousClock.Instant)?
 
     /// Creates an empty session.
     ///
@@ -62,14 +64,23 @@ public final class ChatSession {
         case .status(let line):
             status = line
             openTray = nil
+            finishReasoning()
             setActivity(nil)
         case .thinking:
             setActivity("thinking")
+        case .reasoningDelta(let text):
+            streamReasoning(text)
         case .replyDelta(let text):
+            finishReasoning()
             streamReply(text)
         case .reply(let text):
+            finishReasoning()
             finishReply(text)
+        case .toolCallWriting(let name):
+            finishReasoning()
+            setActivity("writing \(name)")
         case .toolStarted(let name, let arguments):
+            finishReasoning()
             startTool(name: name, summary: ToolSummary.summarize(arguments))
             setActivity("\(name)  \(ToolSummary.summarize(arguments))")
         case .toolFinished(let name, let arguments, let output, let failed):
@@ -138,6 +149,28 @@ public final class ChatSession {
         openTray = nil
         append(.user(text))
         return text
+    }
+
+    /// Grows the reasoning being written, or starts it.
+    private func streamReasoning(_ text: String) {
+        if let openReasoning, case .reasoning(var reasoning) = transcript[openReasoning.block].content {
+            reasoning.text += text
+            transcript[openReasoning.block].content = .reasoning(reasoning)
+        } else {
+            openTray = nil
+            openReasoning = (transcript.count, now())
+            append(.reasoning(Reasoning(text: text)))
+        }
+    }
+
+    /// Records how long the model reasoned, once it moves on.
+    private func finishReasoning() {
+        guard let openReasoning, case .reasoning(var reasoning) = transcript[openReasoning.block].content else {
+            return
+        }
+        reasoning.duration = now() - openReasoning.start
+        transcript[openReasoning.block].content = .reasoning(reasoning)
+        self.openReasoning = nil
     }
 
     /// Grows the reply being written, or starts one.
