@@ -118,11 +118,16 @@ enum SystemPrompt {
     /// Rules for every session, whatever the tools.
     static let rules = [
         "Read the relevant code before changing it.",
-        "Change only what the task needs, and match the surrounding code's style.",
+        "Write the simplest code that solves the task: no features, abstractions or options nobody asked for.",
+        """
+        Change only what the task needs, and match the surrounding code's style. Mention unrelated problems \
+        you notice instead of fixing them; remove only what your own change left unused.
+        """,
         "After changing code, run the project's build or tests and read the result. If you couldn't, say so.",
         """
         Ask before destructive or outward-facing actions (deleting files, git push, anything outside the \
-        project), and when the request is ambiguous.
+        project). If a request can be read several ways, name the readings and ask instead of picking one \
+        silently.
         """,
         "Finish with 2–4 sentences: what changed, how you checked it, what's left. Name files by path.",
     ]

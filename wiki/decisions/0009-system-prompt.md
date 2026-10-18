@@ -18,7 +18,9 @@ four sources and left six open questions.
 Answers to the open questions, for a first version:
 
 1. **Length: short.** The draft's five general rules plus one line per tool
-   rule. A longer workflow gets added when a model gets something wrong, one
+   rule. (Six since a simplicity rule was added from the
+   [Karpathy guidelines](../sources/karpathy-guidelines.md), which also
+   extended the change and ask rules.) A longer workflow gets added when a model gets something wrong, one
    change at a time.
 2. **Autonomy: run until done**, asking before destructive or outward-facing
    actions and when the request is ambiguous.
