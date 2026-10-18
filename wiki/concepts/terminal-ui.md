@@ -1,7 +1,7 @@
 ---
 title: Terminal UI
 summary: How the full-screen workspace is built on Stipple: the design history, the agent's event seam, the observable session and its blocks, the panes and keys, why it runs on the main actor, and how it is tested.
-updated: 2026-10-18
+updated: 2026-10-19
 ---
 
 # Terminal UI
@@ -86,8 +86,12 @@ events:
 [`ChatSession`](../../Sources/TagKit/ChatSession.swift) is a
 `@MainActor @Observable` class. `handle(_:)` turns events into:
 
-- `transcript`, [`TranscriptBlock`](../../Sources/TagKit/Transcript.swift)s
-  whose `content` is `user`, `reasoning(Reasoning)`, `reply`,
+- `blocks`, one `LiveBlock` per block, each an `@Observable` object of its
+  own so that a growing reply changes its block and not the list
+  ([why](#keeping-frames-cheap)). `transcript` is the same as
+  [`TranscriptBlock`](../../Sources/TagKit/Transcript.swift) values, for key
+  handlers and tests; reading it in a view body would observe every block.
+  A block's `content` is `user`, `reasoning(Reasoning)`, `reply`,
   `tools([ToolRun])` or `edit(FileEdit)`.
   Blocks can change after they appear: a reply grows with each
   `.replyDelta` (the first one sets the activity to `writing`) and `.reply`
@@ -140,11 +144,15 @@ handling; the parts are in
   `scrollTo(id:)` on the selected block (each block has `.id(block.id)`), and
   leaving it calls `scrollTo(edge: .bottom)`. Once the user scrolls away
   (`isPositionedByUser` and `edge != .bottom`), the footer offers `↓ latest`.
-  A scroll indicator takes the rightmost column when the content overflows. `BlockView` draws each: user messages bold after a gold `▌`;
-  replies through [`Markdown`](../../Sources/TagKit/Markdown.swift);
+  A scroll indicator takes the rightmost column when the content overflows.
+  Each block is a `BlockRow`, which reads its `LiveBlock` and is `Equatable`
+  (same block object, same flags), around `BlockView`, which draws it: user messages bold after a gold `▌`;
+  replies through [`Markdown`](../../Sources/TagKit/Markdown.swift), one
+  `Text` per line in a `VStack` (a blank line is a space so it keeps its row);
   `ReasoningView`, dim: `◌ thinking` and the last three lines of the
   reasoning while it streams (`.lineLimit(3)` with `.truncationMode(.head)`,
-  which keeps the end of the text since Stipple 0.3.1), then one line,
+  which keeps the end of the text since Stipple 0.3.1, over only the last
+  1,200 characters, `ReasoningView.tail(of:)`), then one line,
   `▸ thought · 3.1s`, that expands to all of it;
   `ToolTray`, one summary line (`▸ 3 tools · 4.2s  read_file · bash`, the `▸`
   red if one failed) that lists every call while running or when expanded,
@@ -158,7 +166,8 @@ handling; the parts are in
   while it works (`type ahead…`).
 - `Footer`: key hints, or a warning (`press ctrl-c again to quit`), on the
   left; the spinner with the current activity and its time on the right.
-- `CommandPalette`: an overlay with a `SelectionList` of `PaletteCommand`s.
+- `CommandPalette` ([CommandPalette.swift](../../Sources/TagKit/CommandPalette.swift), with
+  `Clipboard`): an overlay with a `SelectionList` of `PaletteCommand`s.
 - Mouse (`renderOptions.mouseReporting`): the wheel scrolls the pane under the
   pointer, a click on a block expands or collapses it, and footer hints and
   palette rows are clickable (`.onTapGesture`). Clicking the input box focuses
@@ -221,11 +230,38 @@ long answer takes many seconds. Reasoning streams into its own block before
 the text, and while the model writes a tool call (a long `edit_file` can
 take seconds) the footer says `writing edit_file` instead of `thinking`.
 The tool's arguments are not shown while they stream: the tray and the diff
-card parse complete JSON, and the tool only runs once they are complete. Every delta changes `transcript`, which
+card parse complete JSON, and the tool only runs once they are complete. Every delta changes one block, which
 Stipple observes; Stipple's runtime batches the changes in one main-actor turn
 and draws at most `RenderOptions.maxFps` (30) frames a second, so a fast model
 doesn't redraw the screen per token. Checked live by timing when words of a
 long reply first reached the pseudo-terminal: they arrived across many frames.
+
+### Keeping frames cheap
+
+Stipple lays out the whole view tree every frame, so what a frame costs
+depends on how much of the tree a change touches. Before Stipple 0.3.2 and
+the changes below, a frame re-wrapped every block of the transcript: a
+debug-build frame took about 125 ms at 40 blocks and a second at 320, typing
+lagged while a reply streamed, and the workspace dropped to about one frame a
+second after a few messages. Now:
+
+- **Stipple 0.3.2 keeps layout work across frames**: sizes, wrapped lines
+  and placements stay until the views below change, and off-screen text isn't
+  drawn ([Stipple's view system](https://github.com/telip007/stipple/blob/main/wiki/concepts/view-system.md#retained-layout)).
+- **A delta rebuilds one row.** Each block is its own observable `LiveBlock`,
+  so a delta invalidates that block's `BlockRow` and not `TranscriptPane`.
+  When the pane does rebuild (a new block, expanding, hover), the other rows
+  are `Equatable` and equal, and Stipple skips them.
+- **Only the growing line is wrapped again.** A reply is one `Text` per line,
+  and `Text` is `Equatable`, so the lines that didn't change keep their
+  wrapped layout.
+- **Streaming reasoning wraps its tail**, not everything the model reasoned.
+
+Measured on a debug build at 242 blocks: an idle frame (the spinner) takes
+4 ms instead of ~800, and a frame per streamed delta 8 ms instead of 640.
+Checked live by typing into the pseudo-terminal while three long replies
+streamed: echo stays at about 13 ms (median) from the first reply to the
+third, where the version before took 63, 95 and then 132 ms.
 
 ## Testing
 
@@ -259,6 +295,12 @@ long reply first reached the pseudo-terminal: they arrived across many frames.
   and the session ends (tested), so the loop stops cleanly.
 
 ## Gotchas
+
+- **Reading `session.transcript` in a view body observes every block**, so
+  that view rebuilds on every delta. Views read `blocks` and the one
+  `LiveBlock` they show.
+- **`BlockRow.==` must compare everything its body reads but doesn't observe**
+  (the flags); otherwise Stipple keeps a stale row.
 
 - **A public `@Observable` class needs `public import Observation`** under
   `InternalImportsByDefault`: the macro expands into public members that use

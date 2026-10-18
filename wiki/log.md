@@ -144,3 +144,6 @@ Typing `/clear` at the prompt starts over: `ChatSession` empties `transcript` an
 
 ## [2026-10-18] update | Street cat branding
 Light rebrand ([0010](decisions/0010-street-cat-branding.md)): new `logo.png` and banner background generated with Codex (a tabby street cat in a fez over lamp-lit rooftops), `compose-banner.swift` places the logo beside the title, README gets a short Mascot section. Public wiki wording about the old ornament and palette was made neutral.
+
+## [2026-10-19] update | Smooth workspace: retained layout and per-block updates
+Typing lagged while replies streamed and the workspace slowed to about a frame a second after a few messages, because every frame re-laid out and re-wrapped the whole transcript. Stipple 0.3.2 keeps layout work across frames; `ChatSession` holds each block as an observable `LiveBlock`, rows are `Equatable` `BlockRow`s, replies are one `Text` per line and streaming reasoning wraps only its tail. Debug-build frames at 242 blocks: 4 ms idle, 8 ms per delta (from ~800 and 640); live typing echo stays at ~13 ms. Browsing after a `/clear` emptied the transcript no longer indexes past it. The command palette and clipboard moved to `CommandPalette.swift`. See [terminal UI](concepts/terminal-ui.md#keeping-frames-cheap).

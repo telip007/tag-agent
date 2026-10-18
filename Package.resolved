@@ -1,5 +1,5 @@
 {
-  "originHash" : "78942f584c579510a0a943b5bfe66276b09d2960d8f11adee923c0558a019609",
+  "originHash" : "2834b6766d10af140a8bcba976d72053602acb1e531f96ad6485a0525652b7ed",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/telip007/stipple.git",
       "state" : {
-        "revision" : "47aa496a5429cf9cc1f684702b83bf35b2ac087e",
-        "version" : "0.3.1"
+        "revision" : "617e327db78017849cd95d63f0025736b27d991d",
+        "version" : "0.3.2"
       }
     },
     {

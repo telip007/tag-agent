@@ -6,26 +6,34 @@ import Stipple
 /// is shown as written.
 @MainActor
 enum Markdown {
-    /// `markdown` as styled text.
-    static func text(_ markdown: String) -> Text {
-        var result = Text("")
+    /// `markdown` as styled text, one view per line: a reply being streamed
+    /// grows its last line, so only that line is laid out again.
+    static func view(_ markdown: String) -> some View {
+        let lines = lines(markdown)
+        return VStack(alignment: .leading) {
+            ForEach(lines.indices, id: \.self) { index in
+                lines[index]
+            }
+        }
+    }
+
+    /// Each line of `markdown`, styled. A blank line is a space, so it keeps
+    /// its row.
+    static func lines(_ markdown: String) -> [Text] {
+        var result: [Text] = []
         var isInFence = false
-        var isFirstLine = true
         for line in markdown.split(separator: "\n", omittingEmptySubsequences: false) {
             if line.trimmingPrefix(while: \.isWhitespace).hasPrefix("```") {
                 isInFence.toggle()
                 continue
             }
-            let styled: Text
             if isInFence {
-                styled = Text("  \(line)").foregroundStyle(Theme.tile)
+                result.append(Text("  \(line)").foregroundStyle(Theme.tile))
             } else if let heading = heading(line) {
-                styled = Text(heading).bold()
+                result.append(Text(heading).bold())
             } else {
-                styled = inline(String(line))
+                result.append(line.isEmpty ? Text(" ") : inline(String(line)))
             }
-            result = isFirstLine ? styled : result + Text("\n") + styled
-            isFirstLine = false
         }
         return result
     }

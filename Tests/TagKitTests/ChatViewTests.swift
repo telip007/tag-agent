@@ -299,27 +299,31 @@ struct KeyMapTests {
 @MainActor
 struct MarkdownTests {
     private func render(_ markdown: String) -> String {
-        Stipple.renderToString(Markdown.text(markdown))
+        Stipple.renderToString(Markdown.view(markdown))
     }
 
     @Test func codeIsTurquoiseAndBoldIsBold() {
-        #expect(plainText(Markdown.text("use `make` **now**")) == "use make now")
+        #expect(plainText(Markdown.view("use `make` **now**")) == "use make now")
         #expect(render("use `make`").contains("38;2;64;184;175mmake"))
         #expect(render("**now**").contains("1mnow"))
     }
 
     @Test func unclosedOrEmptyMarkersStayAsWritten() {
-        #expect(plainText(Markdown.text("a `b and ** c")) == "a `b and ** c")
-        #expect(plainText(Markdown.text("empty `` pair")) == "empty `` pair")
+        #expect(plainText(Markdown.view("a `b and ** c")) == "a `b and ** c")
+        #expect(plainText(Markdown.view("empty `` pair")) == "empty `` pair")
     }
 
     @Test func headingsAreBoldWithoutTheirHashes() {
-        #expect(plainText(Markdown.text("## Plan\nstep")) == "Plan\nstep")
+        #expect(plainText(Markdown.view("## Plan\nstep")) == "Plan\nstep")
         #expect(render("# Title").contains("1mTitle"))
-        #expect(plainText(Markdown.text("#hashtag")) == "#hashtag")
+        #expect(plainText(Markdown.view("#hashtag")) == "#hashtag")
+    }
+
+    @Test func blankLinesKeepTheirRow() {
+        #expect(plainText(Markdown.view("one\n\ntwo")) == "one\n\ntwo")
     }
 
     @Test func fencedCodeIsIndentedWithoutFences() {
-        #expect(plainText(Markdown.text("Run:\n```sh\nmake check\n```\nDone.")) == "Run:\n  make check\nDone.")
+        #expect(plainText(Markdown.view("Run:\n```sh\nmake check\n```\nDone.")) == "Run:\n  make check\nDone.")
     }
 }

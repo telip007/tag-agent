@@ -37,11 +37,12 @@ struct TranscriptPane: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-                ForEach(session.transcript) { block in
-                    BlockView(
+                ForEach(session.blocks) { block in
+                    BlockRow(
                         block: block,
                         isExpanded: session.expanded.contains(block.id),
-                        isSelected: block.id == selected || (block.isExpandable && block.id == hovered),
+                        isSelected: block.id == selected,
+                        isHovered: block.id == hovered,
                     )
                     .id(block.id)
                     .onTapGesture { session.toggle(block.id) }
@@ -60,6 +61,26 @@ struct TranscriptPane: View {
         .defaultScrollAnchor(.bottom, for: .sizeChanges)
         .scrollPosition($position)
         .scrollOnPageKeys()
+    }
+}
+
+/// A block of the session: reads the block's content itself, so the pane
+/// doesn't rebuild when one block changes, and is equal to the same row with
+/// the same flags, so the pane rebuilding leaves the other rows alone.
+struct BlockRow: View, Equatable {
+    let block: LiveBlock
+    let isExpanded: Bool
+    let isSelected: Bool
+    let isHovered: Bool
+
+    var body: some View {
+        let block = TranscriptBlock(id: block.id, content: block.content)
+        BlockView(block: block, isExpanded: isExpanded, isSelected: isSelected || (isHovered && block.isExpandable))
+    }
+
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.block === rhs.block && lhs.isExpanded == rhs.isExpanded && lhs.isSelected == rhs.isSelected
+            && lhs.isHovered == rhs.isHovered
     }
 }
 
@@ -95,7 +116,7 @@ struct BlockView: View {
         case .reasoning(let reasoning):
             ReasoningView(reasoning: reasoning, isExpanded: isExpanded).padding(.leading, 2).padding(.top, 1)
         case .reply(let text):
-            Markdown.text(text).padding(.leading, 2).padding(.top, 1)
+            Markdown.view(text).padding(.leading, 2).padding(.top, 1)
         case .tools(let runs):
             ToolTray(runs: runs, isExpanded: isExpanded).padding(.leading, 2).padding(.top, 1)
         case .edit(let edit):
@@ -175,9 +196,17 @@ struct ReasoningView: View {
             if isExpanded {
                 Text(text).dim().padding(.leading, 2)
             } else if reasoning.duration == nil {
-                Text(text).dim().lineLimit(BlockView.reasoningLines).truncationMode(.head).padding(.leading, 2)
+                Text(Self.tail(of: text)).dim().lineLimit(BlockView.reasoningLines).truncationMode(.head)
+                    .padding(.leading, 2)
             }
         }
+    }
+
+    /// Enough of the end of `text` to fill the lines shown while the model
+    /// reasons, so a long reasoning isn't wrapped whole on every new word.
+    static func tail(of text: String) -> String {
+        let limit = BlockView.reasoningLines * 400
+        return text.count > limit ? String(text.suffix(limit)) : text
     }
 
     /// `◌ thinking` while it reasons, then `▸ thought · 3.1s`.
@@ -370,51 +399,6 @@ struct FooterKey: View {
     }
 }
 
-/// What the command palette offers.
-enum PaletteCommand: String, CaseIterable, Identifiable {
-    case togglePanel = "Show or hide the session panel"
-    case copyLastReply = "Copy the last reply"
-    case browse = "Browse the conversation"
-    case quit = "Quit"
-
-    var id: Self { self }
-
-    var key: String {
-        switch self {
-        case .togglePanel: "tab"
-        case .copyLastReply: ""
-        case .browse: "esc"
-        case .quit: "^d"
-        }
-    }
-}
-
-/// A small box over the workspace listing the commands.
-struct CommandPalette: View {
-    @Binding var selection: PaletteCommand?
-    let run: @MainActor (PaletteCommand) -> Void
-
-    var body: some View {
-        VStack(alignment: .leading) {
-            Text("commands").foregroundStyle(Theme.accent)
-            Text(" ")
-            SelectionList(PaletteCommand.allCases, id: \.self, selection: $selection, onSubmit: run) { command in
-                HStack {
-                    Text(command.rawValue)
-                    Spacer(minLength: 2)
-                    Text(command.key).dim()
-                }
-                .onTapGesture { run(command) }
-            }
-        }
-        .padding(.horizontal, 2)
-        .padding(.vertical, 1)
-        .frame(width: 48)
-        .background(Color(red: 36, green: 39, blue: 52))
-        .border(.rounded, color: Theme.accent)
-    }
-}
-
 extension TranscriptBlock {
     /// Whether a click changes the block: trays, edits and reasoning expand.
     var isExpandable: Bool {
@@ -442,20 +426,5 @@ extension TranscriptBlock {
             }
             return ([edit.path] + lines).joined(separator: "\n")
         }
-    }
-}
-
-/// Copies text with the terminal's clipboard escape (OSC 52), which works
-/// over SSH too. Terminals that don't support it ignore it.
-public enum Clipboard {
-    /// The escape that puts `text` on the clipboard.
-    static func sequence(for text: String) -> String {
-        "\u{1B}]52;c;\(Data(text.utf8).base64EncodedString())\u{07}"
-    }
-
-    /// Writes the clipboard escape to standard output.
-    @MainActor
-    public static func copy(_ text: String) {
-        FileHandle.standardOutput.write(Data(sequence(for: text).utf8))
     }
 }
