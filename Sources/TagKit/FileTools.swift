@@ -21,6 +21,7 @@ extension ToolDefinition {
                 ],
                 "required": ["path"],
             ],
+            summary: "read a file",
         ) { json in
             struct Input: Decodable { var path: String }
             let input = try decodeInput(json, as: Input.self)
@@ -46,6 +47,7 @@ extension ToolDefinition {
                     ]
                 ],
             ],
+            summary: "list a folder, recursively",
         ) { json in
             struct Input: Decodable { var path: String? }
             let input = try decodeInput(json, as: Input.self)
@@ -73,6 +75,10 @@ extension ToolDefinition {
                     "new_str": ["type": "string", "description": "Text to replace old_str with"],
                 ],
                 "required": ["path", "old_str", "new_str"],
+            ],
+            summary: "replace one exact, unique snippet in a file, or create a file",
+            guidelines: [
+                "To edit a file, read it first, then give edit_file a snippet long enough to be unique."
             ],
         ) { json in
             struct Input: Decodable {

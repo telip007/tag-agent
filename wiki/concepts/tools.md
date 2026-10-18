@@ -35,6 +35,14 @@ The agent is just this loop: the model decides which tools to call and when to
 stop. A tool is a name, a description, a JSON Schema and a function from raw
 JSON input to a string ([ToolDefinition.swift](../../Sources/TagKit/ToolDefinition.swift)).
 
+A tool also carries a `summary` (a few words for the system prompt's tool
+list) and `guidelines` (rule lines for the system prompt), so a tool's rules
+come and go with the tool. Every request starts with the
+[system prompt](system-prompt.md), rendered once per session. There is no
+explicit [prompt caching](prompt-caching.md) yet.
+What else the loop could borrow from a minimal, high-scoring agent is listed
+in [mini-swe-agent](../sources/mini-swe-agent.md#what-tag-can-borrow).
+
 Errors never end the session. An unknown tool, invalid JSON input or a thrown
 error becomes the tool result (`error: …`), so the model can read it and try
 again. OpenAI-style tool messages have no `is_error` flag, unlike Anthropic's
