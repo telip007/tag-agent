@@ -32,4 +32,5 @@ Start here. Conventions: [SCHEMA.md](SCHEMA.md). Timeline: [log.md](log.md).
 - [OpenAI prompt engineering best practices](sources/openai-prompt-engineering.md): OpenAI's short help-centre list of prompt rules: instructions first, delimiters, specifics, examples, say what to do.
 - [Tetrate system prompts guide](sources/tetrate-system-prompts.md): Tetrate's guide to system prompt components, design patterns, testing and dynamic prompts.
 - [pi coding agent](sources/pi-coding-agent.md): How the pi coding agent builds its system prompt from named, tagged sections with rules contributed by each tool.
+- [Karpathy guidelines](sources/karpathy-guidelines.md): A skill of four rules against common LLM coding mistakes (think first, keep it simple, change surgically, verify against goals), and which of them Tag's system prompt took.
 - [OpenRouter prompt caching](sources/openrouter-prompt-caching.md): OpenRouter's caching guide: automatic vs cache_control providers, sticky routing, session_id, TTLs and usage fields.

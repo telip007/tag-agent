@@ -33,7 +33,9 @@ The sections below are the research the first version was built from.
 Sources: [mini-swe-agent](../sources/mini-swe-agent.md),
 [OpenAI best practices](../sources/openai-prompt-engineering.md),
 [Tetrate guide](../sources/tetrate-system-prompts.md),
-[pi](../sources/pi-coding-agent.md).
+[pi](../sources/pi-coding-agent.md). Rules on simplicity, unrelated
+problems and ambiguous requests were added later from the
+[Karpathy guidelines](../sources/karpathy-guidelines.md).
 
 ## Best practices
 

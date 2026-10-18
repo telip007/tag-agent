@@ -126,3 +126,6 @@ Tag now sends a system prompt (decision 0009): `SystemPrompt.render` builds it f
 
 ## [2026-10-18] update | Hook tests and GIT_DIR
 The pre-push hook failed a probe test that `make check` passed: hook-run tests inherit `GIT_DIR`, so a command in a temporary folder answers for this repository. The test no longer checks the repository field; gotcha in [backpressure setup](concepts/backpressure-setup.md).
+
+## [2026-10-18] ingest | Karpathy guidelines
+Captured the Karpathy guidelines skill and took three of its ideas into the system prompt's rules: write the simplest code with nothing speculative, mention unrelated problems instead of fixing them and remove only your own leftovers, and name the readings of an ambiguous request instead of picking one. The style, persona check, plan template and general "stop and ask" were left out; see [Karpathy guidelines](sources/karpathy-guidelines.md).
