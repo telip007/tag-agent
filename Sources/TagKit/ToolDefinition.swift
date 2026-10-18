@@ -10,6 +10,11 @@ public struct ToolDefinition: Sendable {
     public let description: String
     /// A JSON Schema object describing the tool's input.
     public let parameters: [String: JSONValue]
+    /// A few words for the system prompt's tool list, e.g. "read a file".
+    public let summary: String
+    /// Rules for the system prompt about when and how to use the tool. They
+    /// live with the tool, so removing a tool removes its rules.
+    public let guidelines: [String]
     let function: @Sendable (String) async throws -> String
 
     /// Creates a tool.
@@ -18,17 +23,24 @@ public struct ToolDefinition: Sendable {
     ///   - name: The name the model uses to call the tool.
     ///   - description: What the tool does and when to use it.
     ///   - parameters: A JSON Schema object describing the input.
+    ///   - summary: A few words for the system prompt's tool list; the
+    ///     description when `nil`.
+    ///   - guidelines: Rules for the system prompt about using the tool.
     ///   - function: Runs the tool on the raw JSON input and returns its output.
     ///     A thrown error is reported back to the model.
     public init(
         name: String,
         description: String,
         parameters: [String: JSONValue],
+        summary: String? = nil,
+        guidelines: [String] = [],
         function: @escaping @Sendable (String) async throws -> String,
     ) {
         self.name = name
         self.description = description
         self.parameters = parameters
+        self.summary = summary ?? description
+        self.guidelines = guidelines
         self.function = function
     }
 

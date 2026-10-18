@@ -39,6 +39,9 @@ final class ScriptedModel: ChatModel {
 @MainActor
 final class Terminal {
     var inputs: [String]
+    /// What the agent's clock reads, one entry per user message; the last
+    /// entry repeats.
+    var dates = [Date(timeIntervalSince1970: 1_792_000_000)]
     private(set) var events: [AgentEvent] = []
 
     init(_ inputs: [String]) {
@@ -57,10 +60,35 @@ final class Terminal {
         Agent(
             model: model,
             tools: tools,
-            workingDirectory: URL(filePath: "/work/tag", directoryHint: .isDirectory),
+            environment: .fake,
+            now: { self.dates.count > 1 ? self.dates.removeFirst() : self.dates[0] },
             output: { self.events.append($0) },
             getUserMessage: { self.inputs.isEmpty ? nil : self.inputs.removeFirst() },
         )
+    }
+}
+
+extension SessionEnvironment {
+    static let fake = SessionEnvironment(
+        workingDirectory: URL(filePath: "/work/tag", directoryHint: .isDirectory),
+        operatingSystem: "macOS 26.0.0",
+        architecture: "arm64",
+        isMacOS: true,
+        shell: "bash 3.2.57(1)-release",
+        isGitRepository: true,
+    )
+}
+
+/// The conversation a model was sent, without the system prompt and with
+/// the date notes stripped from user messages.
+func dialogue(_ conversation: [ChatMessage]) -> [ChatMessage] {
+    conversation.dropFirst().map { message in
+        guard case .user(let user) = message, let text = user.content.value1,
+            let range = text.firstRange(of: "</environment_update>\n\n")
+        else {
+            return message
+        }
+        return .user(String(text[range.upperBound...]))
     }
 }
 
@@ -89,7 +117,7 @@ struct AgentTests {
         let terminal = Terminal(["Hello"])
         try await terminal.agent(model: model).run()
 
-        #expect(model.conversations == [[.user("Hello")]])
+        #expect(model.conversations.map(dialogue) == [[.user("Hello")]])
         #expect(model.toolNames == [[]])
         #expect(terminal.events.contains(.reply("Hi!")))
         #expect(terminal.events.contains(.thinking))
@@ -124,7 +152,7 @@ struct AgentTests {
 
         #expect(model.toolNames == [["echo", "fail"], ["echo", "fail"]])
         #expect(
-            model.conversations.last == [
+            model.conversations.last.map(dialogue) == [
                 .user("Go"),
                 .assistant(.init(text: nil, toolCalls: calls)),
                 .tool(callID: "1", content: "echo {}"),
@@ -151,5 +179,38 @@ struct AgentTests {
         await #expect(throws: Agent.InferenceError.emptyReply) {
             try await terminal.agent(model: ScriptedModel([])).run()
         }
+    }
+
+    @Test func startsWithTheSystemPromptAndKeepsItUnchanged() async throws {
+        let calls = [toolCall("1", "echo", "{}")]
+        let model = ScriptedModel([.init(text: nil, toolCalls: calls), .init(text: "Done.", toolCalls: nil)])
+        let terminal = Terminal(["Go"])
+        try await terminal.agent(model: model, tools: [echo]).run()
+
+        let prompt = SystemPrompt.render(tools: [echo], environment: .fake, model: "Scripted Model")
+        #expect(model.conversations.map(\.first) == [.system(prompt), .system(prompt)])
+    }
+
+    @Test func datesTheFirstMessageAndMessagesAfterTheDateChanged() async throws {
+        let model = ScriptedModel([
+            .init(text: "1", toolCalls: nil), .init(text: "2", toolCalls: nil), .init(text: "3", toolCalls: nil),
+        ])
+        let terminal = Terminal(["a", "b", "c"])
+        let day = Date(timeIntervalSince1970: 1_792_000_000)
+        terminal.dates = [day, day, day.addingTimeInterval(86_400)]
+        try await terminal.agent(model: model).run()
+
+        let users = model.conversations.last?.compactMap { message -> String? in
+            guard case .user(let user) = message else { return nil }
+            return user.content.value1
+        }
+        let (first, next) = (UserMessageDater.format(day), UserMessageDater.format(day.addingTimeInterval(86_400)))
+        #expect(
+            users == [
+                "<environment_update>date: \(first)</environment_update>\n\na",
+                "b",
+                "<environment_update>date: \(next)</environment_update>\n\nc",
+            ]
+        )
     }
 }

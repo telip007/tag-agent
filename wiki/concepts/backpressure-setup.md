@@ -39,6 +39,11 @@ strict settings and lint plugin as the sources.
 
 ## Gotchas
 
+- **Tests run by the pre-push hook inherit `GIT_DIR`.** Any `git` command a
+  test starts then answers for Tag's repository, whatever its working
+  directory: `git rev-parse` in a temporary folder reports a repository, and
+  `git init` would reinitialise Tag's. `make check` passed while the push
+  failed. Tests don't assert on git answers from temporary folders.
 - **`swift-tools-version` must not exceed CI's toolchain.** New Xcode
   templates write the local toolchain's version (6.4 here), and CI's
   `macos-26` image had Swift 6.3, so the first CI run failed on the first
