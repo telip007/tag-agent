@@ -110,8 +110,14 @@ handling; the parts are in
 
 - `pane(title:isActive:)`: a rounded border with the title set into its top
   edge (an `overlay` at `.topLeading`); gold while active.
-- `TranscriptPane`: the blocks, bottom-aligned and clipped, so the newest are
-  always in view. `BlockView` draws each: user messages bold after a gold `▌`;
+- `TranscriptPane`: the blocks in a Stipple `ScrollView` with
+  `.defaultScrollAnchor(.bottom)`, so it starts at and follows the newest
+  block, and `.scrollOnPageKeys()`, so Page Up/Down scroll while the input has
+  focus. The `ScrollPosition` lives in `ChatView`: browse mode calls
+  `scrollTo(id:)` on the selected block (each block has `.id(block.id)`), and
+  leaving it calls `scrollTo(edge: .bottom)`. Once the user scrolls away
+  (`isPositionedByUser` and `edge != .bottom`), the footer offers `↓ latest`.
+  A scroll indicator takes the rightmost column when the content overflows. `BlockView` draws each: user messages bold after a gold `▌`;
   replies through [`Markdown`](../../Sources/TagKit/Markdown.swift);
   `ToolTray`, one summary line (`▸ 3 tools · 4.2s  read_file · bash`, the `▸`
   red if one failed) that lists every call while running or when expanded,
@@ -126,6 +132,12 @@ handling; the parts are in
 - `Footer`: key hints, or a warning (`press ctrl-c again to quit`), on the
   left; the spinner with the current activity and its time on the right.
 - `CommandPalette`: an overlay with a `SelectionList` of `PaletteCommand`s.
+- Mouse (`renderOptions.mouseReporting`): the wheel scrolls the pane under the
+  pointer, a click on a block expands or collapses it, and footer hints and
+  palette rows are clickable (`.onTapGesture`). Footer hints carry their
+  action (`Footer.Key`), so the key and the click do the same thing. With
+  mouse reporting on, selecting text in the terminal needs Shift (Option in
+  some macOS terminals).
 - Copy uses OSC 52 (`Clipboard`), which works over SSH and is ignored by
   terminals without it; the view takes a `copy` closure so tests don't write to
   stdout.
@@ -138,6 +150,7 @@ handling; the parts are in
 | ↑ / ↓ | previous / next sent message; ↓ past the newest restores the draft |
 | Esc | on an empty line: browse the conversation |
 | ↑↓ or j/k, Enter, c | while browsing: move, expand or collapse, copy; Esc or typing goes back |
+| Page Up / Down | scroll the conversation; the wheel works too |
 | Ctrl-P | command palette |
 | Tab | show or hide the session panel |
 | Ctrl-C | clear the line; on an empty line, press again within 2 s to quit |
@@ -180,14 +193,14 @@ static helper (`chat()`) that builds everything and runs the view.
   `.frame(height:)` and a `terminalSize` environment
   ([ChatViewTests.swift](../../Tests/TagKitTests/ChatViewTests.swift)). Key
   handling can't run there, so the key maps are tested on their own.
+- Mouse clicks were checked live in a pseudo-terminal by sending an SGR
+  click on a footer hint (`\e[<0;30;30M`, then `m` for the release).
 - Looks are checked by rendering a sample session to ANSI, converting it to
   HTML and screenshotting it in a headless browser. Half blocks and some box
   characters render with gaps there, unlike in a terminal.
 
 ## Limitations
 
-- **The transcript doesn't scroll yet.** It shows the newest blocks that fit;
-  a `ScrollView` with mouse-wheel support is being added to Stipple.
 - **The alternate screen hides the conversation on exit**, as in other
   full-screen tools.
 - **No piped input.** Input comes from Stipple's raw-mode keyboard handling,
@@ -220,5 +233,13 @@ static helper (`chat()`) that builds everything and runs the view.
   placeholder's cursor mid-word. Since 0.1.1 an outside change (clearing,
   history recall) moves the caret to the end of the new text.
 - These three were found while building this UI and fixed in Stipple itself
-  ([0008](../decisions/0008-stipple-terminal-ui.md)); `Package.swift` requires
-  0.1.1.
+  ([0008](../decisions/0008-stipple-terminal-ui.md)).
+- **Scrolling and the mouse came from Stipple 0.2.0**, built for this
+  workspace: `ScrollView`, `ScrollPosition`, `.defaultScrollAnchor`,
+  `.scrollOnPageKeys()`, `.id(_:)`, `.onTapGesture` and
+  `RenderOptions.mouseReporting`. Taps and wheel hit-testing need the
+  alternate screen. `Package.swift` requires 0.2.0.
+- **SwiftLint's `type_body_length` (200 lines)** applies to `ChatView` and to
+  test suites. Helpers live in an `extension ChatView` in the same file
+  (`fileprivate`, so they still reach the `private` state), and the key-map
+  tests are their own suite.

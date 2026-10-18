@@ -99,3 +99,12 @@ OSC 52 copy. Tool output now travels in `.toolFinished`. Removed the mascot
 and `PixelArt`. The design history is in
 [terminal UI](concepts/terminal-ui.md#design).
 
+## [2026-10-18] update | Scrolling and mouse
+
+Stipple 0.2.0 added `ScrollView`, `ScrollPosition`, mouse-wheel scrolling and
+`.onTapGesture`, built for this workspace. The transcript scrolls and follows
+the newest block, browse mode scrolls the selection into view, Page Up/Down
+work while typing, and with mouse reporting on, the wheel scrolls, clicks
+expand blocks, and footer hints and palette rows are clickable. A `↓ latest`
+hint appears after scrolling away. See [terminal UI](concepts/terminal-ui.md).
+

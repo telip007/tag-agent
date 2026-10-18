@@ -160,9 +160,11 @@ struct ChatViewTests {
         let footer = plainText(Footer(session: session, hint: .warning("press ctrl-c again to quit")), width: 60)
         #expect(footer.hasPrefix(" press ctrl-c again to quit"))
         #expect(footer.hasSuffix("⠋ thinking"))
-        #expect(Footer.Hint.warning("a") == .warning("a"))
-        #expect(Footer.Hint.keys([("a", "b")]) == .keys([("a", "b")]))
-        #expect(Footer.Hint.keys([("a", "b")]) != .warning("a"))
+        let keys = plainText(
+            Footer(
+                session: ChatSession(),
+                hint: .keys([Footer.Key(key: "a", label: "b") {}, Footer.Key(key: "c", label: "d") {}])))
+        #expect(keys == " a b · c d")
     }
 
     @Test func paletteListsTheCommands() {
@@ -173,11 +175,43 @@ struct ChatViewTests {
         #expect(palette.contains("commands"))
     }
 
-    @Test func chatViewRunsFullScreenWithoutCtrlCExiting() {
+    @Test func chatViewRunsFullScreenWithTheMouseAndWithoutCtrlCExiting() {
         #expect(!ChatView.renderOptions.exitOnCtrlC)
         #expect(ChatView.renderOptions.alternateScreen)
+        #expect(ChatView.renderOptions.mouseReporting)
     }
 
+    @Test func aLongTranscriptScrollsToTheNewestBlock() {
+        let session = ChatSession()
+        let agent = Terminal([]).agent(model: ScriptedModel([]))
+        for index in 1...20 {
+            session.handle(.reply("reply \(index)"))
+        }
+        let view = ChatView(session: session, agent: agent, copy: { _ in })
+            .frame(height: 16)
+            .environment(\.terminalSize, Size(width: 100, height: 16))
+        let text = plainText(view, width: 100)
+        #expect(text.contains("reply 20"))
+        #expect(!text.contains("reply 1\n") && !text.contains("reply 1 "))
+        // The scroll indicator's thumb shows the content overflows.
+        #expect(text.contains("┃"))
+    }
+
+    @Test func blocksCopyAsPlainText() {
+        #expect(TranscriptBlock(id: 0, content: .user("hi")).plainText == "hi")
+        let tools = TranscriptBlock(
+            id: 0, content: .tools([ToolRun(name: "bash", summary: "ls", state: .succeeded, output: "a")]))
+        #expect(tools.plainText == "bash ls\na")
+        let edit = TranscriptBlock(id: 0, content: .edit(FileEdit(path: "p", lines: [.removed("a"), .added("b")])))
+        #expect(edit.plainText == "p\n- a\n+ b")
+    }
+
+    @Test func clipboardUsesOSC52() {
+        #expect(Clipboard.sequence(for: "hi") == "\u{1B}]52;c;aGk=\u{07}")
+    }
+}
+
+struct KeyMapTests {
     @Test(arguments: [
         (KeyPress(key: "c", modifiers: .control), false, PromptKey.interrupt),
         (KeyPress(key: "c", modifiers: [.control, .capsLock]), false, .interrupt),
@@ -228,19 +262,6 @@ struct ChatViewTests {
         #expect(KeyPress(key: "x", characters: "X").typedText == "X")
         #expect(KeyPress(key: "x", modifiers: .control).typedText == nil)
         #expect(KeyPress(key: .escape).typedText == nil)
-    }
-
-    @Test func blocksCopyAsPlainText() {
-        #expect(TranscriptBlock(id: 0, content: .user("hi")).plainText == "hi")
-        let tools = TranscriptBlock(
-            id: 0, content: .tools([ToolRun(name: "bash", summary: "ls", state: .succeeded, output: "a")]))
-        #expect(tools.plainText == "bash ls\na")
-        let edit = TranscriptBlock(id: 0, content: .edit(FileEdit(path: "p", lines: [.removed("a"), .added("b")])))
-        #expect(edit.plainText == "p\n- a\n+ b")
-    }
-
-    @Test func clipboardUsesOSC52() {
-        #expect(Clipboard.sequence(for: "hi") == "\u{1B}]52;c;aGk=\u{07}")
     }
 }
 

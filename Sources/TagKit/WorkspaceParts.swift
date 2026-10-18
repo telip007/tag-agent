@@ -24,24 +24,32 @@ extension View {
     }
 }
 
-/// The conversation, newest at the bottom. Until it scrolls, the pane shows
-/// the most recent blocks that fit.
+/// The conversation in a scroll view that stays on the newest block until
+/// the user scrolls up (wheel, Page Up) and pins again at the bottom. A click
+/// on a block expands or collapses it.
 struct TranscriptPane: View {
     let session: ChatSession
     let selected: Int?
+    @Binding var position: ScrollPosition
 
     var body: some View {
-        VStack(alignment: .leading) {
-            ForEach(session.transcript) { block in
-                BlockView(
-                    block: block,
-                    isExpanded: session.expanded.contains(block.id),
-                    isSelected: block.id == selected,
-                )
+        ScrollView {
+            VStack(alignment: .leading) {
+                ForEach(session.transcript) { block in
+                    BlockView(
+                        block: block,
+                        isExpanded: session.expanded.contains(block.id),
+                        isSelected: block.id == selected,
+                    )
+                    .id(block.id)
+                    .onTapGesture { session.toggle(block.id) }
+                }
             }
+            .padding(.bottom, 1)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
-        .clipped()
+        .defaultScrollAnchor(.bottom)
+        .scrollPosition($position)
+        .scrollOnPageKeys()
     }
 }
 
@@ -254,19 +262,18 @@ struct SessionPanel: View {
 }
 
 /// The bottom line: key hints or a warning on the left, the agent's activity
-/// on the right.
+/// on the right. Each hint can be clicked as well as typed.
 struct Footer: View {
-    enum Hint: Equatable {
-        case keys([(String, String)])
-        case warning(String)
+    /// A key, what it does, and what a click on it does.
+    struct Key {
+        let key: String
+        let label: String
+        let action: @MainActor () -> Void
+    }
 
-        static func == (lhs: Self, rhs: Self) -> Bool {
-            switch (lhs, rhs) {
-            case (.warning(let left), .warning(let right)): left == right
-            case (.keys(let left), .keys(let right)): left.map { "\($0.0) \($0.1)" } == right.map { "\($0.0) \($0.1)" }
-            default: false
-            }
-        }
+    enum Hint {
+        case keys([Key])
+        case warning(String)
     }
 
     static let frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
@@ -276,7 +283,7 @@ struct Footer: View {
 
     var body: some View {
         HStack {
-            hintText.padding(.leading, 1)
+            hints.padding(.leading, 1)
             Spacer(minLength: 2)
             if let activity = session.activity, let start = session.activityStart {
                 TimelineView(.periodic(every: .milliseconds(80))) { context in
@@ -292,14 +299,18 @@ struct Footer: View {
         }
     }
 
-    private var hintText: Text {
+    @ViewBuilder private var hints: some View {
         switch hint {
         case .warning(let text):
             Text(text).foregroundStyle(Theme.accent)
         case .keys(let keys):
-            keys.enumerated().reduce(Text("")) { line, item in
-                let key = Text(item.element.0) + Text(" \(item.element.1)").dim()
-                return item.offset == 0 ? key : line + Text(" · ").dim() + key
+            HStack {
+                ForEach(Array(keys.enumerated()), id: \.offset) { offset, key in
+                    if offset > 0 {
+                        Text(" · ").dim()
+                    }
+                    (Text(key.key) + Text(" \(key.label)").dim()).onTapGesture(perform: key.action)
+                }
             }
         }
     }
@@ -339,6 +350,7 @@ struct CommandPalette: View {
                     Spacer(minLength: 2)
                     Text(command.key).dim()
                 }
+                .onTapGesture { run(command) }
             }
         }
         .padding(.horizontal, 2)

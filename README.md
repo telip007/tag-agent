@@ -50,10 +50,15 @@ has cost, how long it has run, and which files changed.
 | Enter | send; while the agent works, queue the message (type-ahead) |
 | ↑ / ↓ | recall sent messages; ↓ past the newest restores your draft |
 | Esc | browse the conversation: ↑↓ to move, Enter to expand, c to copy |
+| Page Up / Down | scroll the conversation |
 | Ctrl-P | command palette |
 | Tab | show or hide the session panel |
 | Ctrl-C | clear the line; on an empty line, press twice to quit |
 | Ctrl-D | quit, on an empty line |
+
+The mouse works too: the wheel scrolls, a click expands a tool tray or a diff,
+and the hints in the footer are buttons. To select text with the mouse, hold
+Shift (Option in some macOS terminals).
 
 Input needs an interactive terminal; piping messages on stdin is not
 supported.

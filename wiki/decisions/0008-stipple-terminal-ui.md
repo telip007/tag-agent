@@ -21,7 +21,7 @@ scrollback, raw-mode input, and terminal restore on exit, error and crash.
 ## Decision
 
 - The UI is built with Stipple, added in [Package.swift](../../Package.swift)
-  (`from: "0.1.1"`, product `Stipple`) for `Tag`, `TagKit` and `TagKitTests`.
+  (`from: "0.2.0"`, product `Stipple`) for `Tag`, `TagKit` and `TagKitTests`.
 - `Agent` emits `AgentEvent`s and formats nothing; `ChatSession` holds the
   UI state and `ChatView` renders it ([terminal UI](../concepts/terminal-ui.md)).
 - **`ChatSession` and `ChatView` live in `TagKit`, not `Tag`.** Tests can't

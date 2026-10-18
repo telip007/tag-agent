@@ -23,6 +23,7 @@ public struct ChatView: View {
         var options = RenderOptions()
         options.exitOnCtrlC = false
         options.alternateScreen = true
+        options.mouseReporting = true
         return options
     }
 
@@ -37,6 +38,7 @@ public struct ChatView: View {
     @State private var isPanelShown = true
     @State private var isPaletteOpen = false
     @State private var paletteSelection: PaletteCommand?
+    @State private var scroll = ScrollPosition(edge: .bottom)
     @FocusState private var isInputFocused = true
     @Environment(\.exit) private var exit
     @Environment(\.terminalSize) private var terminalSize
@@ -58,7 +60,7 @@ public struct ChatView: View {
     public var body: some View {
         VStack(alignment: .leading) {
             HStack(alignment: .top) {
-                TranscriptPane(session: session, selected: browsing)
+                TranscriptPane(session: session, selected: browsing, position: $scroll)
                     .pane(title: "tag", isActive: browsing != nil)
                 if isPanelShown, terminalSize.width >= Self.panelMinimumWidth {
                     SessionPanel(session: session)
@@ -113,18 +115,6 @@ public struct ChatView: View {
         }
     }
 
-    /// What the footer's left side says: a pending quit, the browse keys, or
-    /// the everyday ones.
-    private var hint: Footer.Hint {
-        if isQuitArmed {
-            return .warning("press ctrl-c again to quit")
-        }
-        if browsing != nil {
-            return .keys([("↑↓", "move"), ("⏎", "expand"), ("c", "copy"), ("esc", "back")])
-        }
-        return .keys([("esc", "browse"), ("^p", "commands"), ("tab", "panel")])
-    }
-
     /// Keys the text field leaves alone.
     private func handle(_ press: KeyPress) -> KeyPress.Result {
         if isPaletteOpen {
@@ -143,10 +133,7 @@ public struct ChatView: View {
         case .newer:
             input = history.newer(in: session.history) ?? input
         case .browse:
-            browsing = session.transcript.last?.id
-            if browsing == nil {
-                isInputFocused = true
-            }
+            startBrowsing()
         case .palette:
             isPaletteOpen = true
         case .togglePanel:
@@ -160,16 +147,15 @@ public struct ChatView: View {
     private func handleBrowsing(_ press: KeyPress, selected: Int) -> KeyPress.Result {
         switch BrowseKey(press) {
         case .previous:
-            browsing = max(0, selected - 1)
+            select(max(0, selected - 1))
         case .next:
-            browsing = min(session.transcript.count - 1, selected + 1)
+            select(min(session.transcript.count - 1, selected + 1))
         case .toggle:
             session.toggle(selected)
         case .copy:
             copy(session.transcript[selected].plainText)
         case .leave, nil:
-            browsing = nil
-            isInputFocused = true
+            leaveBrowsing()
             if let typed = press.typedText {
                 input += typed
             }
@@ -197,7 +183,7 @@ public struct ChatView: View {
                 copy(reply.plainText)
             }
         case .browse:
-            browsing = session.transcript.last?.id
+            startBrowsing()
         case .quit:
             exit()
         }
@@ -214,6 +200,55 @@ public struct ChatView: View {
         } else {
             isQuitArmed = true
         }
+    }
+}
+
+extension ChatView {
+    /// What the footer's left side says: a pending quit, the browse keys, a
+    /// way back to the newest block when scrolled away, or the everyday keys.
+    fileprivate var hint: Footer.Hint {
+        if isQuitArmed {
+            return .warning("press ctrl-c again to quit")
+        }
+        if browsing != nil {
+            return .keys([
+                Footer.Key(key: "↑↓", label: "move") {},
+                Footer.Key(key: "⏎", label: "expand") { if let browsing { session.toggle(browsing) } },
+                Footer.Key(key: "c", label: "copy") {
+                    if let browsing { copy(session.transcript[browsing].plainText) }
+                },
+                Footer.Key(key: "esc", label: "back") { leaveBrowsing() },
+            ])
+        }
+        var keys = [
+            Footer.Key(key: "esc", label: "browse") { startBrowsing() },
+            Footer.Key(key: "^p", label: "commands") { isPaletteOpen = true },
+            Footer.Key(key: "tab", label: "panel") { isPanelShown.toggle() },
+        ]
+        if scroll.isPositionedByUser, scroll.edge != .bottom {
+            keys.insert(Footer.Key(key: "↓", label: "latest") { scroll.scrollTo(edge: .bottom) }, at: 0)
+        }
+        return .keys(keys)
+    }
+
+    fileprivate func startBrowsing() {
+        guard let last = session.transcript.last?.id else {
+            isInputFocused = true
+            return
+        }
+        select(last)
+    }
+
+    /// Selects a block and scrolls it into view.
+    fileprivate func select(_ id: Int) {
+        browsing = id
+        scroll.scrollTo(id: id)
+    }
+
+    fileprivate func leaveBrowsing() {
+        browsing = nil
+        isInputFocused = true
+        scroll.scrollTo(edge: .bottom)
     }
 }
 
