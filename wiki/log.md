@@ -139,5 +139,8 @@ Replies stream into the workspace: `ChatModel.reply(to:tools:onText:)` streams t
 ## [2026-10-18] update | Streamed reasoning and tool-call names
 `ChatModel` streams `ReplyDelta`s (text, reasoning, tool-call names). Reasoning gets its own transcript block (`◌ thinking` with its latest lines, then `▸ thought · 3.1s`, expandable), and the footer shows `writing <tool>` while a tool call streams. Needed Stipple 0.3.1, where head truncation keeps the last lines of a line-limited text.
 
+## [2026-10-18] update | `/clear` restarts the conversation
+Typing `/clear` at the prompt starts over: `ChatSession` empties `transcript` and `expanded` (block ids restart) and the agent drops what the model was told, its context, cost and date note, keeping the system prompt. The agent's input closure now returns an `AgentInput` (`.message` or `.clear`) instead of a `String`, so `Agent.getUserMessage` became `Agent.input`; `ChatSession.take(_:)` absorbs the old `send(_:)`. Queued while the agent is busy, the command takes effect at the next prompt. See [terminal UI](concepts/terminal-ui.md#chatsession-the-state) and [tools](concepts/tools.md#the-loop).
+
 ## [2026-10-18] update | Street cat branding
 Light rebrand ([0010](decisions/0010-street-cat-branding.md)): new `logo.png` and banner background generated with Codex (a tabby street cat in a fez over lamp-lit rooftops), `compose-banner.swift` places the logo beside the title, README gets a short Mascot section. Public wiki wording about the old ornament and palette was made neutral.

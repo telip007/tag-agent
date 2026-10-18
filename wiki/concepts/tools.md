@@ -17,8 +17,11 @@ by an agent ([0006](../decisions/0006-agents-build-the-harness.md)).
 [Agent.swift](../../Sources/TagKit/Agent.swift):
 
 1. If `readUserInput` is set, emit `.status` with the
-   [status line](#the-status-line) and await `getUserMessage()` (`nil` ends
-   the session). Append it as a user message.
+   [status line](#the-status-line) and await `input()` (`nil` ends the
+   session). A `.message` is appended as a user message; `.clear` — the
+   `/clear` command, see [the session](terminal-ui.md#chatsession-the-state) —
+   drops the conversation back to the system prompt, resets the totals and
+   starts this step over.
 2. Emit `.thinking`, then send the whole conversation plus the tool
    definitions to the [`ChatModel`](../../Sources/TagKit/ChatModel.swift),
    which streams the reply as `ReplyDelta`s: each piece of reasoning is
@@ -26,7 +29,7 @@ by an agent ([0006](../decisions/0006-agents-build-the-harness.md)).
    name of each tool call the model starts writing as `.toolCallWriting`. Append the complete assistant message (text, tool calls
    and any reasoning fields). A reply with neither text nor tool calls throws
    `emptyReply`.
-3. Emit `.reply` with the full text, if any.
+3. Emit `.reply` with the full text, if any (from inside the inference call).
 4. Run every tool call in order, emitting `.toolStarted` before and
    `.toolFinished` (with `failed` for an unknown tool or a thrown error)
    after each, and append each result as a `tool` message with the call's
@@ -52,7 +55,8 @@ again. OpenAI-style tool messages have no `is_error` flag, unlike Anthropic's
 `tool_result`, so the `error:` prefix is the only signal.
 
 The agent formats nothing. It reports `AgentEvent`s through an injected
-`output` closure and reads input through the async `getUserMessage`; the
+`output` closure and reads input through the async `input` closure, which
+hands it an `AgentInput`; the
 [terminal UI](terminal-ui.md) turns events into what the user sees.
 [The tests](../../Tests/TagKitTests/AgentTests.swift) drive the loop with a
 scripted model and assert on the events. `Agent` is `@MainActor`, next to that

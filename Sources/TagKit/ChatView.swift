@@ -6,8 +6,9 @@ public import Stipple
 /// Typing goes to the input line. Esc on an empty line browses past blocks
 /// (↑↓ to move, Enter to expand, c to copy); Ctrl-P opens the command
 /// palette; Tab shows or hides the panel. ↑/↓ recall sent messages, typing
-/// while the agent works queues the message, Ctrl-C clears the line and quits
-/// when pressed twice, and Ctrl-D on an empty line quits.
+/// while the agent works queues the message, `/clear` on its own line starts
+/// the conversation over, Ctrl-C clears the line and quits when pressed
+/// twice, and Ctrl-D on an empty line quits.
 ///
 /// The view starts the agent when it appears and exits the app when the
 /// agent's loop ends, rethrowing its error.
@@ -121,6 +122,11 @@ public struct ChatView: View {
             return handlePalette(press)
         }
         if let selected = browsing {
+            // A `/clear` may have emptied the transcript under the selection.
+            guard selected < session.blocks.count else {
+                leaveBrowsing()
+                return handle(press)
+            }
             return handleBrowsing(press, selected: selected)
         }
         switch PromptKey(press, inputIsEmpty: input.isEmpty) {
@@ -215,7 +221,9 @@ extension ChatView {
                 Footer.Key(key: "↑↓", label: "move") {},
                 Footer.Key(key: "⏎", label: "expand") { if let browsing { session.toggle(browsing) } },
                 Footer.Key(key: "c", label: "copy") {
-                    if let browsing { copy(session.transcript[browsing].plainText) }
+                    if let browsing, browsing < session.blocks.count {
+                        copy(session.transcript[browsing].plainText)
+                    }
                 },
                 Footer.Key(key: "esc", label: "back") { leaveBrowsing() },
             ])

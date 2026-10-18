@@ -65,7 +65,10 @@ Agent ──AgentEvent──▶ ChatSession ──observed by──▶ ChatView
 
 [`Agent`](../../Sources/TagKit/Agent.swift) reports through
 `output: (AgentEvent) -> Void` and reads input with
-`getUserMessage: () async -> String?` (`nil` ends the session). The events:
+`input: () async -> AgentInput?` (`nil` ends the session). `AgentInput` is
+`.message(String)`, or `.clear`, which asks the agent to drop the
+conversation and its totals and to wait for the next message instead. The
+events:
 
 - `.status(StatusLine)` before each prompt ([status line](tools.md#the-status-line)),
 - `.thinking` before each model call,
@@ -103,7 +106,16 @@ Agent ──AgentEvent──▶ ChatSession ──observed by──▶ ChatView
 Input: `submit(_:)` ignores blank text, records the message in `history`, and
 either resumes the waiting `nextMessage()` or appends to `queued` while the
 agent is busy (type-ahead). `nextMessage()` takes queued messages first, then
-suspends on a `CheckedContinuation` until `submit`, `end()` or cancellation.
+suspends on a `CheckedContinuation` until `submit`, `end()` or cancellation;
+what it hands the agent is an `AgentInput`: a message, or a clear.
+
+`/clear` is the one command, alone on the line apart from whitespace. It
+isn't recorded in `history`, and `take(_:)` empties `transcript` and
+`expanded` — block ids start over, so a kept id would expand the wrong block —
+and hands out `.clear`. The agent then keeps the system prompt but forgets
+what the model was told, and resets its context, cost and date note, so the
+next message is dated again. Typed while the agent is busy the command queues
+like a message and takes effect at the next prompt.
 
 The clock is injected (`ChatSession(now:)`) so tests can time tools and the
 session deterministically. Helpers:
@@ -173,6 +185,10 @@ handling; the parts are in
 | Ctrl-C | clear the line; on an empty line, press again within 2 s to quit |
 | Ctrl-D | quit, on an empty line |
 
+Typing `/clear` on its own line starts the conversation over: the transcript
+empties and the agent forgets the context, instead of the line becoming a
+message the model sees.
+
 `ChatView.renderOptions` turns on the alternate screen and turns off Stipple's
 `exitOnCtrlC`, so Ctrl-C reaches the view's `onKeyPress`. The keys the
 `TextField` leaves alone are mapped by the pure `PromptKey` and `BrowseKey`
@@ -181,7 +197,7 @@ focusable view.
 
 [Tag.swift](../../Sources/Tag/Tag.swift) wires everything up: a
 `ChatSession`, an `Agent` with `output: session.handle` and
-`getUserMessage: session.nextMessage`, then
+`input: session.nextMessage`, then
 `Stipple.run(ChatView(...), options: ChatView.renderOptions)`.
 
 ## Why the main actor

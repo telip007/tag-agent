@@ -1,18 +1,23 @@
+import Foundation
 public import Observation
 
 /// The state the workspace shows, fed by the ``Agent``'s events, and the
 /// hand-off of submitted messages back to the agent.
 ///
 /// The agent reads input with ``nextMessage()``. Messages submitted while it
-/// is busy wait in a queue, so the user can type ahead.
+/// is busy wait in a queue, so the user can type ahead. `/clear` starts the
+/// conversation over instead of sending anything: the transcript empties and
+/// the agent drops what the model was told.
 @MainActor
 @Observable
 public final class ChatSession {
     /// Tool calls quicker than this don't show their duration.
     static let noticeableDuration = Duration.seconds(1)
 
-    /// The conversation so far, oldest first.
-    public private(set) var transcript: [TranscriptBlock] = []
+    /// The conversation so far, oldest first, each block observed on its own:
+    /// a reply growing changes its block, not the list, so the workspace
+    /// redraws that block alone.
+    public private(set) var blocks: [LiveBlock] = []
     /// Blocks the user expanded (tool trays, long edits), by id.
     public private(set) var expanded: Set<Int> = []
     /// The latest status line: model, context and cost.
@@ -101,21 +106,21 @@ public final class ChatSession {
         }
     }
 
-    /// Waits for the user's next message, taking queued ones first. Returns
+    /// Waits for what the user does next, taking queued lines first. Returns
     /// `nil` once the session has ended or the waiting task is cancelled.
-    public func nextMessage() async -> String? {
+    public func nextMessage() async -> AgentInput? {
         if !queued.isEmpty {
-            return send(queued.removeFirst())
+            return take(queued.removeFirst())
         }
         guard !isEnded else {
             return nil
         }
-        let message = await withTaskCancellationHandler {
+        let line = await withTaskCancellationHandler {
             await withCheckedContinuation { pendingMessage = $0 }
         } onCancel: {
             Task { @MainActor in self.end() }
         }
-        return message.map(send)
+        return line.map(take)
     }
 
     /// Hands `text` to the agent, or queues it while the agent is busy.
@@ -126,7 +131,11 @@ public final class ChatSession {
         guard text.contains(where: { !$0.isWhitespace }) else {
             return false
         }
-        history.append(text)
+        // A command runs the conversation rather than joining it, so ↑
+        // won't recall it as a message.
+        if !isClearCommand(text) {
+            history.append(text)
+        }
         guard let pendingMessage else {
             queued.append(text)
             return true
@@ -144,42 +153,58 @@ public final class ChatSession {
         pendingMessage = nil
     }
 
-    /// Records `text` as sent.
-    private func send(_ text: String) -> String {
+    /// Takes a line the user entered: the clear command, or a message that
+    /// joins the transcript.
+    private func take(_ line: String) -> AgentInput {
+        if isClearCommand(line) {
+            clear()
+            return .clear
+        }
         openTray = nil
-        append(.user(text))
-        return text
+        append(.user(line))
+        return .message(line)
+    }
+
+    /// Empties the transcript: the agent is told to forget the conversation,
+    /// so nothing here may keep pointing into the old one. The files changed
+    /// and the session's run time stay, they aren't the conversation's.
+    private func clear() {
+        blocks = []
+        expanded = []
+        openTray = nil
+        openReply = nil
+        openReasoning = nil
     }
 
     /// Grows the reasoning being written, or starts it.
     private func streamReasoning(_ text: String) {
-        if let openReasoning, case .reasoning(var reasoning) = transcript[openReasoning.block].content {
+        if let openReasoning, case .reasoning(var reasoning) = blocks[openReasoning.block].content {
             reasoning.text += text
-            transcript[openReasoning.block].content = .reasoning(reasoning)
+            blocks[openReasoning.block].content = .reasoning(reasoning)
         } else {
             openTray = nil
-            openReasoning = (transcript.count, now())
+            openReasoning = (blocks.count, now())
             append(.reasoning(Reasoning(text: text)))
         }
     }
 
     /// Records how long the model reasoned, once it moves on.
     private func finishReasoning() {
-        guard let openReasoning, case .reasoning(var reasoning) = transcript[openReasoning.block].content else {
+        guard let openReasoning, case .reasoning(var reasoning) = blocks[openReasoning.block].content else {
             return
         }
         reasoning.duration = now() - openReasoning.start
-        transcript[openReasoning.block].content = .reasoning(reasoning)
+        blocks[openReasoning.block].content = .reasoning(reasoning)
         self.openReasoning = nil
     }
 
     /// Grows the reply being written, or starts one.
     private func streamReply(_ text: String) {
-        if let openReply, case .reply(let written) = transcript[openReply].content {
-            transcript[openReply].content = .reply(written + text)
+        if let openReply, case .reply(let written) = blocks[openReply].content {
+            blocks[openReply].content = .reply(written + text)
         } else {
             openTray = nil
-            openReply = transcript.count
+            openReply = blocks.count
             append(.reply(text))
             setActivity("writing")
         }
@@ -189,7 +214,7 @@ public final class ChatSession {
     /// appears whole.
     private func finishReply(_ text: String) {
         if let openReply {
-            transcript[openReply].content = .reply(text)
+            blocks[openReply].content = .reply(text)
         } else {
             openTray = nil
             append(.reply(text))
@@ -199,23 +224,23 @@ public final class ChatSession {
 
     private func startTool(name: String, summary: String) {
         let run = ToolRun(name: name, summary: summary, state: .running, output: "")
-        if let openTray, case .tools(let runs) = transcript[openTray].content {
-            transcript[openTray].content = .tools(runs + [run])
+        if let openTray, case .tools(let runs) = blocks[openTray].content {
+            blocks[openTray].content = .tools(runs + [run])
         } else {
-            openTray = transcript.count
+            openTray = blocks.count
             append(.tools([run]))
         }
     }
 
     private func finishTool(output: String, failed: Bool) {
-        guard let openTray, case .tools(var runs) = transcript[openTray].content, !runs.isEmpty else {
+        guard let openTray, case .tools(var runs) = blocks[openTray].content, !runs.isEmpty else {
             return
         }
         let last = runs.count - 1
         runs[last].state = failed ? .failed : .succeeded
         runs[last].output = output
         runs[last].duration = activityStart.map { now() - $0 }
-        transcript[openTray].content = .tools(runs)
+        blocks[openTray].content = .tools(runs)
     }
 
     private func record(_ edit: FileEdit) {
@@ -235,7 +260,7 @@ public final class ChatSession {
     }
 
     private func append(_ content: TranscriptBlock.Content) {
-        transcript.append(TranscriptBlock(id: transcript.count, content: content))
+        blocks.append(LiveBlock(id: blocks.count, content: content))
     }
 
     /// `0.4s`, `12.3s`, `2m 05s`.
@@ -248,4 +273,36 @@ public final class ChatSession {
         let remainder = seconds % 60
         return "\(seconds / 60)m " + (remainder < 10 ? "0" : "") + "\(remainder)s"
     }
+}
+
+extension ChatSession {
+    /// The conversation so far, oldest first, as values.
+    public var transcript: [TranscriptBlock] {
+        blocks.map { TranscriptBlock(id: $0.id, content: $0.content) }
+    }
+}
+
+/// One block of the transcript as the session holds it, observable by
+/// itself so that a change to one block redraws only that block.
+@MainActor
+@Observable
+public final class LiveBlock: Identifiable {
+    /// The block's position in the transcript.
+    public let id: Int
+    /// What the block shows.
+    public fileprivate(set) var content: TranscriptBlock.Content
+
+    init(id: Int, content: TranscriptBlock.Content) {
+        self.id = id
+        self.content = content
+    }
+}
+
+/// Lines that run the conversation rather than joining it, typed at the
+/// prompt after a `/`.
+private let clearCommand = "/clear"
+
+/// Whether `line` is ``clearCommand``, ignoring whitespace around it.
+private func isClearCommand(_ line: String) -> Bool {
+    line.trimmingCharacters(in: .whitespaces) == clearCommand
 }

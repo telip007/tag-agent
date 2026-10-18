@@ -63,7 +63,7 @@ struct ChatSessionTests {
         await waitForInputRequest()
 
         #expect(session.submit("Hello"))
-        #expect(await reply.value == "Hello")
+        #expect(await reply.value == .message("Hello"))
         #expect(!session.isWaitingForInput)
         #expect(session.transcript.map(\.content) == [.user("Hello")])
         #expect(session.history == ["Hello"])
@@ -82,9 +82,37 @@ struct ChatSessionTests {
         // Queued messages join the transcript only when the agent takes them.
         #expect(session.transcript.isEmpty)
 
-        #expect(await session.nextMessage() == "first")
+        #expect(await session.nextMessage() == .message("first"))
         #expect(session.queued == ["second"])
         #expect(session.transcript.map(\.content) == [.user("first")])
+    }
+
+    @Test func clearingEmptiesTheTranscriptAndTellsTheAgent() async {
+        session.handle(.reply("Done."))
+        session.toggle(0)
+        let reply = Task { await session.nextMessage() }
+        await waitForInputRequest()
+
+        #expect(session.submit(" /clear "))
+        #expect(await reply.value == .clear)
+        #expect(session.transcript.isEmpty)
+        // Block ids start over, so nothing may stay expanded.
+        #expect(session.expanded.isEmpty)
+        // The command isn't a message, so ↑ can't recall it.
+        #expect(session.history.isEmpty)
+
+        session.handle(.reply("Fresh."))
+        #expect(session.transcript.map(\.content) == [.reply("Fresh.")])
+    }
+
+    @Test func aQueuedClearWaitsForTheAgent() async {
+        // With the agent busy the clear is queued like a message would be.
+        session.submit("/clear")
+        #expect(session.queued == ["/clear"])
+
+        #expect(await session.nextMessage() == .clear)
+        #expect(session.transcript.isEmpty)
+        #expect(session.queued.isEmpty)
     }
 
     @Test func endingReleasesTheWaitingAgent() async {

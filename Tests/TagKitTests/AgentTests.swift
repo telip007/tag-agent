@@ -53,14 +53,14 @@ final class ScriptedModel: ChatModel {
 /// The user's side of a conversation, plus everything the agent reported.
 @MainActor
 final class Terminal {
-    var inputs: [String]
+    var inputs: [AgentInput]
     /// What the agent's clock reads, one entry per user message; the last
     /// entry repeats.
     var dates = [Date(timeIntervalSince1970: 1_792_000_000)]
     private(set) var events: [AgentEvent] = []
 
     init(_ inputs: [String]) {
-        self.inputs = inputs
+        self.inputs = inputs.map(AgentInput.message)
     }
 
     /// The status lines shown, in order.
@@ -78,7 +78,7 @@ final class Terminal {
             environment: .fake,
             now: { self.dates.count > 1 ? self.dates.removeFirst() : self.dates[0] },
             output: { self.events.append($0) },
-            getUserMessage: { self.inputs.isEmpty ? nil : self.inputs.removeFirst() },
+            input: { self.inputs.isEmpty ? nil : self.inputs.removeFirst() },
         )
     }
 }
@@ -250,6 +250,34 @@ struct AgentTests {
                 "<environment_update>date: \(first)</environment_update>\n\na",
                 "b",
                 "<environment_update>date: \(next)</environment_update>\n\nc",
+            ]
+        )
+    }
+
+    @Test func clearingDropsTheConversationAndTheTotals() async throws {
+        let model = ScriptedModel([.init(text: "Hi!", toolCalls: nil), .init(text: "Again!", toolCalls: nil)])
+        model.usage = ChatUsage(completionTokens: 5, cost: 0.001, promptTokens: 100, totalTokens: 105)
+        let terminal = Terminal(["Hello", "Again"])
+        terminal.inputs.insert(.clear, at: 1)
+        try await terminal.agent(model: model).run()
+
+        // The second conversation holds the system prompt and the new message.
+        #expect(model.conversations.map(dialogue) == [[.user("Hello")], [.user("Again")]])
+        // Its first message carries the date again, as in a fresh session.
+        let date = UserMessageDater.format(terminal.dates[0])
+        let messages = model.conversations.last?.compactMap { message -> String? in
+            guard case .user(let user) = message else { return nil }
+            return user.content.value1
+        }
+        #expect(messages == ["<environment_update>date: \(date)</environment_update>\n\nAgain"])
+        // The user is asked again, with the context and the cost back to zero:
+        // the last line costs what one reply costs, not two.
+        #expect(
+            terminal.statusLines == [
+                "/work/tag · Scripted Model · ctx 0/8k (0%) · $0.00",
+                "/work/tag · Scripted Model · ctx 105/8k (1%) · $0.001",
+                "/work/tag · Scripted Model · ctx 0/8k (0%) · $0.00",
+                "/work/tag · Scripted Model · ctx 105/8k (1%) · $0.001",
             ]
         )
     }

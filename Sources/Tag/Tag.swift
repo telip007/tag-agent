@@ -19,7 +19,7 @@ struct Tag: AsyncParsableCommand {
             tools: ToolDefinition.builtIn(workingDirectory: workingDirectory),
             environment: SessionEnvironment.probe(workingDirectory: workingDirectory),
             output: session.handle,
-            getUserMessage: session.nextMessage,
+            input: session.nextMessage,
         )
         try await Stipple.run(ChatView(session: session, agent: agent), options: ChatView.renderOptions)
     }

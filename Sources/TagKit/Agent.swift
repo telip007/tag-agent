@@ -23,6 +23,15 @@ public enum AgentEvent: Sendable, Equatable {
     case toolFinished(name: String, arguments: String, output: String, failed: Bool)
 }
 
+/// What the user does at the prompt.
+public enum AgentInput: Sendable, Equatable {
+    /// A message to add to the conversation.
+    case message(String)
+    /// Start the conversation over: the model forgets it, and the totals go
+    /// back to zero.
+    case clear
+}
+
 /// The agent loop: chat with the user and run the tools the model calls.
 ///
 /// It runs on the main actor, next to the UI it reports to; the model and the
@@ -43,7 +52,7 @@ public struct Agent {
     let tools: [ToolDefinition]
     let environment: SessionEnvironment
     let now: () -> Date
-    let getUserMessage: () async -> String?
+    let input: () async -> AgentInput?
     let output: (AgentEvent) -> Void
 
     /// Creates an agent.
@@ -55,24 +64,24 @@ public struct Agent {
     ///     the status line.
     ///   - now: The clock that dates user messages.
     ///   - output: Receives what happens in the conversation, for display.
-    ///   - getUserMessage: Reads the next user message, or `nil` to end the session.
+    ///   - input: Reads what the user does at the prompt, or `nil` to end the session.
     public init(
         model: any ChatModel,
         tools: [ToolDefinition] = [],
         environment: SessionEnvironment,
         now: @escaping () -> Date = Date.init,
         output: @escaping (AgentEvent) -> Void,
-        getUserMessage: @escaping () async -> String?,
+        input: @escaping () async -> AgentInput?,
     ) {
         self.model = model
         self.tools = tools
         self.environment = environment
         self.now = now
         self.output = output
-        self.getUserMessage = getUserMessage
+        self.input = input
     }
 
-    /// Runs the conversation until ``getUserMessage`` returns `nil`.
+    /// Runs the conversation until ``input`` returns `nil`.
     public func run() async throws {
         // A catalogue call for the status line and the system prompt.
         let modelDescription = await model.modelDescription()
@@ -88,23 +97,24 @@ public struct Agent {
         var readUserInput = true
         while true {
             if readUserInput {
-                output(
-                    .status(
-                        StatusLine(
-                            directory: environment.workingDirectory,
-                            model: modelDescription,
-                            contextTokens: contextTokens,
-                            cost: cost,
-                        )
-                    )
-                )
+                output(.status(statusLine(model: modelDescription, contextTokens: contextTokens, cost: cost)))
 
-                let userInput = await getUserMessage()
-                guard let userInput else {
+                guard let userInput = await input() else {
                     break
                 }
 
-                conversation.append(.user(dater.message(userInput, at: now())))
+                switch userInput {
+                case .clear:
+                    // The system prompt stays; everything the model was told
+                    // goes, so the prompt cache prefix does too.
+                    conversation = [systemMessage(model: modelDescription)]
+                    dater = UserMessageDater()
+                    contextTokens = 0
+                    cost = 0
+                    continue
+                case .message(let text):
+                    conversation.append(.user(dater.message(text, at: now())))
+                }
             }
 
             output(.thinking)
@@ -113,10 +123,6 @@ public struct Agent {
             if let usage = result.usage {
                 contextTokens = usage.totalTokens
                 cost += usage.cost ?? 0
-            }
-
-            if let reply = result.message.text, !reply.isEmpty {
-                output(.reply(reply))
             }
 
             let toolCalls = result.message.toolCalls ?? []
@@ -129,6 +135,16 @@ public struct Agent {
 
     private func systemMessage(model: ModelDescription) -> ChatMessage {
         .system(SystemPrompt.render(tools: tools, environment: environment, model: model.name))
+    }
+
+    /// The line the panel shows above the prompt.
+    private func statusLine(model: ModelDescription, contextTokens: Int, cost: Double) -> StatusLine {
+        StatusLine(
+            directory: environment.workingDirectory,
+            model: model,
+            contextTokens: contextTokens,
+            cost: cost,
+        )
     }
 
     private func runInference(
@@ -145,6 +161,9 @@ public struct Agent {
         let message = result.message
         guard message.text?.isEmpty == false || message.toolCalls?.isEmpty == false else {
             throw InferenceError.emptyReply
+        }
+        if let reply = message.text, !reply.isEmpty {
+            output(.reply(reply))
         }
 
         return (message, result.usage)
