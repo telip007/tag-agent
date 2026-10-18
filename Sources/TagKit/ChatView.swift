@@ -43,19 +43,29 @@ public struct ChatView: View {
             Static(session.transcript) { entry in
                 TranscriptLine(entry: entry)
             }
-            if let activity = session.activity, let start = session.activityStart {
-                ActivityLine(text: activity, start: start)
+            VStack(alignment: .leading) {
+                if let activity = session.activity, let start = session.activityStart {
+                    ActivityLine(text: activity, start: start)
+                }
+                Divider().foregroundStyle(Theme.rule)
+                HStack {
+                    Text("› ").foregroundStyle(session.isWaitingForInput ? Theme.accent : Theme.rule)
+                    TextField(session.isWaitingForInput ? "" : "type ahead…", text: $input)
+                        .focused($isInputFocused)
+                }
+                .padding(.horizontal, 1)
+                Divider().foregroundStyle(Theme.rule)
+                VStack(alignment: .leading) {
+                    if let status = session.status {
+                        StatusBar(status: status)
+                    }
+                    if let hint {
+                        Text(hint).foregroundStyle(Theme.accent)
+                    }
+                }
+                .padding(.horizontal, 1)
             }
-            HStack {
-                Text("› ").foregroundStyle(session.isWaitingForInput ? Theme.accent : .gray)
-                TextField(session.isWaitingForInput ? "" : "type ahead…", text: $input)
-                    .focused($isInputFocused)
-            }
-            if isQuitArmed {
-                Text("press ctrl-c again to quit").foregroundStyle(Theme.accent)
-            } else if let status = session.status {
-                StatusBar(status: status, queued: session.queued.count)
-            }
+            .padding(.horizontal, Theme.margin)
         }
         .onSubmit {
             if session.submit(input) {
@@ -83,6 +93,15 @@ public struct ChatView: View {
                 isQuitArmed = false
             }
         }
+    }
+
+    /// A line under the status bar, only while there is something to say.
+    private var hint: String? {
+        if isQuitArmed {
+            return "press ctrl-c again to quit"
+        }
+        let queued = session.queued.count
+        return queued == 0 ? nil : queued == 1 ? "1 message queued" : "\(queued) messages queued"
     }
 
     /// The keys the text field leaves alone: history, Ctrl-C and Ctrl-D.
@@ -148,41 +167,74 @@ enum PromptKey: Equatable {
     }
 }
 
-/// The few colours the UI uses: amber phosphor, as on old terminals.
+/// The look: the terminal's own colours with two from Ottoman art — the gold
+/// of illuminated manuscripts as the accent and İznik tile turquoise for
+/// code — dim rules, and one tinted band for the user's messages.
 enum Theme {
-    static let accent = Color(red: 255, green: 176, blue: 0)
+    static let accent = Color(red: 227, green: 179, blue: 65)
+    static let tile = Color(red: 64, green: 184, blue: 175)
+    static let rule = Color.gray
+    static let userBand = Color(red: 58, green: 62, blue: 80)
+    /// Columns kept free on the left and right.
+    static let margin = 1
+    /// Where text starts inside the margin: after a band's padding and the `› ` prompt,
+    /// so replies line up with the message they answer.
+    static let indent = 3
 }
 
-/// One transcript entry. Agent text and tool calls hang two columns in, so
-/// the user's messages stand out at the margin.
+/// One transcript entry. The user's messages sit on a tinted band; agent
+/// text and tool calls are indented under them.
 struct TranscriptLine: View {
     let entry: TranscriptEntry
 
     var body: some View {
+        content.padding(.horizontal, Theme.margin)
+    }
+
+    @ViewBuilder private var content: some View {
         switch entry.content {
         case .banner(let model, let folder):
-            (Text(" TAG ").foregroundStyle(.black).background(Theme.accent).bold()
-                + Text("  \(model)")
-                + Text(" · \(folder)").dim())
-                .padding(.bottom, 1)
+            Banner(model: model, folder: folder).padding(.leading, 1)
         case .user(let text):
-            (Text("› ").foregroundStyle(Theme.accent) + Text(text).bold())
+            (Text("› ").foregroundStyle(Theme.accent) + Text(text))
+                .padding(.horizontal, 1)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Theme.userBand)
+                .padding(.bottom, 1)
         case .agent(let text):
-            HStack {
-                Text("  ")
-                Text(text)
-            }
+            Markdown.text(text)
+                .padding(.leading, Theme.indent)
+                .padding(.top, entry.followsTool ? 1 : 0)
+                .padding(.bottom, 1)
         case .tool(let name, let summary, let failed, let duration):
-            HStack {
-                Text("  ")
-                Text(failed ? "✗ " : "▸ ").foregroundStyle(failed ? .red : Theme.accent)
-                    + Text(name)
-                    + Text(summary.isEmpty ? "" : "  \(summary)").dim()
-                    + Text(duration.map { "  \(ChatSession.seconds($0))" } ?? "").foregroundStyle(Theme.accent)
-            }
+            (Text(failed ? "✗ " : "▸ ").foregroundStyle(failed ? .red : Theme.accent)
+                + Text(name)
+                + Text(summary.isEmpty ? "" : "  \(summary)").dim()
+                + Text(duration.map { "  \(ChatSession.seconds($0))" } ?? "").foregroundStyle(Theme.accent))
+                .padding(.leading, Theme.indent)
         case .turnSummary(let text):
-            Text("  ─ \(text)").dim().padding(.bottom, 1)
+            Text(text).dim().padding(.leading, Theme.indent).padding(.bottom, 1)
         }
+    }
+}
+
+/// The header at the top of a session: the mascot, and what is running where.
+struct Banner: View {
+    let model: ModelDescription
+    let folder: String
+
+    var body: some View {
+        HStack(alignment: .center, spacing: 3) {
+            VStack(alignment: .leading) {
+                ForEach(Array(Mascot.turban.lines.enumerated()), id: \.offset) { $0.element }
+            }
+            VStack(alignment: .leading) {
+                Text("Tag Agent").bold()
+                Text(model.contextLength.map { "\(model.name) · \(StatusLine.tokens($0)) context" } ?? model.name).dim()
+                Text(folder).dim()
+            }
+        }
+        .padding(.vertical, 1)
     }
 }
 
@@ -197,87 +249,87 @@ struct ActivityLine: View {
     var body: some View {
         TimelineView(.periodic(every: .milliseconds(80))) { context in
             let elapsed = ContinuousClock.now - start
-            Text("  \(Self.frames[context.frame % Self.frames.count]) ").foregroundStyle(Theme.accent)
+            Text("\(Self.frames[context.frame % Self.frames.count]) ").foregroundStyle(Theme.accent)
                 + Text(text).dim()
                 + Text(elapsed >= ChatSession.noticeableDuration ? "  \(ChatSession.seconds(elapsed))" : "").dim()
         }
+        .padding(.leading, Theme.indent)
     }
 }
 
-/// The status line, styled, with a context meter that warms up as the window
-/// fills. Fields drop out, least useful first, when the terminal is narrow.
+/// The status line under the input: where and with what on the left, how
+/// full the context is and what it cost on the right. The context turns amber
+/// past half and red past 80%, and the left side gives way on narrow
+/// terminals: the folder goes first, then the model.
 struct StatusBar: View {
-    /// What the bar can show, in display order.
+    /// What the bar can show.
     enum Field: Equatable {
-        case folder, model, meter, context, cost, queued
+        case folder, model, context, cost
     }
 
-    static let meterCells = 8
     static let separator = " · "
+    /// The least space kept between the two sides.
+    static let gap = 2
 
     let status: StatusLine
-    let queued: Int
     @Environment(\.terminalSize) private var terminalSize
 
     var body: some View {
-        Self.fields(for: status, queued: queued, width: terminalSize.width)
-            .map(text)
-            .enumerated()
-            .reduce(Text("")) { line, field in
-                field.offset == 0 ? field.element : line + Text(Self.separator).dim() + field.element
-            }
+        let fields = Self.fields(for: status, width: terminalSize.width - 2 * Theme.margin - 2)
+        HStack {
+            joined(fields.filter { $0 == .folder || $0 == .model }.map(text))
+            Spacer(minLength: Self.gap)
+            joined([text(.context), text(.cost)])
+        }
     }
 
     /// The fields that fit in `width` columns, dropping the folder first,
-    /// then the model, then the meter.
-    static func fields(for status: StatusLine, queued: Int, width: Int) -> [Field] {
-        var fields: [Field] = [.folder, .model, .meter, .context, .cost]
-        if status.contextFraction == nil {
-            fields.removeAll { $0 == .meter }
-        }
-        if queued > 0 {
-            fields.append(.queued)
-        }
-        for dropped in [Field.folder, .model, .meter] where width < self.width(of: fields, status, queued) {
+    /// then the model.
+    static func fields(for status: StatusLine, width: Int) -> [Field] {
+        var fields: [Field] = [.folder, .model, .context, .cost]
+        for dropped in [Field.folder, .model] where width < self.width(of: fields, status) {
             fields.removeAll { $0 == dropped }
         }
         return fields
     }
 
-    private static func width(of fields: [Field], _ status: StatusLine, _ queued: Int) -> Int {
-        let texts = fields.map { plain($0, status, queued) }
-        return texts.map(\.count).reduce(0, +) + separator.count * max(0, texts.count - 1)
+    private static func width(of fields: [Field], _ status: StatusLine) -> Int {
+        let left = fields.filter { $0 == .folder || $0 == .model }
+        let right = fields.filter { $0 == .context || $0 == .cost }
+        func length(_ side: [Field]) -> Int {
+            side.map { plain($0, status).count }.reduce(0, +) + separator.count * max(0, side.count - 1)
+        }
+        return length(left) + gap + length(right)
     }
 
-    private static func plain(_ field: Field, _ status: StatusLine, _ queued: Int) -> String {
+    static func plain(_ field: Field, _ status: StatusLine) -> String {
         switch field {
         case .folder: status.folder
         case .model: status.model.name
-        case .meter: String(repeating: "▱", count: meterCells)
-        case .context: status.contextUsage
+        case .context: contextText(status)
         case .cost: status.money
-        case .queued: "\(queued) queued"
         }
+    }
+
+    /// `831/1M`, with the percentage once the window is half full.
+    private static func contextText(_ status: StatusLine) -> String {
+        guard let fraction = status.contextFraction, fraction >= 0.5 else {
+            return status.contextUsage
+        }
+        return "\(status.contextUsage) (\(Int((fraction * 100).rounded()))%)"
     }
 
     private func text(_ field: Field) -> Text {
-        switch field {
-        case .meter:
-            meter
-        case .queued:
-            Text(Self.plain(field, status, queued)).foregroundStyle(Theme.accent)
-        default:
-            Text(Self.plain(field, status, queued)).dim()
+        let text = Text(Self.plain(field, status))
+        guard field == .context, let fraction = status.contextFraction, fraction >= 0.5 else {
+            return text.foregroundStyle(Theme.rule)
         }
+        return text.foregroundStyle(fraction < 0.8 ? Theme.accent : .red)
     }
 
-    /// `▰▰▱▱▱▱▱▱`: green while there is room, amber past half, red past 80%.
-    private var meter: Text {
-        let fraction = min(max(status.contextFraction ?? 0, 0), 1)
-        let cells = Self.meterCells
-        let filled = fraction > 0 ? max(1, Int((fraction * Double(cells)).rounded())) : 0
-        let color: Color = fraction < 0.5 ? .green : fraction < 0.8 ? Theme.accent : .red
-        return Text(String(repeating: "▰", count: filled)).foregroundStyle(color)
-            + Text(String(repeating: "▱", count: cells - filled)).dim()
+    private func joined(_ texts: [Text]) -> Text {
+        texts.enumerated().reduce(Text("")) { line, item in
+            item.offset == 0 ? item.element : line + Text(Self.separator).foregroundStyle(Theme.rule) + item.element
+        }
     }
 }

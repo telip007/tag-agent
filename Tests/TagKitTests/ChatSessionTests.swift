@@ -44,7 +44,10 @@ struct ChatSessionTests {
         session.handle(.status(status()))
         session.handle(.status(status()))
 
-        #expect(session.transcript.map(\.content) == [.banner(model: "Scripted Model", folder: "/work/tag")])
+        #expect(
+            session.transcript.map(\.content) == [
+                .banner(model: ModelDescription(name: "Scripted Model", contextLength: 8_000), folder: "/work/tag")
+            ])
         #expect(session.status == status())
     }
 
@@ -124,7 +127,7 @@ struct ChatSessionTests {
         )
     }
 
-    @Test func eachTurnEndsWithASummary() async {
+    @Test func turnsThatRanToolsEndWithASummary() async {
         session.handle(.status(status()))
         session.submit("Go")
         _ = await session.nextMessage()
@@ -136,10 +139,12 @@ struct ChatSessionTests {
 
         #expect(session.transcript.last?.content == .turnSummary("1 tool · 4.1s · $0.0031"))
 
+        // A plain answer gets no summary.
         session.submit("Again")
         _ = await session.nextMessage()
+        session.handle(.reply("Sure."))
         session.handle(.status(status(cost: 0.0041)))
-        #expect(session.transcript.last?.content == .turnSummary("0.0s · $0.001"))
+        #expect(session.transcript.last?.content == .agent("Sure."))
     }
 
     @Test func toolCountIsPlural() async {

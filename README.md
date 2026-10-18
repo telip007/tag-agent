@@ -40,16 +40,20 @@ submodule in `Packages/OpenRouter`).
 ## The terminal UI
 
 The chat runs in the terminal with
-[Stipple](https://github.com/telip007/stipple). It looks like a plain prompt:
-messages and tool calls (with their key argument, and their time when slow)
-scroll into your terminal's history, each turn ends with its tool count, time
-and cost, and below the `›` prompt one status line shows the folder, the
-model's display name, a context meter with how much of the model's window the
-conversation uses, and what the session has cost so far. Narrow terminals
-drop the folder, then the model, then the meter.
+[Stipple](https://github.com/telip007/stipple). A small header names the model
+and folder; your messages sit on a tinted band, replies and tool calls (with
+their key argument, and their time when slow) are indented under them, and
+everything scrolls into your terminal's history. Below the input, one status
+line shows the folder and model on the left, and how much of the context window
+is used and what the session has cost on the right. The context figure turns
+gold past half and red past 80%; narrow terminals drop the folder, then the
+model.
 
 ```text
-~/developer/tag · DeepSeek V4.1 Flash · ▰▱▱▱▱▱▱▱ · 12.3k/200k · $0.0012
+ ────────────────────────────────────────────────────────────────────────
+  ›
+ ────────────────────────────────────────────────────────────────────────
+  ~/developer/tag · DeepSeek V4.1 Flash                 12.3k/200k · $0.0012
 ```
 
 | Key | What |

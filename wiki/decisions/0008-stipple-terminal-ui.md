@@ -31,9 +31,9 @@ scrollback, raw-mode input, and terminal restore on exit, error and crash.
   wiring, `TagKit` owns the agent *and* its UI.
 
 - The look follows the maintainer's brief, *a simple look that reveals
-  hidden aha moments; retro but state of the art*: one amber accent, a bare
-  prompt, and features (history, type-ahead, turn costs, the context meter)
-  that show up when used ([design intent](../concepts/terminal-ui.md#design-intent)).
+  hidden aha moments; retro but state of the art*: a quiet layout after
+  current agent CLIs, colours from Ottoman art, and features (history,
+  type-ahead, turn costs, the warming context figure) that show up when used ([design intent](../concepts/terminal-ui.md#design-intent)).
 
 ## Consequences
 

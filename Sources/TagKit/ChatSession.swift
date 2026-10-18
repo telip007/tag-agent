@@ -6,7 +6,7 @@ public struct TranscriptEntry: Identifiable, Sendable, Equatable {
     /// What the line shows.
     public enum Content: Sendable, Equatable {
         /// The header at the top of a session.
-        case banner(model: String, folder: String)
+        case banner(model: ModelDescription, folder: String)
         /// A message the user sent.
         case user(String)
         /// Text the model wrote.
@@ -22,6 +22,8 @@ public struct TranscriptEntry: Identifiable, Sendable, Equatable {
     public let id: Int
     /// What the line shows.
     public let content: Content
+    /// Whether the line comes right after a tool call, so it needs a gap.
+    public var followsTool = false
 }
 
 /// The state the chat view shows, fed by the ``Agent``'s events, and the
@@ -77,7 +79,7 @@ public final class ChatSession {
         switch event {
         case .status(let line):
             if status == nil {
-                append(.banner(model: line.model.name, folder: line.folder))
+                append(.banner(model: line.model, folder: line.folder))
             }
             finishTurn(cost: line.cost)
             status = line
@@ -148,16 +150,14 @@ public final class ChatSession {
     }
 
     private func finishTurn(cost: Double) {
-        guard let turn else {
+        // Only turns that ran tools get a summary; a plain answer speaks for itself.
+        guard let turn, turn.tools > 0 else {
+            self.turn = nil
             return
         }
         self.turn = nil
-        var parts: [String] = []
-        if turn.tools > 0 {
-            parts.append(turn.tools == 1 ? "1 tool" : "\(turn.tools) tools")
-        }
-        parts.append(Self.seconds(now() - turn.start))
-        parts.append(StatusLine.money(cost - turn.startCost))
+        let tools = turn.tools == 1 ? "1 tool" : "\(turn.tools) tools"
+        let parts = [tools, Self.seconds(now() - turn.start), StatusLine.money(cost - turn.startCost)]
         append(.turnSummary(parts.joined(separator: " · ")))
     }
 
@@ -167,7 +167,11 @@ public final class ChatSession {
     }
 
     private func append(_ content: TranscriptEntry.Content) {
-        transcript.append(TranscriptEntry(id: transcript.count, content: content))
+        var entry = TranscriptEntry(id: transcript.count, content: content)
+        if case .tool = transcript.last?.content {
+            entry.followsTool = true
+        }
+        transcript.append(entry)
     }
 
     /// `0.4s`, `12.3s`, `2m 05s`.

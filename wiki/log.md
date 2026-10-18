@@ -68,3 +68,22 @@ reaching ancestors on an empty `TextField`, and the caret moving to the end
 after outside text changes. `Package.swift` now requires 0.1.1; the gotchas in
 [terminal UI](concepts/terminal-ui.md) say which version fixed what. The model's
 catalogue name is shown without its author prefix (`ModelDescription.displayName`).
+
+## [2026-10-18] update | Terminal UI redesign
+
+The first look was flat and cramped next to current agent CLIs. Redesigned
+after Claude Code and Pi: a header with a pixel-art mascot (a turquoise creature in a turban with a
+gold jewel and cobalt plume; a fez variant is drawn too), user
+messages on a tinted band, replies indented to the message text, the input
+between two rules, and a two-sided status bar. Dropped the ` TAG ` badge, the
+`▰▱` meter and the summary line for turns without tools. Replies now render a
+light Markdown subset (`Markdown.swift`). Palette moved from amber phosphor to
+manuscript gold and İznik turquoise. See [terminal UI](concepts/terminal-ui.md).
+
+## [2026-10-18] update | Mascot
+
+Replaced the star logo with a mascot drawn by `PixelArt` (half blocks, two
+colours per cell): `Mascot.turban` by default, `Mascot.fez` as the alternative.
+Why a character and not a star, and what was dropped, is in
+[terminal UI](concepts/terminal-ui.md#the-mascot).
+

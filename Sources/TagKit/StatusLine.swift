@@ -92,7 +92,7 @@ public struct StatusLine: Sendable, Equatable {
     }
 
     /// `999`, `1.2k`, `64k`, `1.5M`.
-    private static func tokens(_ count: Int) -> String {
+    static func tokens(_ count: Int) -> String {
         if count >= 1_000_000 {
             return scaled(count, by: 1_000_000, suffix: "M")
         }

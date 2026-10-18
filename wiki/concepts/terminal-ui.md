@@ -17,18 +17,43 @@ Stipple, and why the views live in `TagKit`:
 The maintainer's brief: *a simple look that reveals hidden aha moments; retro
 but state of the art.*
 
-- **Simple look.** At rest it is a prompt (`›`) and one status line, nothing
-  else. No help text, no boxes. Lines in the transcript have one accent colour
-  and dim secondary text.
-- **Retro.** One accent colour, amber phosphor (RGB 255,176,0, `Theme.accent`),
-  as on old terminals. A ` TAG ` badge opens the session, a braille spinner
-  shows work, `▰▱` cells show context use.
+- **Simple look.** Modelled on the layout of current agent CLIs (Claude Code,
+  Pi): a header, a transcript with breathing room, the input fenced by two dim
+  rules, and a status bar under it. No help text and no boxes; secondary text
+  is dim.
+- **Retro, with tradition.** Two colours from Ottoman art on top of the
+  terminal's own: the gold of illuminated manuscripts as the accent
+  (`Theme.accent`, RGB 227,179,65) and İznik tile turquoise (`Theme.tile`,
+  RGB 64,184,175) for code. The header has a pixel-art mascot in half blocks
+  (see [the mascot](#the-mascot)), and a braille spinner shows work.
 - **Hidden aha moments.** Features show up when you use them, not before:
   ↑ brings back your last message, typing while the agent works queues the
-  message (`type ahead…`, `N queued`), a slow tool call shows how long it took,
-  each turn ends with what it cost, the context meter warms from green to
-  amber to red, and the status bar narrows with the terminal instead of
-  wrapping.
+  message (`type ahead…`, `N messages queued`), a slow tool call shows how long
+  it took, a turn that ran tools ends with its tool count, time and cost, the
+  context figure turns gold past half and red past 80%, replies render light
+  Markdown, and the status bar narrows with the terminal instead of wrapping.
+
+### The mascot
+
+The header shows a small creature in the spirit of Claude Code's: a turquoise
+body (İznik tile) under a wrapped turban with a gold jewel and a cobalt plume,
+the sorguç of the sultans' turbans ([`Mascot.turban`](../../Sources/TagKit/PixelArt.swift)).
+A fez variant (`Mascot.fez`) is drawn too; swapping is one word in `Banner`.
+
+How it got there: a ` TAG ` badge read as a label, not a mark. An
+eight-pointed star (the Rub el Hizb) came next, but at 8–12 pixels a regular
+star's short points vanish and it reads as a notched square. A character
+reads at any size. Dropped along the way: a moustache (at this size it looks
+like an open mouth) and shaded turban folds (noise). Horizontal wrap bands
+read as cloth.
+
+[`PixelArt`](../../Sources/TagKit/PixelArt.swift) turns a grid of palette
+characters into lines of half blocks. A half block (`▀`, `▄`) is one cell wide
+and half a cell tall, so pixels come out roughly square, and a cell whose two
+pixels differ is a `▀` with the top colour as foreground and the bottom as
+background. Shapes were drafted as plain pixel grids in a browser first: the
+half-block output looks right in a terminal but not in an HTML preview, unless
+each cell is drawn as a two-colour box.
 
 ## Three pieces
 
@@ -92,20 +117,30 @@ Helpers:
 [`ChatView`](../../Sources/TagKit/ChatView.swift):
 
 - `Static(transcript)` writes each finished line once into the terminal's
-  scrollback. User messages sit at the margin after an amber `›`; agent text
-  and tool lines hang two columns in. Tool lines start with an amber `▸`, or
-  a red `✗` when they failed, then the name, the dim summary and the duration.
-  The turn summary is a dim `─` line.
-- The live area: an `ActivityLine` (braille spinner in a `TimelineView` at
-  80 ms, the activity, elapsed time after a second), the `›` prompt with a
-  `TextField` (amber when the agent waits, gray with the placeholder
-  `type ahead…` while busy), then the `StatusBar`.
-- `StatusBar` styles the status line's fields (`StatusLine.folder`,
-  `model.name`, `contextUsage`, `money`) and adds an 8-cell `▰▱` meter from
-  `contextFraction`: green under 50%, amber under 80%, red above. It reads
-  `@Environment(\.terminalSize)` and drops the folder, then the model, then
-  the meter when the line doesn't fit. With messages queued it shows
-  `N queued` in amber.
+  scrollback, inside a one-column margin (`Theme.margin`):
+  - the `Banner`: the mascot, **Tag Agent**, the model with its context window, the
+    folder;
+  - user messages on a full-width tinted band (`Theme.userBand`) after a gold
+    `›`, followed by a blank line;
+  - agent text through [`Markdown`](../../Sources/TagKit/Markdown.swift)
+    (`code` and fenced blocks in turquoise, **bold**, headings bold), indented
+    by `Theme.indent` so it lines up with the text of the message it answers;
+    a reply right after tool calls gets a blank line above it
+    (`TranscriptEntry.followsTool`);
+  - tool lines at the same indent: a gold `▸`, or a red `✗` when they failed,
+    then the name, the dim summary and the duration;
+  - the dim turn summary, only for turns that ran tools.
+- The live area: the `ActivityLine` (braille spinner in a `TimelineView` at
+  80 ms, the activity, elapsed time after a second), a dim rule, the `›`
+  prompt with a `TextField` (gold when the agent waits, gray with the
+  placeholder `type ahead…` while busy), another rule, the `StatusBar`, and a
+  hint line only when there is something to say (`press ctrl-c again to quit`,
+  `N messages queued`).
+- `StatusBar` has two sides: the folder and model on the left, the context
+  (`contextUsage`, with the percentage once half full) and the cost on the
+  right, pushed apart by a `Spacer`. The context is dim, gold past 50% and red
+  past 80%. It reads `@Environment(\.terminalSize)` and drops the folder, then
+  the model, when the line doesn't fit.
 - `.task` runs the agent and calls `exit()` when the loop ends, or
   `exit(throwing:)` with its error.
 
@@ -155,7 +190,11 @@ static helper (`chat()`) that builds everything and runs the view.
   ([ChatViewTests.swift](../../Tests/TagKitTests/ChatViewTests.swift)). Key
   handling can't run there (`renderToString` runs no handlers), so the key
   mapping lives in the pure `PromptKey` type and is tested on its own, as is
-  `StatusBar.fields(for:queued:width:)`.
+  `StatusBar.fields(for:width:)`. `MarkdownTests` covers the Markdown subset and `PixelArtTests` the half-block drawing.
+- Looks are checked by rendering a sample session to ANSI with
+  `renderToString`, converting it to HTML and screenshotting it in a headless
+  browser. Half blocks show gaps there (the browser's line height), unlike in
+  a terminal.
 - Checked by hand in a pseudo-terminal: banner, status bar, spinner, Ctrl-C
   clearing the line and the double Ctrl-C quit.
 
@@ -178,10 +217,10 @@ static helper (`chat()`) that builds everything and runs the view.
   Passing `session.handle` as the old `(String) -> Void` `output` fails to
   compile; see [why the main actor](#why-the-main-actor).
 - **Stipple 0.1.0 always emitted RGB colours as truecolor**, despite its docs,
-  so the amber accent came out wrong on terminals without truecolor. Fixed
+  so the accent colour came out wrong on terminals without truecolor. Fixed
   upstream in 0.1.1: the colour depth is detected like chalk's supports-color
   (`RenderOptions.colorDepth`, `nil` detects) and RGB is downsampled; on a
-  256-colour terminal the amber becomes palette 214. Piped output now has no
+  256-colour terminal it becomes the nearest palette entry. Piped output now has no
   colour unless `FORCE_COLOR` is set.
 - **Ctrl-D on an empty line** was swallowed by Stipple 0.1.0's `TextField`
   (readline's delete-forward). Since 0.1.1 an empty field leaves it unhandled,
