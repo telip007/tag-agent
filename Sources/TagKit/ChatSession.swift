@@ -1,32 +1,6 @@
 public import Observation
 
-/// One finished line of the conversation. Once shown it moves into the
-/// terminal's scrollback and never changes.
-public struct TranscriptEntry: Identifiable, Sendable, Equatable {
-    /// What the line shows.
-    public enum Content: Sendable, Equatable {
-        /// The header at the top of a session.
-        case banner(model: ModelDescription, folder: String)
-        /// A message the user sent.
-        case user(String)
-        /// Text the model wrote.
-        case agent(String)
-        /// A finished tool call: its name, the gist of its arguments, whether
-        /// it failed, and how long it took when that was long enough to notice.
-        case tool(name: String, summary: String, failed: Bool, duration: Duration?)
-        /// The line closing a turn: tools run, time taken, what it cost.
-        case turnSummary(String)
-    }
-
-    /// The entry's position in the transcript.
-    public let id: Int
-    /// What the line shows.
-    public let content: Content
-    /// Whether the line comes right after a tool call, so it needs a gap.
-    public var followsTool = false
-}
-
-/// The state the chat view shows, fed by the ``Agent``'s events, and the
+/// The state the workspace shows, fed by the ``Agent``'s events, and the
 /// hand-off of submitted messages back to the agent.
 ///
 /// The agent reads input with ``nextMessage()``. Messages submitted while it
@@ -37,14 +11,20 @@ public final class ChatSession {
     /// Tool calls quicker than this don't show their duration.
     static let noticeableDuration = Duration.seconds(1)
 
-    /// Everything said so far, oldest first.
-    public private(set) var transcript: [TranscriptEntry] = []
-    /// The latest status line, shown below the input.
+    /// The conversation so far, oldest first.
+    public private(set) var transcript: [TranscriptBlock] = []
+    /// Blocks the user expanded (tool trays, long edits), by id.
+    public private(set) var expanded: Set<Int> = []
+    /// The latest status line: model, context and cost.
     public private(set) var status: StatusLine?
+    /// Files changed this session, in the order first touched.
+    public private(set) var files: [FileChange] = []
     /// What the agent is busy with (`"thinking"`, a tool call), or `nil`.
     public private(set) var activity: String?
     /// When the current ``activity`` started.
     public private(set) var activityStart: ContinuousClock.Instant?
+    /// When the session started, for its running time.
+    public let start: ContinuousClock.Instant
     /// Messages submitted while the agent was busy, oldest first.
     public private(set) var queued: [String] = []
     /// Every message sent, oldest first, for recalling with the arrow keys.
@@ -58,44 +38,52 @@ public final class ChatSession {
     @ObservationIgnored private let now: () -> ContinuousClock.Instant
     private var pendingMessage: CheckedContinuation<String?, Never>?
     @ObservationIgnored private var isEnded = false
-    @ObservationIgnored private var turn: Turn?
-
-    /// What the current turn has done so far, for its summary line.
-    private struct Turn {
-        var start: ContinuousClock.Instant
-        var startCost: Double
-        var tools = 0
-    }
+    /// The tray collecting the current run of tool calls, if one is open.
+    @ObservationIgnored private var openTray: Int?
 
     /// Creates an empty session.
     ///
-    /// - Parameter now: The clock that times turns and tool calls.
+    /// - Parameter now: The clock that times the session and tool calls.
     public init(now: @escaping () -> ContinuousClock.Instant = { ContinuousClock.now }) {
         self.now = now
+        start = now()
+    }
+
+    /// The time since the session started.
+    public var elapsed: Duration {
+        now() - start
     }
 
     /// Updates the state for an event from the agent loop.
     public func handle(_ event: AgentEvent) {
         switch event {
         case .status(let line):
-            if status == nil {
-                append(.banner(model: line.model, folder: line.folder))
-            }
-            finishTurn(cost: line.cost)
             status = line
+            openTray = nil
             setActivity(nil)
         case .thinking:
             setActivity("thinking")
         case .reply(let text):
-            append(.agent(text))
+            openTray = nil
+            append(.reply(text))
         case .toolStarted(let name, let arguments):
+            startTool(name: name, summary: ToolSummary.summarize(arguments))
             setActivity("\(name)  \(ToolSummary.summarize(arguments))")
-        case .toolFinished(let name, let arguments, let failed):
-            let elapsed = activityStart.map { now() - $0 }
-            let duration = elapsed.flatMap { $0 >= Self.noticeableDuration ? $0 : nil }
-            append(.tool(name: name, summary: ToolSummary.summarize(arguments), failed: failed, duration: duration))
-            turn?.tools += 1
+        case .toolFinished(let name, let arguments, let output, let failed):
+            finishTool(output: output, failed: failed)
+            if name == "edit_file", !failed, let edit = FileEdit.from(arguments: arguments) {
+                record(edit)
+            }
             setActivity(nil)
+        }
+    }
+
+    /// Expands a collapsed block or collapses an expanded one.
+    public func toggle(_ id: Int) {
+        if expanded.contains(id) {
+            expanded.remove(id)
+        } else {
+            expanded.insert(id)
         }
     }
 
@@ -142,23 +130,43 @@ public final class ChatSession {
         pendingMessage = nil
     }
 
-    /// Records `text` as sent and starts timing its turn.
+    /// Records `text` as sent.
     private func send(_ text: String) -> String {
+        openTray = nil
         append(.user(text))
-        turn = Turn(start: now(), startCost: status?.cost ?? 0)
         return text
     }
 
-    private func finishTurn(cost: Double) {
-        // Only turns that ran tools get a summary; a plain answer speaks for itself.
-        guard let turn, turn.tools > 0 else {
-            self.turn = nil
+    private func startTool(name: String, summary: String) {
+        let run = ToolRun(name: name, summary: summary, state: .running, output: "")
+        if let openTray, case .tools(let runs) = transcript[openTray].content {
+            transcript[openTray].content = .tools(runs + [run])
+        } else {
+            openTray = transcript.count
+            append(.tools([run]))
+        }
+    }
+
+    private func finishTool(output: String, failed: Bool) {
+        guard let openTray, case .tools(var runs) = transcript[openTray].content, !runs.isEmpty else {
             return
         }
-        self.turn = nil
-        let tools = turn.tools == 1 ? "1 tool" : "\(turn.tools) tools"
-        let parts = [tools, Self.seconds(now() - turn.start), StatusLine.money(cost - turn.startCost)]
-        append(.turnSummary(parts.joined(separator: " · ")))
+        let last = runs.count - 1
+        runs[last].state = failed ? .failed : .succeeded
+        runs[last].output = output
+        runs[last].duration = activityStart.map { now() - $0 }
+        transcript[openTray].content = .tools(runs)
+    }
+
+    private func record(_ edit: FileEdit) {
+        openTray = nil
+        append(.edit(edit))
+        if let index = files.firstIndex(where: { $0.path == edit.path }) {
+            files[index].added += edit.added
+            files[index].removed += edit.removed
+        } else {
+            files.append(FileChange(path: edit.path, added: edit.added, removed: edit.removed))
+        }
     }
 
     private func setActivity(_ text: String?) {
@@ -166,12 +174,8 @@ public final class ChatSession {
         activityStart = text == nil ? nil : now()
     }
 
-    private func append(_ content: TranscriptEntry.Content) {
-        var entry = TranscriptEntry(id: transcript.count, content: content)
-        if case .tool = transcript.last?.content {
-            entry.followsTool = true
-        }
-        transcript.append(entry)
+    private func append(_ content: TranscriptBlock.Content) {
+        transcript.append(TranscriptBlock(id: transcript.count, content: content))
     }
 
     /// `0.4s`, `12.3s`, `2m 05s`.

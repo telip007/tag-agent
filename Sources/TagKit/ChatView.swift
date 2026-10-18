@@ -1,71 +1,89 @@
 public import Stipple
 
-/// The terminal UI: finished lines scroll into the terminal's history, while
-/// a live area below shows what the agent is doing, the input line and the
-/// status bar.
+/// The full-screen workspace: the conversation on the left, the session
+/// panel on the right, the input line and a footer of key hints below.
 ///
-/// It looks like a plain prompt; the rest is found by using it. ↑ and ↓
-/// recall sent messages, typing while the agent works queues the message,
-/// Ctrl-C clears the line and quits when pressed twice, and Ctrl-D on an
-/// empty line quits.
+/// Typing goes to the input line. Esc on an empty line browses past blocks
+/// (↑↓ to move, Enter to expand, c to copy); Ctrl-P opens the command
+/// palette; Tab shows or hides the panel. ↑/↓ recall sent messages, typing
+/// while the agent works queues the message, Ctrl-C clears the line and quits
+/// when pressed twice, and Ctrl-D on an empty line quits.
 ///
 /// The view starts the agent when it appears and exits the app when the
 /// agent's loop ends, rethrowing its error.
 public struct ChatView: View {
     /// How long a first Ctrl-C on an empty line waits for the second.
     static let quitWindow = Duration.seconds(2)
+    /// Narrower terminals hide the session panel.
+    static let panelMinimumWidth = 90
 
-    /// The options to run the view with: Ctrl-C is the view's to handle.
+    /// The options to run the view with: full screen, and Ctrl-C is the
+    /// view's to handle.
     public static var renderOptions: RenderOptions {
         var options = RenderOptions()
         options.exitOnCtrlC = false
+        options.alternateScreen = true
         return options
     }
 
     let session: ChatSession
     let agent: Agent
+    let copy: @MainActor (String) -> Void
 
     @State private var input = ""
     @State private var history = InputHistory()
     @State private var isQuitArmed = false
+    @State private var browsing: Int?
+    @State private var isPanelShown = true
+    @State private var isPaletteOpen = false
+    @State private var paletteSelection: PaletteCommand?
     @FocusState private var isInputFocused = true
     @Environment(\.exit) private var exit
+    @Environment(\.terminalSize) private var terminalSize
 
     /// Creates the view for `agent`, whose events and input go through `session`.
-    public init(session: ChatSession, agent: Agent) {
+    ///
+    /// - Parameters:
+    ///   - session: The state the view shows and the hand-off of input.
+    ///   - agent: The agent loop the view starts.
+    ///   - copy: Puts text on the clipboard; defaults to the terminal's
+    ///     clipboard escape (OSC 52).
+    public init(session: ChatSession, agent: Agent, copy: @escaping @MainActor (String) -> Void = Clipboard.copy) {
         self.session = session
         self.agent = agent
+        self.copy = copy
     }
 
-    /// The transcript, the live area and the status bar.
+    /// The panes, the input line and the footer.
     public var body: some View {
         VStack(alignment: .leading) {
-            Static(session.transcript) { entry in
-                TranscriptLine(entry: entry)
+            HStack(alignment: .top) {
+                TranscriptPane(session: session, selected: browsing)
+                    .pane(title: "tag", isActive: browsing != nil)
+                if isPanelShown, terminalSize.width >= Self.panelMinimumWidth {
+                    SessionPanel(session: session)
+                        .pane(title: "session", isActive: false)
+                        .frame(width: SessionPanel.width + 4)
+                }
             }
-            VStack(alignment: .leading) {
-                if let activity = session.activity, let start = session.activityStart {
-                    ActivityLine(text: activity, start: start)
-                }
-                Divider().foregroundStyle(Theme.rule)
-                HStack {
-                    Text("› ").foregroundStyle(session.isWaitingForInput ? Theme.accent : Theme.rule)
-                    TextField(session.isWaitingForInput ? "" : "type ahead…", text: $input)
-                        .focused($isInputFocused)
-                }
-                .padding(.horizontal, 1)
-                Divider().foregroundStyle(Theme.rule)
-                VStack(alignment: .leading) {
-                    if let status = session.status {
-                        StatusBar(status: status)
-                    }
-                    if let hint {
-                        Text(hint).foregroundStyle(Theme.accent)
-                    }
-                }
-                .padding(.horizontal, 1)
+            .frame(maxHeight: .infinity)
+            HStack {
+                Text("› ").foregroundStyle(session.isWaitingForInput ? Theme.accent : Theme.rule)
+                TextField(session.isWaitingForInput ? "ask anything" : "type ahead…", text: $input)
+                    .focused($isInputFocused)
             }
-            .padding(.horizontal, Theme.margin)
+            .padding(.horizontal, 1)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .border(.rounded, color: session.isWaitingForInput && browsing == nil ? Theme.accent : Theme.rule)
+            Footer(session: session, hint: hint)
+        }
+        .overlay {
+            if isPaletteOpen {
+                CommandPalette(selection: $paletteSelection) { command in
+                    isPaletteOpen = false
+                    run(command)
+                }
+            }
         }
         .onSubmit {
             if session.submit(input) {
@@ -95,17 +113,26 @@ public struct ChatView: View {
         }
     }
 
-    /// A line under the status bar, only while there is something to say.
-    private var hint: String? {
+    /// What the footer's left side says: a pending quit, the browse keys, or
+    /// the everyday ones.
+    private var hint: Footer.Hint {
         if isQuitArmed {
-            return "press ctrl-c again to quit"
+            return .warning("press ctrl-c again to quit")
         }
-        let queued = session.queued.count
-        return queued == 0 ? nil : queued == 1 ? "1 message queued" : "\(queued) messages queued"
+        if browsing != nil {
+            return .keys([("↑↓", "move"), ("⏎", "expand"), ("c", "copy"), ("esc", "back")])
+        }
+        return .keys([("esc", "browse"), ("^p", "commands"), ("tab", "panel")])
     }
 
-    /// The keys the text field leaves alone: history, Ctrl-C and Ctrl-D.
+    /// Keys the text field leaves alone.
     private func handle(_ press: KeyPress) -> KeyPress.Result {
+        if isPaletteOpen {
+            return handlePalette(press)
+        }
+        if let selected = browsing {
+            return handleBrowsing(press, selected: selected)
+        }
         switch PromptKey(press, inputIsEmpty: input.isEmpty) {
         case .interrupt:
             interrupt()
@@ -115,10 +142,65 @@ public struct ChatView: View {
             input = history.older(in: session.history, current: input) ?? input
         case .newer:
             input = history.newer(in: session.history) ?? input
+        case .browse:
+            browsing = session.transcript.last?.id
+            if browsing == nil {
+                isInputFocused = true
+            }
+        case .palette:
+            isPaletteOpen = true
+        case .togglePanel:
+            isPanelShown.toggle()
         case nil:
             return .ignored
         }
         return .handled
+    }
+
+    private func handleBrowsing(_ press: KeyPress, selected: Int) -> KeyPress.Result {
+        switch BrowseKey(press) {
+        case .previous:
+            browsing = max(0, selected - 1)
+        case .next:
+            browsing = min(session.transcript.count - 1, selected + 1)
+        case .toggle:
+            session.toggle(selected)
+        case .copy:
+            copy(session.transcript[selected].plainText)
+        case .leave, nil:
+            browsing = nil
+            isInputFocused = true
+            if let typed = press.typedText {
+                input += typed
+            }
+        }
+        return .handled
+    }
+
+    private func handlePalette(_ press: KeyPress) -> KeyPress.Result {
+        guard press.key == .escape else {
+            return .ignored
+        }
+        isPaletteOpen = false
+        isInputFocused = true
+        return .handled
+    }
+
+    private func run(_ command: PaletteCommand) {
+        isInputFocused = true
+        switch command {
+        case .togglePanel:
+            isPanelShown.toggle()
+        case .copyLastReply:
+            let reply = session.transcript.last { if case .reply = $0.content { true } else { false } }
+            if let reply {
+                copy(reply.plainText)
+            }
+        case .browse:
+            browsing = session.transcript.last?.id
+        case .quit:
+            exit()
+        }
     }
 
     /// Ctrl-C clears the line; on an empty line, a second press quits.
@@ -127,7 +209,6 @@ public struct ChatView: View {
             input = ""
             history.reset()
         } else if isQuitArmed {
-            // Leaves the status bar, not the hint, in the final frame.
             isQuitArmed = false
             exit()
         } else {
@@ -146,190 +227,77 @@ enum PromptKey: Equatable {
     case older
     /// ↓: a newer message, or back to the line being typed.
     case newer
+    /// Esc on an empty line: browse past blocks.
+    case browse
+    /// Ctrl-P: the command palette.
+    case palette
+    /// Tab: show or hide the session panel.
+    case togglePanel
 
     init?(_ press: KeyPress, inputIsEmpty: Bool) {
         guard press.phase != .up else {
             return nil
         }
-        let modifiers = press.modifiers.subtracting([.capsLock, .numLock])
-        switch (press.key, modifiers) {
+        switch (press.key, press.modifiers.subtracting([.capsLock, .numLock])) {
         case ("c", .control):
             self = .interrupt
         case ("d", .control) where inputIsEmpty:
             self = .endOfInput
+        case ("p", .control):
+            self = .palette
         case (.upArrow, []):
             self = .older
         case (.downArrow, []):
             self = .newer
+        case (.escape, []) where inputIsEmpty:
+            self = .browse
+        case (.tab, []):
+            self = .togglePanel
         default:
             return nil
         }
     }
 }
 
-/// The look: the terminal's own colours with two from Ottoman art — the gold
-/// of illuminated manuscripts as the accent and İznik tile turquoise for
-/// code — dim rules, and one tinted band for the user's messages.
-enum Theme {
-    static let accent = Color(red: 227, green: 179, blue: 65)
-    static let tile = Color(red: 64, green: 184, blue: 175)
-    static let rule = Color.gray
-    static let userBand = Color(red: 58, green: 62, blue: 80)
-    /// Columns kept free on the left and right.
-    static let margin = 1
-    /// Where text starts inside the margin: after a band's padding and the `› ` prompt,
-    /// so replies line up with the message they answer.
-    static let indent = 3
-}
+/// What a key press means while browsing past blocks.
+enum BrowseKey: Equatable {
+    case previous
+    case next
+    case toggle
+    case copy
+    /// Back to the input line; a typed character goes into it.
+    case leave
 
-/// One transcript entry. The user's messages sit on a tinted band; agent
-/// text and tool calls are indented under them.
-struct TranscriptLine: View {
-    let entry: TranscriptEntry
-
-    var body: some View {
-        content.padding(.horizontal, Theme.margin)
-    }
-
-    @ViewBuilder private var content: some View {
-        switch entry.content {
-        case .banner(let model, let folder):
-            Banner(model: model, folder: folder).padding(.leading, 1)
-        case .user(let text):
-            (Text("› ").foregroundStyle(Theme.accent) + Text(text))
-                .padding(.horizontal, 1)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Theme.userBand)
-                .padding(.bottom, 1)
-        case .agent(let text):
-            Markdown.text(text)
-                .padding(.leading, Theme.indent)
-                .padding(.top, entry.followsTool ? 1 : 0)
-                .padding(.bottom, 1)
-        case .tool(let name, let summary, let failed, let duration):
-            (Text(failed ? "✗ " : "▸ ").foregroundStyle(failed ? .red : Theme.accent)
-                + Text(name)
-                + Text(summary.isEmpty ? "" : "  \(summary)").dim()
-                + Text(duration.map { "  \(ChatSession.seconds($0))" } ?? "").foregroundStyle(Theme.accent))
-                .padding(.leading, Theme.indent)
-        case .turnSummary(let text):
-            Text(text).dim().padding(.leading, Theme.indent).padding(.bottom, 1)
+    init?(_ press: KeyPress) {
+        guard press.phase != .up else {
+            return nil
+        }
+        switch (press.key, press.modifiers.subtracting([.capsLock, .numLock])) {
+        case (.upArrow, []), ("k", []):
+            self = .previous
+        case (.downArrow, []), ("j", []):
+            self = .next
+        case (.return, []), (.space, []):
+            self = .toggle
+        case ("c", []), ("y", []):
+            self = .copy
+        case (.escape, _), (.character, _):
+            self = .leave
+        default:
+            return nil
         }
     }
 }
 
-/// The header at the top of a session: the mascot, and what is running where.
-struct Banner: View {
-    let model: ModelDescription
-    let folder: String
-
-    var body: some View {
-        HStack(alignment: .center, spacing: 3) {
-            VStack(alignment: .leading) {
-                ForEach(Array(Mascot.turban.lines.enumerated()), id: \.offset) { $0.element }
-            }
-            VStack(alignment: .leading) {
-                Text("Tag Agent").bold()
-                Text(model.contextLength.map { "\(model.name) · \(StatusLine.tokens($0)) context" } ?? model.name).dim()
-                Text(folder).dim()
-            }
+extension KeyPress {
+    /// The text a press types, if it types any: a plain character without
+    /// Control, Option or Command.
+    var typedText: String? {
+        guard case .character(let character) = key,
+            modifiers.isDisjoint(with: [.control, .option, .command])
+        else {
+            return nil
         }
-        .padding(.vertical, 1)
-    }
-}
-
-/// A spinner with what the agent is doing, and for how long once it's been
-/// more than a second.
-struct ActivityLine: View {
-    static let frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
-
-    let text: String
-    let start: ContinuousClock.Instant
-
-    var body: some View {
-        TimelineView(.periodic(every: .milliseconds(80))) { context in
-            let elapsed = ContinuousClock.now - start
-            Text("\(Self.frames[context.frame % Self.frames.count]) ").foregroundStyle(Theme.accent)
-                + Text(text).dim()
-                + Text(elapsed >= ChatSession.noticeableDuration ? "  \(ChatSession.seconds(elapsed))" : "").dim()
-        }
-        .padding(.leading, Theme.indent)
-    }
-}
-
-/// The status line under the input: where and with what on the left, how
-/// full the context is and what it cost on the right. The context turns amber
-/// past half and red past 80%, and the left side gives way on narrow
-/// terminals: the folder goes first, then the model.
-struct StatusBar: View {
-    /// What the bar can show.
-    enum Field: Equatable {
-        case folder, model, context, cost
-    }
-
-    static let separator = " · "
-    /// The least space kept between the two sides.
-    static let gap = 2
-
-    let status: StatusLine
-    @Environment(\.terminalSize) private var terminalSize
-
-    var body: some View {
-        let fields = Self.fields(for: status, width: terminalSize.width - 2 * Theme.margin - 2)
-        HStack {
-            joined(fields.filter { $0 == .folder || $0 == .model }.map(text))
-            Spacer(minLength: Self.gap)
-            joined([text(.context), text(.cost)])
-        }
-    }
-
-    /// The fields that fit in `width` columns, dropping the folder first,
-    /// then the model.
-    static func fields(for status: StatusLine, width: Int) -> [Field] {
-        var fields: [Field] = [.folder, .model, .context, .cost]
-        for dropped in [Field.folder, .model] where width < self.width(of: fields, status) {
-            fields.removeAll { $0 == dropped }
-        }
-        return fields
-    }
-
-    private static func width(of fields: [Field], _ status: StatusLine) -> Int {
-        let left = fields.filter { $0 == .folder || $0 == .model }
-        let right = fields.filter { $0 == .context || $0 == .cost }
-        func length(_ side: [Field]) -> Int {
-            side.map { plain($0, status).count }.reduce(0, +) + separator.count * max(0, side.count - 1)
-        }
-        return length(left) + gap + length(right)
-    }
-
-    static func plain(_ field: Field, _ status: StatusLine) -> String {
-        switch field {
-        case .folder: status.folder
-        case .model: status.model.name
-        case .context: contextText(status)
-        case .cost: status.money
-        }
-    }
-
-    /// `831/1M`, with the percentage once the window is half full.
-    private static func contextText(_ status: StatusLine) -> String {
-        guard let fraction = status.contextFraction, fraction >= 0.5 else {
-            return status.contextUsage
-        }
-        return "\(status.contextUsage) (\(Int((fraction * 100).rounded()))%)"
-    }
-
-    private func text(_ field: Field) -> Text {
-        let text = Text(Self.plain(field, status))
-        guard field == .context, let fraction = status.contextFraction, fraction >= 0.5 else {
-            return text.foregroundStyle(Theme.rule)
-        }
-        return text.foregroundStyle(fraction < 0.8 ? Theme.accent : .red)
-    }
-
-    private func joined(_ texts: [Text]) -> Text {
-        texts.enumerated().reduce(Text("")) { line, item in
-            item.offset == 0 ? item.element : line + Text(Self.separator).foregroundStyle(Theme.rule) + item.element
-        }
+        return characters.isEmpty ? String(character) : characters
     }
 }

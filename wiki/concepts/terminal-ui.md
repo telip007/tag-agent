@@ -1,6 +1,6 @@
 ---
 title: Terminal UI
-summary: How the chat UI is built on Stipple: the design intent, the agent's event seam, the observable session, the view and its hidden keys, why it runs on the main actor, and how it is tested.
+summary: How the full-screen workspace is built on Stipple: the design history, the agent's event seam, the observable session and its blocks, the panes and keys, why it runs on the main actor, and how it is tested.
 updated: 2026-10-18
 ---
 
@@ -12,48 +12,46 @@ wrote raw ANSI escapes with `print` and read lines with `readLine`. Why
 Stipple, and why the views live in `TagKit`:
 [0008](../decisions/0008-stipple-terminal-ui.md).
 
-## Design intent
+## Design
 
-The maintainer's brief: *a simple look that reveals hidden aha moments; retro
-but state of the art.*
+The UI is a full-screen workspace (alternate screen): the conversation in a
+pane on the left, a **session** panel on the right, a boxed input below, and a
+footer with key hints and the agent's current activity.
 
-- **Simple look.** Modelled on the layout of current agent CLIs (Claude Code,
-  Pi): a header, a transcript with breathing room, the input fenced by two dim
-  rules, and a status bar under it. No help text and no boxes; secondary text
-  is dim.
-- **Retro, with tradition.** Two colours from Ottoman art on top of the
-  terminal's own: the gold of illuminated manuscripts as the accent
-  (`Theme.accent`, RGB 227,179,65) and İznik tile turquoise (`Theme.tile`,
-  RGB 64,184,175) for code. The header has a pixel-art mascot in half blocks
-  (see [the mascot](#the-mascot)), and a braille spinner shows work.
-- **Hidden aha moments.** Features show up when you use them, not before:
-  ↑ brings back your last message, typing while the agent works queues the
-  message (`type ahead…`, `N messages queued`), a slow tool call shows how long
-  it took, a turn that ran tools ends with its tool count, time and cost, the
-  context figure turns gold past half and red past 80%, replies render light
-  Markdown, and the status bar narrows with the terminal instead of wrapping.
+```text
+╭─ tag ──────────────────────────────╮╭─ session ──────────╮
+│ ▌ fix the failing parser test      ││ DeepSeek V4.1 Flash│
+│                                    ││ ━━━━━━━━━━━━━  12% │
+│   Looking at it.                   ││ 124k/1M tokens     │
+│   ▸ 3 tools · 4.2s  search · read  ││ $0.0031 · 4m 12s   │
+│   ┌ Sources/Parser.swift ── +2 −1 ┐ ││ files              │
+│   │ - let flag = "--verbose"      │ ││ Parser.swift +2 −1 │
+│   └───────────────────────────────┘ ││                    │
+╰────────────────────────────────────╯╰────────────────────╯
+╭──────────────────────────────────────────────────────────╮
+│ › ask anything                                           │
+╰──────────────────────────────────────────────────────────╯
+ esc browse · ^p commands · tab panel        ⠋ bash  swift test
+```
 
-### The mascot
+How it got here (all on 2026-10-18), so the next redesign doesn't repeat it:
 
-The header shows a small creature in the spirit of Claude Code's: a turquoise
-body (İznik tile) under a wrapped turban with a gold jewel and a cobalt plume,
-the sorguç of the sultans' turbans ([`Mascot.turban`](../../Sources/TagKit/PixelArt.swift)).
-A fez variant (`Mascot.fez`) is drawn too; swapping is one word in `Banner`.
+1. A plain inline REPL with an amber accent and a ` TAG ` badge: flat and
+   cramped next to current agent CLIs.
+2. A copy of Claude Code's layout (header, rules around the input, a status
+   bar) with a pixel mascot: rejected as a copy, and the mascot, Claude's body
+   in a hat, as too similar to Claude's.
+3. Three sketched directions themed on Islamic and Ottoman terms: rejected.
+   Names in the UI are plain words; theming by vocabulary reads as a gimmick.
+4. Research into 2026 agent CLIs: they are full-screen apps, not REPLs. Amp
+   went fullscreen with mouse support, overlays and clickable buttons; Toad
+   redraws only what changed and lets you interact with past output; Crush has
+   a split-pane layout and a diff view; Warp groups output into blocks. Of
+   three full-screen sketches, the workspace with a side panel was chosen.
 
-How it got there: a ` TAG ` badge read as a label, not a mark. An
-eight-pointed star (the Rub el Hizb) came next, but at 8–12 pixels a regular
-star's short points vanish and it reads as a notched square. A character
-reads at any size. Dropped along the way: a moustache (at this size it looks
-like an open mouth) and shaded turban folds (noise). Horizontal wrap bands
-read as cloth.
-
-[`PixelArt`](../../Sources/TagKit/PixelArt.swift) turns a grid of palette
-characters into lines of half blocks. A half block (`▀`, `▄`) is one cell wide
-and half a cell tall, so pixels come out roughly square, and a cell whose two
-pixels differ is a `▀` with the top colour as foreground and the bottom as
-background. Shapes were drafted as plain pixel grids in a browser first: the
-half-block output looks right in a terminal but not in an HTML preview, unless
-each cell is drawn as a two-colour box.
+What stayed from the earlier rounds: the gold accent (`Theme.accent`),
+turquoise for code (`Theme.tile`), light Markdown in replies, type-ahead,
+input history, the double Ctrl-C quit and tool summaries.
 
 ## Three pieces
 
@@ -73,76 +71,64 @@ Agent ──AgentEvent──▶ ChatSession ──observed by──▶ ChatView
 - `.thinking` before each model call,
 - `.reply(String)` for the model's text,
 - `.toolStarted(name:arguments:)` before a tool runs, and
-  `.toolFinished(name:arguments:failed:)` after it; `failed` is set for an
-  unknown tool or a thrown error.
+  `.toolFinished(name:arguments:output:failed:)` after it, with what the model
+  sees; `failed` is set for an unknown tool or a thrown error.
 
 ### ChatSession: the state
 
 [`ChatSession`](../../Sources/TagKit/ChatSession.swift) is a
 `@MainActor @Observable` class. `handle(_:)` turns events into:
 
-- `transcript`, finished `TranscriptEntry`s whose `content` is one of:
-  - `banner(model:folder:)`, added on the first status,
-  - `user`, `agent`,
-  - `tool(name:summary:failed:duration:)`, where `duration` is only set when
-    the call took at least a second (`noticeableDuration`),
-  - `turnSummary`, added when the next status ends a turn:
-    `2 tools · 4.1s · $0.0031` (tool count, wall time, cost of that turn).
-- `status`, the latest `StatusLine`.
-- `activity` and `activityStart` (`"thinking"`, or the tool name and its
-  summary), which drive the spinner and its elapsed time.
-- `queued` and `history`.
+- `transcript`, [`TranscriptBlock`](../../Sources/TagKit/Transcript.swift)s
+  whose `content` is `user`, `reply`, `tools([ToolRun])` or `edit(FileEdit)`.
+  Blocks can change after they appear: tool calls between two replies share
+  one tray, which grows while the agent works; each `ToolRun` goes from
+  `running` to `succeeded` or `failed` with its duration and output.
+- `edit` blocks: a successful `edit_file` call becomes a `FileEdit`, its
+  `old_str` against its `new_str` with the lines they share at both ends
+  trimmed, so a one-line change in a long snippet shows as one line.
+- `files`, lines added and removed per file over the session, for the panel.
+- `expanded`, the blocks the user opened (`toggle(_:)`).
+- `status`, `activity`/`activityStart`, `start`/`elapsed`, `queued`, `history`.
 
 Input: `submit(_:)` ignores blank text, records the message in `history`, and
 either resumes the waiting `nextMessage()` or appends to `queued` while the
 agent is busy (type-ahead). `nextMessage()` takes queued messages first, then
 suspends on a `CheckedContinuation` until `submit`, `end()` or cancellation.
-A message enters the transcript when the agent takes it, not when typed.
 
-The clock is injected (`ChatSession(now:)`) so tests can time turns and tool
-calls deterministically.
+The clock is injected (`ChatSession(now:)`) so tests can time tools and the
+session deterministically. Helpers:
+[`ToolSummary`](../../Sources/TagKit/ToolSummary.swift) (the gist of a call's
+arguments) and [`InputHistory`](../../Sources/TagKit/InputHistory.swift)
+(shell-style ↑/↓).
 
-Helpers:
+### ChatView: the workspace
 
-- [`ToolSummary`](../../Sources/TagKit/ToolSummary.swift) shows the gist of a
-  call's JSON arguments: the `command`, `path` or `pattern` value (else the
-  first string value), newlines as ` ⏎ `, at most 60 characters. `swift build`
-  instead of `{"command":"swift build"}`.
-- [`InputHistory`](../../Sources/TagKit/InputHistory.swift) walks `history`
-  shell-style: the first ↑ saves the line being typed, ↓ past the newest
-  message restores it.
+[`ChatView`](../../Sources/TagKit/ChatView.swift) holds the layout and the key
+handling; the parts are in
+[`WorkspaceParts.swift`](../../Sources/TagKit/WorkspaceParts.swift):
 
-### ChatView: the look
-
-[`ChatView`](../../Sources/TagKit/ChatView.swift):
-
-- `Static(transcript)` writes each finished line once into the terminal's
-  scrollback, inside a one-column margin (`Theme.margin`):
-  - the `Banner`: the mascot, **Tag Agent**, the model with its context window, the
-    folder;
-  - user messages on a full-width tinted band (`Theme.userBand`) after a gold
-    `›`, followed by a blank line;
-  - agent text through [`Markdown`](../../Sources/TagKit/Markdown.swift)
-    (`code` and fenced blocks in turquoise, **bold**, headings bold), indented
-    by `Theme.indent` so it lines up with the text of the message it answers;
-    a reply right after tool calls gets a blank line above it
-    (`TranscriptEntry.followsTool`);
-  - tool lines at the same indent: a gold `▸`, or a red `✗` when they failed,
-    then the name, the dim summary and the duration;
-  - the dim turn summary, only for turns that ran tools.
-- The live area: the `ActivityLine` (braille spinner in a `TimelineView` at
-  80 ms, the activity, elapsed time after a second), a dim rule, the `›`
-  prompt with a `TextField` (gold when the agent waits, gray with the
-  placeholder `type ahead…` while busy), another rule, the `StatusBar`, and a
-  hint line only when there is something to say (`press ctrl-c again to quit`,
-  `N messages queued`).
-- `StatusBar` has two sides: the folder and model on the left, the context
-  (`contextUsage`, with the percentage once half full) and the cost on the
-  right, pushed apart by a `Spacer`. The context is dim, gold past 50% and red
-  past 80%. It reads `@Environment(\.terminalSize)` and drops the folder, then
-  the model, when the line doesn't fit.
-- `.task` runs the agent and calls `exit()` when the loop ends, or
-  `exit(throwing:)` with its error.
+- `pane(title:isActive:)`: a rounded border with the title set into its top
+  edge (an `overlay` at `.topLeading`); gold while active.
+- `TranscriptPane`: the blocks, bottom-aligned and clipped, so the newest are
+  always in view. `BlockView` draws each: user messages bold after a gold `▌`;
+  replies through [`Markdown`](../../Sources/TagKit/Markdown.swift);
+  `ToolTray`, one summary line (`▸ 3 tools · 4.2s  read_file · bash`, the `▸`
+  red if one failed) that lists every call while running or when expanded,
+  with the first six lines of each output; `EditCard`, a bordered diff with
+  the path and `+n −m` in its top edge, the first eight lines until expanded.
+  The block selected in browse mode gets a tinted background.
+- `SessionPanel` (30 columns, hidden below 90): the model, the folder, a
+  context gauge (`━`, turquoise, gold past 50%, red past 80%), tokens, cost and
+  session time, the files changed and the queued messages.
+- The input: a rounded box, gold while the agent waits (`ask anything`), gray
+  while it works (`type ahead…`).
+- `Footer`: key hints, or a warning (`press ctrl-c again to quit`), on the
+  left; the spinner with the current activity and its time on the right.
+- `CommandPalette`: an overlay with a `SelectionList` of `PaletteCommand`s.
+- Copy uses OSC 52 (`Clipboard`), which works over SSH and is ignored by
+  terminals without it; the view takes a `copy` closure so tests don't write to
+  stdout.
 
 ### Keys
 
@@ -150,12 +136,18 @@ Helpers:
 | --- | --- |
 | Enter | send, or queue while the agent works |
 | ↑ / ↓ | previous / next sent message; ↓ past the newest restores the draft |
+| Esc | on an empty line: browse the conversation |
+| ↑↓ or j/k, Enter, c | while browsing: move, expand or collapse, copy; Esc or typing goes back |
+| Ctrl-P | command palette |
+| Tab | show or hide the session panel |
 | Ctrl-C | clear the line; on an empty line, press again within 2 s to quit |
 | Ctrl-D | quit, on an empty line |
 
-`ChatView.renderOptions` turns off Stipple's `exitOnCtrlC`, so Ctrl-C reaches
-the view's `onKeyPress`. Arrow keys and Ctrl-D are handled there too, because
-the `TextField` leaves them unhandled.
+`ChatView.renderOptions` turns on the alternate screen and turns off Stipple's
+`exitOnCtrlC`, so Ctrl-C reaches the view's `onKeyPress`. The keys the
+`TextField` leaves alone are mapped by the pure `PromptKey` and `BrowseKey`
+types. Tab also moves Stipple's focus, harmlessly: the input is the only
+focusable view.
 
 [Tag.swift](../../Sources/Tag/Tag.swift) wires everything up: a
 `ChatSession`, an `Agent` with `output: session.handle` and
@@ -178,28 +170,26 @@ static helper (`chat()`) that builds everything and runs the view.
 ## Testing
 
 - The agent loop is tested by collecting `AgentEvent`s from a scripted model
-  ([AgentTests.swift](../../Tests/TagKitTests/AgentTests.swift)); no terminal
-  is involved.
-- `ChatSession` is tested directly with an injected clock: feed events, call
-  `submit`/`end`, check the transcript, the queue and what `nextMessage()`
-  returns ([ChatSessionTests.swift](../../Tests/TagKitTests/ChatSessionTests.swift)).
-- `ToolSummary` and `InputHistory` are plain functions and are tested as such
-  ([PromptHelpersTests.swift](../../Tests/TagKitTests/PromptHelpersTests.swift)).
-- Views are rendered to a string with `Stipple.renderToString`, the ANSI
-  codes stripped, and compared as text, without a TTY
+  ([AgentTests.swift](../../Tests/TagKitTests/AgentTests.swift)).
+- `ChatSession` and `FileEdit` are tested directly with an injected clock
+  ([ChatSessionTests.swift](../../Tests/TagKitTests/ChatSessionTests.swift)).
+- `ToolSummary` and `InputHistory`:
+  [PromptHelpersTests.swift](../../Tests/TagKitTests/PromptHelpersTests.swift).
+- Views are rendered with `Stipple.renderToString`, the ANSI codes stripped,
+  and compared as text; the whole workspace is rendered at a fixed size with
+  `.frame(height:)` and a `terminalSize` environment
   ([ChatViewTests.swift](../../Tests/TagKitTests/ChatViewTests.swift)). Key
-  handling can't run there (`renderToString` runs no handlers), so the key
-  mapping lives in the pure `PromptKey` type and is tested on its own, as is
-  `StatusBar.fields(for:width:)`. `MarkdownTests` covers the Markdown subset and `PixelArtTests` the half-block drawing.
-- Looks are checked by rendering a sample session to ANSI with
-  `renderToString`, converting it to HTML and screenshotting it in a headless
-  browser. Half blocks show gaps there (the browser's line height), unlike in
-  a terminal.
-- Checked by hand in a pseudo-terminal: banner, status bar, spinner, Ctrl-C
-  clearing the line and the double Ctrl-C quit.
+  handling can't run there, so the key maps are tested on their own.
+- Looks are checked by rendering a sample session to ANSI, converting it to
+  HTML and screenshotting it in a headless browser. Half blocks and some box
+  characters render with gaps there, unlike in a terminal.
 
 ## Limitations
 
+- **The transcript doesn't scroll yet.** It shows the newest blocks that fit;
+  a `ScrollView` with mouse-wheel support is being added to Stipple.
+- **The alternate screen hides the conversation on exit**, as in other
+  full-screen tools.
 - **No piped input.** Input comes from Stipple's raw-mode keyboard handling,
   so `echo "hi" | swift run Tag`, which `readLine` allowed, no longer works. A
   non-interactive mode would need its own input path.

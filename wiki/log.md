@@ -87,3 +87,15 @@ colours per cell): `Mascot.turban` by default, `Mascot.fez` as the alternative.
 Why a character and not a star, and what was dropped, is in
 [terminal UI](concepts/terminal-ui.md#the-mascot).
 
+## [2026-10-18] update | Full-screen workspace
+
+The second redesign was rejected as a copy of Claude Code, and so was its
+mascot. Rebuilt as a full-screen workspace after researching 2026 agent CLIs:
+the conversation pane, a session panel (model, context gauge, cost, time,
+files changed), a boxed input and a footer of key hints. Transcript blocks
+replace lines: tool trays that grow and collapse, diff cards from `edit_file`
+calls. Browse mode (Esc), a command palette (Ctrl-P), a panel toggle (Tab) and
+OSC 52 copy. Tool output now travels in `.toolFinished`. Removed the mascot
+and `PixelArt`. The design history is in
+[terminal UI](concepts/terminal-ui.md#design).
+

@@ -39,27 +39,19 @@ submodule in `Packages/OpenRouter`).
 
 ## The terminal UI
 
-The chat runs in the terminal with
-[Stipple](https://github.com/telip007/stipple). A small header names the model
-and folder; your messages sit on a tinted band, replies and tool calls (with
-their key argument, and their time when slow) are indented under them, and
-everything scrolls into your terminal's history. Below the input, one status
-line shows the folder and model on the left, and how much of the context window
-is used and what the session has cost on the right. The context figure turns
-gold past half and red past 80%; narrow terminals drop the folder, then the
-model.
-
-```text
- ────────────────────────────────────────────────────────────────────────
-  ›
- ────────────────────────────────────────────────────────────────────────
-  ~/developer/tag · DeepSeek V4.1 Flash                 12.3k/200k · $0.0012
-```
+Tag runs full screen, with [Stipple](https://github.com/telip007/stipple). The
+conversation fills the left pane: your messages, replies, tool calls grouped
+into trays you can expand, and every file edit as a small diff. The panel on
+the right shows the model, how full its context window is, what the session
+has cost, how long it has run, and which files changed.
 
 | Key | What |
 | --- | --- |
 | Enter | send; while the agent works, queue the message (type-ahead) |
 | ↑ / ↓ | recall sent messages; ↓ past the newest restores your draft |
+| Esc | browse the conversation: ↑↓ to move, Enter to expand, c to copy |
+| Ctrl-P | command palette |
+| Tab | show or hide the session panel |
 | Ctrl-C | clear the line; on an empty line, press twice to quit |
 | Ctrl-D | quit, on an empty line |
 

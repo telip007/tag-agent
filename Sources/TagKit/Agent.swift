@@ -11,8 +11,9 @@ public enum AgentEvent: Sendable, Equatable {
     case reply(String)
     /// A tool started running, with the raw JSON arguments the model sent.
     case toolStarted(name: String, arguments: String)
-    /// The tool finished; `failed` when it was unknown or threw.
-    case toolFinished(name: String, arguments: String, failed: Bool)
+    /// The tool finished with `output`, what the model sees; `failed` when
+    /// the tool was unknown or threw.
+    case toolFinished(name: String, arguments: String, output: String, failed: Bool)
 }
 
 /// The agent loop: chat with the user and run the tools the model calls.
@@ -130,7 +131,7 @@ public struct Agent {
         let (name, arguments) = (call.function.name, call.function.arguments)
         output(.toolStarted(name: name, arguments: arguments))
         let result = await result(of: call)
-        output(.toolFinished(name: name, arguments: arguments, failed: result.failed))
+        output(.toolFinished(name: name, arguments: arguments, output: result.content, failed: result.failed))
         return result.content
     }
 

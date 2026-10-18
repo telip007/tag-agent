@@ -23,6 +23,13 @@ func status(cost: Double = 0, tokens: Int = 0) -> StatusLine {
     )
 }
 
+/// `edit_file` arguments replacing `old` with `new` in `path`.
+func editArguments(_ path: String, _ old: String, _ new: String) -> String {
+    let object = ["path": path, "old_str": old, "new_str": new]
+    let data = (try? JSONSerialization.data(withJSONObject: object)) ?? Data()
+    return String(bytes: data, encoding: .utf8) ?? ""
+}
+
 @MainActor
 struct ChatSessionTests {
     let clock = ManualClock()
@@ -40,15 +47,15 @@ struct ChatSessionTests {
         }
     }
 
-    @Test func firstStatusAddsTheBanner() {
-        session.handle(.status(status()))
-        session.handle(.status(status()))
+    private func runTool(_ name: String, _ arguments: String = "{}", output: String = "ok", failed: Bool = false) {
+        session.handle(.toolStarted(name: name, arguments: arguments))
+        session.handle(.toolFinished(name: name, arguments: arguments, output: output, failed: failed))
+    }
 
-        #expect(
-            session.transcript.map(\.content) == [
-                .banner(model: ModelDescription(name: "Scripted Model", contextLength: 8_000), folder: "/work/tag")
-            ])
-        #expect(session.status == status())
+    @Test func statusIsKeptForThePanel() {
+        session.handle(.status(status(cost: 0.5)))
+        #expect(session.status == status(cost: 0.5))
+        #expect(session.transcript.isEmpty)
     }
 
     @Test func submittedMessageReachesTheWaitingAgent() async {
@@ -111,52 +118,67 @@ struct ChatSessionTests {
         #expect(session.activityStart == nil)
     }
 
-    @Test func slowToolsShowTheirDuration() {
+    @Test func toolCallsBetweenRepliesShareATray() {
         session.handle(.toolStarted(name: "read_file", arguments: #"{"path":"a.swift"}"#))
-        clock.advance(.milliseconds(300))
-        session.handle(.toolFinished(name: "read_file", arguments: #"{"path":"a.swift"}"#, failed: false))
-        session.handle(.toolStarted(name: "bash", arguments: #"{"command":"make"}"#))
-        clock.advance(.seconds(4))
-        session.handle(.toolFinished(name: "bash", arguments: #"{"command":"make"}"#, failed: true))
-
         #expect(
             session.transcript.map(\.content) == [
-                .tool(name: "read_file", summary: "a.swift", failed: false, duration: nil),
-                .tool(name: "bash", summary: "make", failed: true, duration: .seconds(4)),
+                .tools([ToolRun(name: "read_file", summary: "a.swift", state: .running, output: "")])
             ]
         )
+        clock.advance(.milliseconds(300))
+        session.handle(
+            .toolFinished(name: "read_file", arguments: #"{"path":"a.swift"}"#, output: "text", failed: false))
+        session.handle(.toolStarted(name: "bash", arguments: #"{"command":"make"}"#))
+        clock.advance(.seconds(4))
+        session.handle(.toolFinished(name: "bash", arguments: #"{"command":"make"}"#, output: "boom", failed: true))
+
+        let read = ToolRun(
+            name: "read_file", summary: "a.swift", state: .succeeded, duration: .milliseconds(300), output: "text")
+        let bash = ToolRun(name: "bash", summary: "make", state: .failed, duration: .seconds(4), output: "boom")
+        #expect(session.transcript.map(\.content) == [.tools([read, bash])])
     }
 
-    @Test func turnsThatRanToolsEndWithASummary() async {
-        session.handle(.status(status()))
-        session.submit("Go")
-        _ = await session.nextMessage()
-        session.handle(.toolStarted(name: "echo", arguments: "{}"))
-        session.handle(.toolFinished(name: "echo", arguments: "{}", failed: false))
+    @Test func aReplyClosesTheTray() {
+        runTool("echo")
         session.handle(.reply("Done."))
-        clock.advance(.milliseconds(4_100))
-        session.handle(.status(status(cost: 0.0031)))
+        runTool("echo")
 
-        #expect(session.transcript.last?.content == .turnSummary("1 tool · 4.1s · $0.0031"))
-
-        // A plain answer gets no summary.
-        session.submit("Again")
-        _ = await session.nextMessage()
-        session.handle(.reply("Sure."))
-        session.handle(.status(status(cost: 0.0041)))
-        #expect(session.transcript.last?.content == .agent("Sure."))
+        #expect(session.transcript.count == 3)
+        guard case .tools(let runs) = session.transcript[2].content else {
+            Issue.record("expected a tray")
+            return
+        }
+        #expect(runs.count == 1)
     }
 
-    @Test func toolCountIsPlural() async {
-        session.submit("Go")
-        _ = await session.nextMessage()
-        for _ in 0..<2 {
-            session.handle(.toolStarted(name: "echo", arguments: "{}"))
-            session.handle(.toolFinished(name: "echo", arguments: "{}", failed: false))
-        }
-        session.handle(.status(status()))
+    @Test func successfulEditsBecomeDiffsAndCountTowardsFiles() {
+        runTool("edit_file", editArguments("a.swift", "x\nold\ny", "x\nnew\nmore\ny"))
+        runTool("edit_file", editArguments("a.swift", "", "created"))
+        runTool("edit_file", editArguments("b.swift", "1", "2"), failed: true)
 
-        #expect(session.transcript.last?.content == .turnSummary("2 tools · 0.0s · $0.00"))
+        let edits = session.transcript.compactMap { block -> FileEdit? in
+            guard case .edit(let edit) = block.content else { return nil }
+            return edit
+        }
+        #expect(
+            edits == [
+                FileEdit(path: "a.swift", lines: [.removed("old"), .added("new"), .added("more")]),
+                FileEdit(path: "a.swift", lines: [.added("created")]),
+            ]
+        )
+        #expect(session.files == [FileChange(path: "a.swift", added: 3, removed: 1)])
+    }
+
+    @Test func blocksExpandAndCollapse() {
+        session.toggle(3)
+        #expect(session.expanded == [3])
+        session.toggle(3)
+        #expect(session.expanded.isEmpty)
+    }
+
+    @Test func elapsedCountsFromTheStart() {
+        clock.advance(.seconds(90))
+        #expect(session.elapsed == .seconds(90))
     }
 
     @Test(arguments: [
@@ -167,5 +189,22 @@ struct ChatSessionTests {
     ])
     func formatsDurations(duration: Duration, expected: String) {
         #expect(ChatSession.seconds(duration) == expected)
+    }
+}
+
+struct FileEditTests {
+    @Test func trimsSharedLinesAtBothEnds() {
+        #expect(FileEdit.diff(old: "a\nb\nc", new: "a\nB\nc") == [.removed("b"), .added("B")])
+        #expect(FileEdit.diff(old: "", new: "x\ny") == [.added("x"), .added("y")])
+        #expect(FileEdit.diff(old: "same", new: "same").isEmpty)
+    }
+
+    @Test func readsEditArguments() {
+        let edit = FileEdit.from(arguments: editArguments("p.swift", "a", "b"))
+        #expect(edit == FileEdit(path: "p.swift", lines: [.removed("a"), .added("b")]))
+        #expect(edit?.added == 1)
+        #expect(edit?.removed == 1)
+        #expect(FileEdit.from(arguments: #"{"path":"p"}"#) == nil)
+        #expect(FileEdit.from(arguments: "nope") == nil)
     }
 }

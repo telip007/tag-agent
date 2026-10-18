@@ -135,11 +135,11 @@ struct AgentTests {
         #expect(
             terminal.events.filter(\.isToolEvent) == [
                 .toolStarted(name: "echo", arguments: "{}"),
-                .toolFinished(name: "echo", arguments: "{}", failed: false),
+                .toolFinished(name: "echo", arguments: "{}", output: "echo {}", failed: false),
                 .toolStarted(name: "fail", arguments: "{}"),
-                .toolFinished(name: "fail", arguments: "{}", failed: true),
+                .toolFinished(name: "fail", arguments: "{}", output: "error: boom", failed: true),
                 .toolStarted(name: "missing", arguments: "{}"),
-                .toolFinished(name: "missing", arguments: "{}", failed: true),
+                .toolFinished(name: "missing", arguments: "{}", output: "error: tool not found", failed: true),
             ]
         )
         // The user was asked once at the start and once after "Done.".
