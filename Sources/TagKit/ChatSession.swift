@@ -40,6 +40,8 @@ public final class ChatSession {
     @ObservationIgnored private var isEnded = false
     /// The tray collecting the current run of tool calls, if one is open.
     @ObservationIgnored private var openTray: Int?
+    /// The reply block the model is still writing, if any.
+    @ObservationIgnored private var openReply: Int?
 
     /// Creates an empty session.
     ///
@@ -63,9 +65,10 @@ public final class ChatSession {
             setActivity(nil)
         case .thinking:
             setActivity("thinking")
+        case .replyDelta(let text):
+            streamReply(text)
         case .reply(let text):
-            openTray = nil
-            append(.reply(text))
+            finishReply(text)
         case .toolStarted(let name, let arguments):
             startTool(name: name, summary: ToolSummary.summarize(arguments))
             setActivity("\(name)  \(ToolSummary.summarize(arguments))")
@@ -135,6 +138,30 @@ public final class ChatSession {
         openTray = nil
         append(.user(text))
         return text
+    }
+
+    /// Grows the reply being written, or starts one.
+    private func streamReply(_ text: String) {
+        if let openReply, case .reply(let written) = transcript[openReply].content {
+            transcript[openReply].content = .reply(written + text)
+        } else {
+            openTray = nil
+            openReply = transcript.count
+            append(.reply(text))
+            setActivity("writing")
+        }
+    }
+
+    /// Settles the reply on its full text; a reply that wasn't streamed
+    /// appears whole.
+    private func finishReply(_ text: String) {
+        if let openReply {
+            transcript[openReply].content = .reply(text)
+        } else {
+            openTray = nil
+            append(.reply(text))
+        }
+        openReply = nil
     }
 
     private func startTool(name: String, summary: String) {

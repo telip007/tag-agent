@@ -5,6 +5,7 @@ import Testing
 @testable import TagKit
 
 /// A model that plays back scripted replies and records what it was sent.
+/// Text streams word by word, each word with the space after it.
 final class ScriptedModel: ChatModel {
     var replies: [ChatAssistantMessage]
     var description = ModelDescription(name: "Scripted Model", contextLength: 8_000)
@@ -20,18 +21,22 @@ final class ScriptedModel: ChatModel {
         description
     }
 
-    func reply(to conversation: [ChatMessage], tools: [ChatTool]) throws -> ChatResult {
+    func reply(to conversation: [ChatMessage], tools: [ChatTool], onText: (String) -> Void) throws -> ModelReply {
         conversations.append(conversation)
         toolNames.append(tools.compactMap { $0.value1?.function.name })
-        let choices = replies.isEmpty ? [] : [ChatChoice(index: 0, message: replies.removeFirst())]
-        return ChatResult(
-            choices: choices,
-            created: 0,
-            id: "result",
-            model: "scripted",
-            object: .chat_completion,
-            usage: usage,
-        )
+        let message = replies.isEmpty ? ChatAssistantMessage(text: nil, toolCalls: nil) : replies.removeFirst()
+        for piece in Self.pieces(of: message.text ?? "") {
+            onText(piece)
+        }
+        return ModelReply(message: message, usage: usage)
+    }
+
+    /// `"Hi there"` streams as `"Hi "`, `"there"`.
+    static func pieces(of text: String) -> [String] {
+        text.split(separator: " ", omittingEmptySubsequences: false).enumerated().map { index, word in
+            index == 0 ? String(word) : " " + word
+        }
+        .filter { !$0.isEmpty }
     }
 }
 
@@ -122,6 +127,16 @@ struct AgentTests {
         #expect(terminal.events.contains(.reply("Hi!")))
         #expect(terminal.events.contains(.thinking))
         #expect(terminal.statusLines.first == "/work/tag · Scripted Model · ctx 0/8k (0%) · $0.00")
+    }
+
+    @Test func streamsTheReplyBeforeReportingAllOfIt() async throws {
+        let model = ScriptedModel([.init(text: "Hi there, you.", toolCalls: nil)])
+        let terminal = Terminal(["Hello"])
+        try await terminal.agent(model: model).run()
+
+        let reply = terminal.events.drop { $0 != .thinking }.dropFirst().prefix(4)
+        let deltas: [AgentEvent] = [.replyDelta("Hi"), .replyDelta(" there,"), .replyDelta(" you.")]
+        #expect(Array(reply) == deltas + [.reply("Hi there, you.")])
     }
 
     @Test func statusLineReportsContextAndCostAfterAReply() async throws {

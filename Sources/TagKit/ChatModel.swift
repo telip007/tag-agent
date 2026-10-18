@@ -9,14 +9,37 @@ public protocol ChatModel {
     ///   knows it, its context window.
     func modelDescription() async -> ModelDescription
 
-    /// Generate the next reply to a conversation
+    /// Generates the next reply to a conversation, streaming its text.
     ///
     /// - Parameters:
-    ///   - conversation: The conversation history
-    ///   - tools: The tools the model may call
-    /// - Returns: The result of generating the next chat reply
-    /// - Throws: Whatever the model API throws.
-    func reply(to conversation: [ChatMessage], tools: [ChatTool]) async throws -> ChatResult
+    ///   - conversation: The conversation history.
+    ///   - tools: The tools the model may call.
+    ///   - onText: Receives the reply's text piece by piece, as it arrives.
+    /// - Returns: The complete reply.
+    /// - Throws: Whatever the model API throws, also after streaming started.
+    func reply(
+        to conversation: [ChatMessage],
+        tools: [ChatTool],
+        onText: (String) -> Void,
+    ) async throws -> ModelReply
+}
+
+/// A complete reply from a ``ChatModel``.
+public struct ModelReply: Sendable {
+    /// The assistant message, ready to append to the conversation.
+    public var message: ChatAssistantMessage
+    /// Token counts and cost, when the API reported them.
+    public var usage: ChatUsage?
+
+    /// Creates a reply.
+    ///
+    /// - Parameters:
+    ///   - message: The assistant message.
+    ///   - usage: Token counts and cost, when known.
+    public init(message: ChatAssistantMessage, usage: ChatUsage? = nil) {
+        self.message = message
+        self.usage = usage
+    }
 }
 
 /// A human-readable description of a model, shown in the status line.
@@ -77,15 +100,25 @@ public struct OpenRouterChatModel: ChatModel {
         }
     }
 
-    /// Sends the conversation and tools to OpenRouter.
-    public func reply(to conversation: [ChatMessage], tools: [ChatTool]) async throws -> ChatResult {
-        try await openRouterClient.chat.send(
-            .init(
-                messages: conversation,
-                model: modelID,
-                toolChoice: tools.isEmpty ? nil : .auto,
-                tools: tools.isEmpty ? nil : tools,
-            )
+    /// Streams the reply to the conversation and tools from OpenRouter.
+    public func reply(
+        to conversation: [ChatMessage],
+        tools: [ChatTool],
+        onText: (String) -> Void,
+    ) async throws -> ModelReply {
+        let request = ChatRequest(
+            messages: conversation,
+            model: modelID,
+            toolChoice: tools.isEmpty ? nil : .auto,
+            tools: tools.isEmpty ? nil : tools,
         )
+        var accumulator = ChatStreamAccumulator()
+        for try await chunk in try await openRouterClient.chat.stream(request) {
+            accumulator.add(chunk)
+            if let text = chunk.textDelta, !text.isEmpty {
+                onText(text)
+            }
+        }
+        return ModelReply(message: accumulator.message, usage: accumulator.usage)
     }
 }

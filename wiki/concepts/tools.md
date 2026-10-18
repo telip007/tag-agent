@@ -20,10 +20,12 @@ by an agent ([0006](../decisions/0006-agents-build-the-harness.md)).
    [status line](#the-status-line) and await `getUserMessage()` (`nil` ends
    the session). Append it as a user message.
 2. Emit `.thinking`, then send the whole conversation plus the tool
-   definitions to the [`ChatModel`](../../Sources/TagKit/ChatModel.swift).
-   Append the assistant message as returned (text, tool calls and any
-   reasoning fields).
-3. Emit `.reply` with the text, if any.
+   definitions to the [`ChatModel`](../../Sources/TagKit/ChatModel.swift),
+   which streams the reply: each piece of text is emitted as `.replyDelta`
+   while it arrives. Append the complete assistant message (text, tool calls
+   and any reasoning fields). A reply with neither text nor tool calls throws
+   `emptyReply`.
+3. Emit `.reply` with the full text, if any.
 4. Run every tool call in order, emitting `.toolStarted` before and
    `.toolFinished` (with `failed` for an unknown tool or a thrown error)
    after each, and append each result as a `tool` message with the call's

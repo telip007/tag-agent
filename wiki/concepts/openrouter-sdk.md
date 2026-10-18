@@ -1,7 +1,7 @@
 ---
 title: OpenRouter SDK
 summary: How Tag Agent consumes the swift-openrouter submodule and where its own docs live.
-updated: 2026-10-17
+updated: 2026-10-18
 ---
 
 # OpenRouter SDK
@@ -28,7 +28,10 @@ let openRouter = try OpenRouterClient.fromEnvironment(
 )
 ```
 
-`OPENROUTER_API_KEY` must be set. The submodule fetches over HTTPS (so
+`OPENROUTER_API_KEY` must be set. `OpenRouterChatModel` streams every reply
+with `chat.stream` and rebuilds the message with `ChatStreamAccumulator`,
+whose `message` keeps `reasoning` and `reasoning_details` (added to the SDK
+for this, so a streamed reply goes back into the history like a sent one). The submodule fetches over HTTPS (so
 anyone can clone) and pushes over SSH. The SDK's README has the full tour:
 `send`, `stream` + `ChatStreamAccumulator`, tool definitions, typed errors.
 

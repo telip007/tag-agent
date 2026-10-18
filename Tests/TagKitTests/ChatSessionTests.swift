@@ -151,6 +151,28 @@ struct ChatSessionTests {
         #expect(runs.count == 1)
     }
 
+    @Test func deltasGrowOneReplyUntilItIsFinished() {
+        session.handle(.thinking)
+        session.handle(.replyDelta("Look"))
+        #expect(session.activity == "writing")
+        session.handle(.replyDelta("ing."))
+        #expect(session.transcript.map(\.content) == [.reply("Looking.")])
+
+        session.handle(.reply("Looking."))
+        session.handle(.replyDelta("Next"))
+        #expect(session.transcript.map(\.content) == [.reply("Looking."), .reply("Next")])
+    }
+
+    @Test func aStreamedReplyClosesTheTray() {
+        runTool("echo")
+        session.handle(.replyDelta("Done"))
+        session.handle(.reply("Done."))
+        runTool("echo")
+
+        #expect(session.transcript.count == 3)
+        #expect(session.transcript[1].content == .reply("Done."))
+    }
+
     @Test func successfulEditsBecomeDiffsAndCountTowardsFiles() {
         runTool("edit_file", editArguments("a.swift", "x\nold\ny", "x\nnew\nmore\ny"))
         runTool("edit_file", editArguments("a.swift", "", "created"))

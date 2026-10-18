@@ -132,3 +132,6 @@ Captured the Karpathy guidelines skill and took three of its ideas into the syst
 
 ## [2026-10-18] update | Evaluation loop plan
 New page [evaluation loop](concepts/evaluation-loop.md): model tiers, what Tag needs first (headless mode, saved trajectories), task set, grading, the change-one-thing loop, and open questions for a working session. Nothing built or decided yet.
+
+## [2026-10-18] update | Reply streaming
+Replies stream into the workspace: `ChatModel.reply(to:tools:onText:)` streams through the SDK's `chat.stream`, the agent emits `.replyDelta` per piece and `.reply` at the end, and `ChatSession` grows one reply block. The SDK's stream accumulator now keeps reasoning on the message.

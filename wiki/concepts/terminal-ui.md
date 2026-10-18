@@ -69,7 +69,8 @@ Agent ──AgentEvent──▶ ChatSession ──observed by──▶ ChatView
 
 - `.status(StatusLine)` before each prompt ([status line](tools.md#the-status-line)),
 - `.thinking` before each model call,
-- `.reply(String)` for the model's text,
+- `.replyDelta(String)` for each piece of the model's text as it streams in,
+  then `.reply(String)` with all of it,
 - `.toolStarted(name:arguments:)` before a tool runs, and
   `.toolFinished(name:arguments:output:failed:)` after it, with what the model
   sees; `failed` is set for an unknown tool or a thrown error.
@@ -81,7 +82,9 @@ Agent ──AgentEvent──▶ ChatSession ──observed by──▶ ChatView
 
 - `transcript`, [`TranscriptBlock`](../../Sources/TagKit/Transcript.swift)s
   whose `content` is `user`, `reply`, `tools([ToolRun])` or `edit(FileEdit)`.
-  Blocks can change after they appear: tool calls between two replies share
+  Blocks can change after they appear: a reply grows with each
+  `.replyDelta` (the first one sets the activity to `writing`) and `.reply`
+  settles it on the full text; tool calls between two replies share
   one tray, which grows while the agent works; each `ToolRun` goes from
   `running` to `succeeded` or `failed` with its duration and output.
 - `edit` blocks: a successful `edit_file` call becomes a `FileEdit`, its
@@ -183,6 +186,16 @@ run.
 
 `AsyncParsableCommand.run()` is nonisolated, so `Tag` calls a `@MainActor`
 static helper (`chat()`) that builds everything and runs the view.
+
+## Streaming
+
+Replies stream: the text appears as the model writes it instead of all at
+once when the reply is complete, so the agent feels responsive even when a
+long answer takes many seconds. Every delta changes `transcript`, which
+Stipple observes; Stipple's runtime batches the changes in one main-actor turn
+and draws at most `RenderOptions.maxFps` (30) frames a second, so a fast model
+doesn't redraw the screen per token. Checked live by timing when words of a
+long reply first reached the pseudo-terminal: they arrived across many frames.
 
 ## Testing
 
