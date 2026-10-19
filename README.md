@@ -70,8 +70,11 @@ git clone --recurse-submodules https://github.com/telip007/tag-agent.git
 cd tag-agent
 make bootstrap                      # SwiftLint, ripgrep, git hooks, submodule
 export OPENROUTER_API_KEY=sk-or-... # https://openrouter.ai/keys
-swift run Tag
+make run                            # swift run -c release Tag
 ```
+
+Run the optimised build: a debug build (`swift run Tag`) draws several
+times slower, which shows when resizing a long session.
 
 Requires Swift 6.2+ (Xcode 26) and macOS 15+.
 

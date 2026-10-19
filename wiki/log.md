@@ -153,3 +153,6 @@ Stipple 0.3.3: text that only grew resumes wrapping, and key presses draw at onc
 
 ## [2026-10-19] update | Smooth at any length, size and load
 Stipple 0.4.0 (frames cost what is on screen). `BlockRow` applies the row's frame, tap and hover itself and fills the pane, hover lives in a `HoverState` object, the footer reads the scroll position so scrolling doesn't rebuild `ChatView`, and incremental rendering writes only changed rows. Measured across sizes, 1,500 blocks, debug and release, and live while resizing, scrolling and under full CPU load; numbers and method in [terminal UI](concepts/terminal-ui.md#keeping-frames-cheap).
+
+## [2026-10-19] update | `make run` runs the optimised build
+The README and `make run` start Tag with `swift run -c release Tag`: the debug build draws several times slower, which shows when resizing a long session. See [terminal UI](concepts/terminal-ui.md#keeping-frames-cheap).

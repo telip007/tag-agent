@@ -306,6 +306,10 @@ on every core:
 | release, echo p95 / max | 8 / 23 ms | 9 / 16 ms | 7 / 11 ms | 21 / 30 ms |
 | debug, echo p95 / max | 16 / 29 ms | 16 / 21 ms | 15 / 19 ms | 30 / 32 ms |
 
+Users run the optimised build (`make run`, `swift run -c release Tag`); the
+debug-only costs above (a long session's resize, the odd 40 ms key) don't
+occur there.
+
 On the busy machine, a program that only echoes the line reached 9 ms p95,
 so about half of that tail is the machine. Raising the main thread's QoS
 was tried and had no measurable effect here: processes started by the tool
