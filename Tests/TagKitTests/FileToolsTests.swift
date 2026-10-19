@@ -1,4 +1,5 @@
 import Foundation
+import ModelKit
 import OpenRouter
 import Testing
 
@@ -108,7 +109,7 @@ struct FileToolsTests {
         #expect(tools.map(\.name) == ["read_file", "list_files", "edit_file", "bash", "code_search"])
         for tool in tools {
             #expect(tool.parameters["type"] == "object")
-            #expect(tool.chatTool.value1?.function.name == tool.name)
+            #expect(tool.spec.name == tool.name)
         }
     }
 }

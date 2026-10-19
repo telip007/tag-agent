@@ -1,4 +1,5 @@
 import Foundation
+import ModelKit
 import OpenRouter
 import Testing
 
@@ -7,36 +8,50 @@ import Testing
 /// A model that plays back scripted replies and records what it was sent.
 /// Reasoning and text stream word by word, then each tool call's name.
 final class ScriptedModel: ChatModel {
-    var replies: [ChatAssistantMessage]
-    var description = ModelDescription(name: "Scripted Model", contextLength: 8_000)
-    var usage: ChatUsage?
-    private(set) var conversations: [[ChatMessage]] = []
+    var replies: [AssistantMessage]
+    var entry = ModelEntry(
+        ref: ModelRef(provider: .openRouter, model: "scripted"),
+        name: "Scripted Model",
+        contextLength: 8_000,
+        format: .openRouter,
+    )
+    var usage: Usage?
+    var failure: (any Error)?
+    private(set) var conversations: [[Message]] = []
     private(set) var toolNames: [[String]] = []
+    private(set) var options: [ReplyOptions] = []
 
-    init(_ replies: [ChatAssistantMessage]) {
+    init(_ replies: [AssistantMessage]) {
         self.replies = replies
     }
 
-    func modelDescription() -> ModelDescription {
-        description
+    /// The model as the agent sees it.
+    var active: ActiveModel {
+        ActiveModel(entry: entry, chatModel: self)
     }
 
     func reply(
-        to conversation: [ChatMessage],
-        tools: [ChatTool],
+        to conversation: [Message],
+        tools: [ToolSpec],
+        options: ReplyOptions,
         onDelta: (ReplyDelta) -> Void,
     ) throws -> ModelReply {
         conversations.append(conversation)
-        toolNames.append(tools.compactMap { $0.value1?.function.name })
-        let message = replies.isEmpty ? ChatAssistantMessage(text: nil, toolCalls: nil) : replies.removeFirst()
+        toolNames.append(tools.map(\.name))
+        self.options.append(options)
+        if let failure {
+            self.failure = nil
+            throw failure
+        }
+        let message = replies.isEmpty ? AssistantMessage() : replies.removeFirst()
         for piece in Self.pieces(of: message.reasoning ?? "") {
             onDelta(.reasoning(piece))
         }
         for piece in Self.pieces(of: message.text ?? "") {
             onDelta(.text(piece))
         }
-        for call in message.toolCalls ?? [] {
-            onDelta(.toolCall(name: call.function.name))
+        for call in message.toolCalls {
+            onDelta(.toolCall(name: call.name))
         }
         return ModelReply(message: message, usage: usage)
     }
@@ -59,6 +74,10 @@ final class Terminal {
     var dates = [Date(timeIntervalSince1970: 1_792_000_000)]
     private(set) var events: [AgentEvent] = []
 
+    func record(_ event: AgentEvent) {
+        events.append(event)
+    }
+
     init(_ inputs: [String]) {
         self.inputs = inputs.map(AgentInput.message)
     }
@@ -73,7 +92,7 @@ final class Terminal {
 
     func agent(model: ScriptedModel, tools: [ToolDefinition] = []) -> Agent {
         Agent(
-            model: model,
+            model: { model.active },
             tools: tools,
             environment: .fake,
             now: { self.dates.count > 1 ? self.dates.removeFirst() : self.dates[0] },
@@ -96,9 +115,9 @@ extension SessionEnvironment {
 
 /// The conversation a model was sent, without the system prompt and with
 /// the date notes stripped from user messages.
-func dialogue(_ conversation: [ChatMessage]) -> [ChatMessage] {
+func dialogue(_ conversation: [Message]) -> [Message] {
     conversation.dropFirst().map { message in
-        guard case .user(let user) = message, let text = user.content.value1,
+        guard case .user(let text) = message,
             let range = text.firstRange(of: "</environment_update>\n\n")
         else {
             return message
@@ -107,8 +126,8 @@ func dialogue(_ conversation: [ChatMessage]) -> [ChatMessage] {
     }
 }
 
-func toolCall(_ id: String, _ name: String, _ arguments: String) -> ChatToolCall {
-    ChatToolCall(function: .init(arguments: arguments, name: name), id: id, _type: .function)
+func toolCall(_ id: String, _ name: String, _ arguments: String) -> ToolCall {
+    ToolCall(id: id, name: name, arguments: arguments)
 }
 
 extension AgentEvent {
@@ -128,7 +147,7 @@ let failing = ToolDefinition(name: "fail", description: "Always fails", paramete
 @MainActor
 struct AgentTests {
     @Test func chatsUntilInputEnds() async throws {
-        let model = ScriptedModel([.init(text: "Hi!", toolCalls: nil)])
+        let model = ScriptedModel([AssistantMessage(text: "Hi!")])
         let terminal = Terminal(["Hello"])
         try await terminal.agent(model: model).run()
 
@@ -140,9 +159,9 @@ struct AgentTests {
     }
 
     @Test func streamsReasoningThenTextThenToolNames() async throws {
-        var message = ChatAssistantMessage(text: "On it.", toolCalls: [toolCall("1", "echo", "{}")])
-        message.reasoning = "Need echo."
-        let model = ScriptedModel([message, .init(text: "Done.", toolCalls: nil)])
+        let message = AssistantMessage(
+            text: "On it.", reasoning: "Need echo.", toolCalls: [toolCall("1", "echo", "{}")])
+        let model = ScriptedModel([message, AssistantMessage(text: "Done.")])
         let terminal = Terminal(["Go"])
         try await terminal.agent(model: model, tools: [echo]).run()
 
@@ -155,7 +174,7 @@ struct AgentTests {
     }
 
     @Test func streamsTheReplyBeforeReportingAllOfIt() async throws {
-        let model = ScriptedModel([.init(text: "Hi there, you.", toolCalls: nil)])
+        let model = ScriptedModel([AssistantMessage(text: "Hi there, you.")])
         let terminal = Terminal(["Hello"])
         try await terminal.agent(model: model).run()
 
@@ -165,8 +184,8 @@ struct AgentTests {
     }
 
     @Test func statusLineReportsContextAndCostAfterAReply() async throws {
-        let model = ScriptedModel([.init(text: "Hi!", toolCalls: nil)])
-        model.usage = ChatUsage(completionTokens: 5, cost: 0.0012, promptTokens: 100, totalTokens: 105)
+        let model = ScriptedModel([AssistantMessage(text: "Hi!")])
+        model.usage = Usage(inputTokens: 100, outputTokens: 5, cost: 0.0012)
         let terminal = Terminal(["Hello"])
         try await terminal.agent(model: model).run()
 
@@ -175,8 +194,8 @@ struct AgentTests {
 
     @Test func addsEachReplysCostToTheStatusLine() async throws {
         let calls = [toolCall("1", "echo", "{}")]
-        let model = ScriptedModel([.init(text: nil, toolCalls: calls), .init(text: "Done.", toolCalls: nil)])
-        model.usage = ChatUsage(completionTokens: 5, cost: 0.001, promptTokens: 100, totalTokens: 105)
+        let model = ScriptedModel([AssistantMessage(toolCalls: calls), AssistantMessage(text: "Done.")])
+        model.usage = Usage(inputTokens: 100, outputTokens: 5, cost: 0.001)
         let terminal = Terminal(["Go"])
         try await terminal.agent(model: model, tools: [echo]).run()
 
@@ -186,7 +205,7 @@ struct AgentTests {
 
     @Test func runsToolCallsAndSendsResultsBackWithoutAskingTheUser() async throws {
         let calls = [toolCall("1", "echo", "{}"), toolCall("2", "fail", "{}"), toolCall("3", "missing", "{}")]
-        let model = ScriptedModel([.init(text: nil, toolCalls: calls), .init(text: "Done.", toolCalls: nil)])
+        let model = ScriptedModel([AssistantMessage(toolCalls: calls), AssistantMessage(text: "Done.")])
         let terminal = Terminal(["Go"])
         try await terminal.agent(model: model, tools: [echo, failing]).run()
 
@@ -194,10 +213,10 @@ struct AgentTests {
         #expect(
             model.conversations.last.map(dialogue) == [
                 .user("Go"),
-                .assistant(.init(text: nil, toolCalls: calls)),
-                .tool(callID: "1", content: "echo {}"),
-                .tool(callID: "2", content: "error: boom"),
-                .tool(callID: "3", content: "error: tool not found"),
+                .assistant(AssistantMessage(toolCalls: calls)),
+                .tool(callID: "1", name: "echo", content: "echo {}"),
+                .tool(callID: "2", name: "fail", content: "error: boom"),
+                .tool(callID: "3", name: "missing", content: "error: tool not found"),
             ]
         )
         #expect(
@@ -214,16 +233,71 @@ struct AgentTests {
         #expect(terminal.statusLines.count == 2)
     }
 
-    @Test func throwsWhenTheModelReturnsNoChoices() async {
-        let terminal = Terminal(["Hello"])
-        await #expect(throws: Agent.InferenceError.emptyReply) {
-            try await terminal.agent(model: ScriptedModel([])).run()
-        }
+    @Test func reportsAnEmptyReplyAndWaitsForTheNextMessage() async throws {
+        let model = ScriptedModel([AssistantMessage(), AssistantMessage(text: "Back.")])
+        let terminal = Terminal(["Hello", "Again"])
+        try await terminal.agent(model: model).run()
+
+        let message = Agent.InferenceError.emptyReply.localizedDescription
+        #expect(terminal.events.contains(.failure(message: message, recovery: nil)))
+        #expect(terminal.events.contains(.reply("Back.")))
+        #expect(terminal.statusLines.count == 3)
+    }
+
+    @Test func reportsProviderErrorsWithTheirRecovery() async throws {
+        let model = ScriptedModel([AssistantMessage(text: "Hi!")])
+        let limit = ProviderError.usageLimit(.codex, detail: "", manageURL: URL(string: "https://example.com/usage"))
+        model.failure = limit
+        let terminal = Terminal(["Hello", "Again"])
+        try await terminal.agent(model: model).run()
+
+        let failure = AgentEvent.failure(message: limit.localizedDescription, recovery: limit.recoverySuggestion)
+        #expect(terminal.events.contains(failure))
+        #expect(limit.recoverySuggestion?.contains("Manage usage: https://example.com/usage") == true)
+        #expect(terminal.events.contains(.reply("Hi!")))
+    }
+
+    @Test func switchingModelsKeepsTheConversationAndRenamesTheModel() async throws {
+        let first = ScriptedModel([AssistantMessage(text: "One.")])
+        let second = ScriptedModel([AssistantMessage(text: "Two.")])
+        second.entry.ref = ModelRef(provider: .codex, model: "other")
+        second.entry.name = "Other Model"
+        var active = first.active
+        let terminal = Terminal(["a", "b"])
+        let agent = Agent(
+            model: { active },
+            environment: .fake,
+            output: { event in
+                terminal.record(event)
+                if event == .reply("One.") {
+                    active = ActiveModel(entry: second.entry, chatModel: second, effort: "high")
+                }
+            },
+            input: { terminal.inputs.isEmpty ? nil : terminal.inputs.removeFirst() },
+        )
+        try await agent.run()
+
+        let sent = try #require(second.conversations.first)
+        #expect(dialogue(sent).count == 3)
+        #expect(sent.first == .system(SystemPrompt.render(tools: [], environment: .fake, model: "Other Model")))
+        #expect(second.options.first?.reasoningEffort == "high")
+        #expect(second.options.first?.sessionID == first.options.first?.sessionID)
+        #expect(terminal.statusLines.last?.contains("Other Model") == true)
+    }
+
+    @Test func clearingStartsANewSession() async throws {
+        let model = ScriptedModel([AssistantMessage(text: "1"), AssistantMessage(text: "2")])
+        let terminal = Terminal(["a", "b"])
+        terminal.inputs.insert(.clear, at: 1)
+        try await terminal.agent(model: model).run()
+
+        #expect(model.options.count == 2)
+        #expect(model.options[0].sessionID != model.options[1].sessionID)
     }
 
     @Test func startsWithTheSystemPromptAndKeepsItUnchanged() async throws {
         let calls = [toolCall("1", "echo", "{}")]
-        let model = ScriptedModel([.init(text: nil, toolCalls: calls), .init(text: "Done.", toolCalls: nil)])
+        let model = ScriptedModel([AssistantMessage(toolCalls: calls), AssistantMessage(text: "Done.")])
         let terminal = Terminal(["Go"])
         try await terminal.agent(model: model, tools: [echo]).run()
 
@@ -233,7 +307,7 @@ struct AgentTests {
 
     @Test func datesTheFirstMessageAndMessagesAfterTheDateChanged() async throws {
         let model = ScriptedModel([
-            .init(text: "1", toolCalls: nil), .init(text: "2", toolCalls: nil), .init(text: "3", toolCalls: nil),
+            AssistantMessage(text: "1"), AssistantMessage(text: "2"), AssistantMessage(text: "3"),
         ])
         let terminal = Terminal(["a", "b", "c"])
         let day = Date(timeIntervalSince1970: 1_792_000_000)
@@ -241,8 +315,8 @@ struct AgentTests {
         try await terminal.agent(model: model).run()
 
         let users = model.conversations.last?.compactMap { message -> String? in
-            guard case .user(let user) = message else { return nil }
-            return user.content.value1
+            guard case .user(let text) = message else { return nil }
+            return text
         }
         let (first, next) = (UserMessageDater.format(day), UserMessageDater.format(day.addingTimeInterval(86_400)))
         #expect(
@@ -255,8 +329,8 @@ struct AgentTests {
     }
 
     @Test func clearingDropsTheConversationAndTheTotals() async throws {
-        let model = ScriptedModel([.init(text: "Hi!", toolCalls: nil), .init(text: "Again!", toolCalls: nil)])
-        model.usage = ChatUsage(completionTokens: 5, cost: 0.001, promptTokens: 100, totalTokens: 105)
+        let model = ScriptedModel([AssistantMessage(text: "Hi!"), AssistantMessage(text: "Again!")])
+        model.usage = Usage(inputTokens: 100, outputTokens: 5, cost: 0.001)
         let terminal = Terminal(["Hello", "Again"])
         terminal.inputs.insert(.clear, at: 1)
         try await terminal.agent(model: model).run()
@@ -266,8 +340,8 @@ struct AgentTests {
         // Its first message carries the date again, as in a fresh session.
         let date = UserMessageDater.format(terminal.dates[0])
         let messages = model.conversations.last?.compactMap { message -> String? in
-            guard case .user(let user) = message else { return nil }
-            return user.content.value1
+            guard case .user(let text) = message else { return nil }
+            return text
         }
         #expect(messages == ["<environment_update>date: \(date)</environment_update>\n\nAgain"])
         // The user is asked again, with the context and the cost back to zero:
@@ -280,27 +354,5 @@ struct AgentTests {
                 "/work/tag · Scripted Model · ctx 105/8k (1%) · $0.001",
             ]
         )
-    }
-}
-
-struct ReplyDeltaTests {
-    private func chunk(_ delta: String) throws -> ChatStreamChunk {
-        let json = """
-            {"id":"g","object":"chat.completion.chunk","created":0,"model":"m",\
-            "choices":[{"index":0,"delta":\(delta),"finish_reason":null}]}
-            """
-        return try JSONDecoder().decode(ChatStreamChunk.self, from: Data(json.utf8))
-    }
-
-    @Test func aChunkBecomesReasoningTextAndToolNames() throws {
-        let call = #"{"index":0,"id":"a","type":"function","function":{"name":"bash","arguments":""}}"#
-        let delta = #"{"reasoning":"Hm.","content":"Ok","tool_calls":["# + call + "]}"
-        let deltas = OpenRouterChatModel.deltas(in: try chunk(delta))
-        #expect(deltas == [.reasoning("Hm."), .text("Ok"), .toolCall(name: "bash")])
-    }
-
-    @Test func argumentFragmentsAndEmptyPiecesAreSkipped() throws {
-        let delta = #"{"content":"","tool_calls":[{"index":0,"function":{"arguments":"{}"}}]}"#
-        #expect(OpenRouterChatModel.deltas(in: try chunk(delta)).isEmpty)
     }
 }

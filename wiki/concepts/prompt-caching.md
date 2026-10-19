@@ -7,7 +7,7 @@ updated: 2026-10-18
 # Prompt caching
 
 Status on 2026-10-18: **nothing explicit.**
-[`OpenRouterChatModel.reply`](../../Sources/TagKit/ChatModel.swift) sends only
+[`OpenRouterChatModel.reply`](../../Sources/ModelKit/Providers/OpenRouterChatModel.swift) sends only
 `messages`, `model`, `tools` and `toolChoice`. Source:
 [OpenRouter prompt caching](../sources/openrouter-prompt-caching.md).
 
