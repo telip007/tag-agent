@@ -201,3 +201,8 @@ The Responses adapter now streams through `WireStream` with a `ResponsesDecoder`
 
 ## [2026-10-19] update | Codex CLI route written up
 New design page [Codex CLI route for ChatGPT plans](designs/codex-cli-route.md): how the Codex CLI's sign-in and private backend work (from OpenAI's open-source Codex CLI), why it gets past the Business refusal, its risks and three options. Not built; the decision is open.
+
+## [2026-10-19] update | Keep the model selection Foundation import internal
+Fixed the Swift 6.3 CI build: Foundation is only used by an internal error,
+so ModelSelection uses a plain import. Recorded the toolchain difference
+and retained every existing lint, warning and coverage gate.

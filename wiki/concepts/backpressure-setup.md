@@ -39,6 +39,14 @@ strict settings and lint plugin as the sources.
 
 ## Gotchas
 
+- **Only use `public import` for modules exposed by public API.**
+  `ModelSelection` uses Foundation's `LocalizedError` only in its internal
+  `SignInUnavailable` error. Declaring Foundation as a public import failed
+  the Swift 6.3 CI build with an unused-public-import diagnostic, promoted
+  to an error by the warnings-as-errors gate, even though the local Swift
+  6.4 build accepted it. A plain `import Foundation` keeps the dependency
+  internal under `InternalImportsByDefault` without weakening the checks.
+
 - **Not every warning fails the build.** `SendableMetatypes` warnings
   ("capture of non-Sendable type 'Decoder.Type' in an isolated closure")
   were printed but didn't fail `swift build` under `treatAllWarnings(as:
