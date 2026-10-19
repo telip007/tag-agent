@@ -156,3 +156,6 @@ Stipple 0.4.0 (frames cost what is on screen). `BlockRow` applies the row's fram
 
 ## [2026-10-19] update | `make run` runs the optimised build
 The README and `make run` start Tag with `swift run -c release Tag`: the debug build draws several times slower, which shows when resizing a long session. See [terminal UI](concepts/terminal-ui.md#keeping-frames-cheap).
+
+## [2026-10-19] update | Lazy transcript
+Stipple 0.5.0: the transcript is a `LazyVStack`, so resizing a long session lays out the rows in view first, pinned or scrolled up (the first row in view stays put). `TranscriptPane` is `Equatable`, so a resize no longer rebuilds it. Release, 1,500 blocks: every interaction at most about 8 ms except resizing while scrolled up (8–24 ms); debug at most about 26 ms. See [terminal UI](concepts/terminal-ui.md#keeping-frames-cheap).

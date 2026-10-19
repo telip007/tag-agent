@@ -286,6 +286,12 @@ second after a few messages. Now:
   streamed line growing past the others re-measured every row at each new
   width. Scrolling doesn't rebuild `ChatView` (the footer reads the scroll
   position), so it doesn't rebuild the pane either.
+- **Stipple 0.5.0's `LazyVStack` holds the transcript.** A resize lays out
+  the rows in view at once and the long history above over the next frames;
+  scrolled up, the first row in view stays where it is while the rows above
+  settle. `TranscriptPane` is `Equatable` on the session and the selection,
+  so the `ChatView` rebuild a resize causes (it reads the terminal size)
+  doesn't rebuild the pane and its rows.
 - **Only changed rows are written.** `renderOptions` turns on Stipple's
   incremental rendering, which rewrites each changed row from its first
   changed column: a typed key writes about 350 bytes instead of a whole
@@ -294,9 +300,10 @@ second after a few messages. Now:
 Measured with the real view tree (debug and release builds, 80×24, 140×40
 and 250×70, up to 1,500 blocks) for the worst frame of each interaction while
 a reply streams. Release, 1,500 blocks: idle about 1 ms, a streamed delta
-3 ms, a scroll 6 ms, expanding a block 3 ms, a resize 30–60 ms (the first
-one measures every text). Debug, 1,500 blocks: under 30 ms except a resize,
-up to about 400 ms. Live, in a pseudo-terminal, typing a character every
+3 ms, a scroll 4 ms, expanding a block 4 ms, a resize 7–8 ms pinned to the
+bottom and 8–16 ms scrolled up (24 ms once, at 751 blocks, in the frame where
+the rows above settle). Debug, 1,500 blocks: at most about 26 ms for all of
+them, except one 44 ms settling frame in a short session. Live, in a pseudo-terminal, typing a character every
 200 ms while long replies streamed, in rounds that also resized the
 terminal every 400 ms, paged the transcript every 700 ms, or ran a busy loop
 on every core:
@@ -306,9 +313,8 @@ on every core:
 | release, echo p95 / max | 8 / 23 ms | 9 / 16 ms | 7 / 11 ms | 21 / 30 ms |
 | debug, echo p95 / max | 16 / 29 ms | 16 / 21 ms | 15 / 19 ms | 30 / 32 ms |
 
-Users run the optimised build (`make run`, `swift run -c release Tag`); the
-debug-only costs above (a long session's resize, the odd 40 ms key) don't
-occur there.
+Users run the optimised build (`make run`, `swift run -c release Tag`),
+which is several times faster than these debug numbers.
 
 On the busy machine, a program that only echoes the line reached 9 ms p95,
 so about half of that tail is the machine. Raising the main thread's QoS
