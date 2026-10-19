@@ -43,9 +43,19 @@ else
 	@echo "test: no Tests/ directory yet, skipping"
 endif
 
+# SwiftPM's codecov JSON covers only one test bundle, so export the merged
+# profile against every bundle (wiki/concepts/backpressure-setup.md).
 coverage: test
 ifneq ($(wildcard Tests),)
-	python3 -I Scripts/check-coverage.py "$$(swift test --show-codecov-path)" $(MIN_COVERAGE) Sources
+	@codecov="$$(dirname "$$(swift test --show-codecov-path)")"; \
+	products="$$(dirname "$$codecov")"; \
+	objects=""; \
+	for bundle in "$$products"/*Tests.xctest; do \
+		objects="$$objects -object $$bundle/Contents/MacOS/$$(basename "$$bundle" .xctest)"; \
+	done; \
+	xcrun llvm-cov export -summary-only -instr-profile "$$codecov/default.profdata" $$objects \
+		> "$$codecov/all-tests.json"; \
+	python3 -I Scripts/check-coverage.py "$$codecov/all-tests.json" $(MIN_COVERAGE) Sources
 endif
 
 check: lint build coverage
