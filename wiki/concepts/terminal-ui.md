@@ -433,6 +433,10 @@ How to measure it, and the traps on the way:
 - **Stipple focuses a node whose `@FocusState` is requested even when it
   isn't focusable.** Hiding the input under an overlay needs both
   `isInputFocused = false` and `.focusable(false)`.
+- **Overlays need Stipple 0.5.1 or later.** Before it, `.background(_ color:)`
+  only recoloured cells, so the session panel's text showed through the
+  model picker wherever the picker's own content was blank. 0.5.1 paints
+  background-coloured spaces, as Ink does.
 - **A paste without an `.onPaste` handler arrives as one `KeyPress`** with
   the whole text in `characters`. Typing paths read `typedText`, which
   covers both cases.

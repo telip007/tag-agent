@@ -171,3 +171,6 @@ New `designs/` layer for brainstorms, specs, mockups and plans, including those 
 
 ## [2026-10-19] update | Choosing models in the UI
 Onboarding on the first start, the search-first `/model` picker, `/model <provider>/<model>`, connecting providers (masked keys, "Continue with ChatGPT"), the ChatGPT plan notices and a `.failure` transcript block. The keys, design choices and Stipple focus gotchas are on [terminal UI](concepts/terminal-ui.md#choosing-models). Tried live in a pseudo-terminal against OpenRouter: onboarding, the picker, a reply, the restored model and effort, and the quick switch.
+
+## [2026-10-19] update | Stipple 0.5.1: opaque overlays
+The model picker over the workspace let the session panel show through its blank cells. Fixed in Stipple 0.5.1 (`.background(_ color:)` paints spaces, as Ink does), and Tag now requires it. `/model x/y` no longer leaves the input unfocused, and a search that spells a whole model name ranks it first. Tried live: the quick switch keeps the conversation (the new model recalled a word from before the switch).

@@ -32,7 +32,7 @@ let package = Package(
         .package(url: "https://github.com/swiftlang/swift-subprocess.git", from: "1.0.0"),
         .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins.git", exact: "0.65.1"),
         // SwiftUI-shaped terminal UI; see wiki/concepts/terminal-ui.md.
-        .package(url: "https://github.com/telip007/stipple.git", from: "0.5.0"),
+        .package(url: "https://github.com/telip007/stipple.git", from: "0.5.1"),
     ],
     targets: [
         // Thin command-line entry point: argument parsing and terminal I/O.
