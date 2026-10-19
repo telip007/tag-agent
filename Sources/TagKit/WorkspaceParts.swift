@@ -43,6 +43,14 @@ struct TranscriptPane: View, Equatable {
     }
 
     var body: some View {
+        if session.blocks.isEmpty {
+            Welcome()
+        } else {
+            conversation
+        }
+    }
+
+    private var conversation: some View {
         ScrollView {
             // Lazy: a resize lays out the rows in view at once and the long
             // history above over the next frames.

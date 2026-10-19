@@ -19,9 +19,17 @@ under strict automated checks (see [the decisions](wiki/index.md#decisions)).
 
 Models are accessed through OpenRouter via
 [swift-openrouter](https://github.com/telip007/swift-openrouter) (a git
-submodule in `Packages/OpenRouter`).
+submodule in `Packages/OpenRouter`). The model is
+`deepseek/deepseek-v4.1-flash` for now. The system prompt gives it the tools,
+the working directory and the project's `AGENTS.md` if there is one.
 
 > Status: early. The harness is being built step by step.
+
+<img src=".github/assets/logo.png" alt="" width="96" align="right">
+
+The mascot is a tabby street cat in a fez, drawn as pixel art. It greets you
+in an empty conversation, and the same sprite draws the logo and the banner
+(`swift .github/assets/render-assets.swift`).
 
 ## Tools
 
@@ -48,10 +56,11 @@ has cost, how long it has run, and which files changed.
 | Key | What |
 | --- | --- |
 | Enter | send; while the agent works, queue the message (type-ahead) |
+| `/clear` | start the conversation over (keeps the system prompt) |
 | ↑ / ↓ | recall sent messages; ↓ past the newest restores your draft |
 | Esc | browse the conversation: ↑↓ to move, Enter to expand, c to copy |
 | Page Up / Down | scroll the conversation |
-| Ctrl-P | command palette |
+| Ctrl-P | command palette: panel, copy the last reply, browse, quit |
 | Tab | show or hide the session panel |
 | Ctrl-C | clear the line; on an empty line, press twice to quit |
 | Ctrl-D | quit, on an empty line |

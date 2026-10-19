@@ -6,7 +6,7 @@ updated: 2026-10-19
 
 # Models and providers
 
-Why it is shaped this way: [0011](../decisions/0011-model-providers.md). The
+Why it is shaped this way: [0012](../decisions/0012-model-providers.md). The
 user-facing design: [model picker](../designs/model-picker.md).
 
 ## Layers

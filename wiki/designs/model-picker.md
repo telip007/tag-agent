@@ -7,7 +7,7 @@ updated: 2026-10-19
 # Model picker design
 
 Brainstormed with the maintainer on 2026-10-19 before
-[0011](../decisions/0011-model-providers.md). The mockups were shown in the
+[0012](../decisions/0012-model-providers.md). The mockups were shown in the
 browser and are kept here as text. How it was built is on
 [models and providers](../concepts/model-providers.md).
 
@@ -57,7 +57,7 @@ highlighted model, and effort is changed with ←→.
 Providers on the left with their sign-in state, their models on the right,
 and details below. Built for browsing rather than searching. It also
 assumed a usage meter, which ChatGPT plans don't offer (see
-[0011](../decisions/0011-model-providers.md)).
+[0012](../decisions/0012-model-providers.md)).
 
 ```text
 ╭─ model ───────────────────────────────────────────────╮

@@ -4,7 +4,7 @@ summary: Tag talks to OpenRouter, ChatGPT plans (Codex) and OpenCode Go through 
 updated: 2026-10-19
 ---
 
-# 0011 Model providers and user-chosen models
+# 0012 Model providers and user-chosen models
 
 ## Context
 

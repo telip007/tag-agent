@@ -50,7 +50,15 @@ public struct OnboardingView: View {
             if flow.isOpen {
                 ModelFlowView(flow: flow, width: width)
             } else {
-                Welcome(hasLostModel: hasLostModel, width: width) { [flow] in flow.start() }
+                VStack {
+                    if terminalSize.height >= Welcome.catMinimumHeight + 12 {
+                        ForEach(Array(Mascot.lines.enumerated()), id: \.offset) { _, line in
+                            line
+                        }
+                        Text(" ")
+                    }
+                    OnboardingWelcome(hasLostModel: hasLostModel, width: width) { [flow] in flow.start() }
+                }
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
@@ -64,8 +72,9 @@ public struct OnboardingView: View {
     }
 }
 
-/// The first screen: what Tag needs and how to go on.
-struct Welcome: View {
+/// The first screen, under the cat when the terminal is tall enough: what
+/// Tag needs and how to go on.
+struct OnboardingWelcome: View {
     let hasLostModel: Bool
     let width: Int
     let start: @MainActor () -> Void
