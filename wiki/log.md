@@ -189,3 +189,6 @@ Without credentials: OpenCode Go demands `x-opencode-session` (400 otherwise) an
 
 ## [2026-10-19] update | Credentials across processes, and kept from the tools
 Credential and settings writes hold a cross-process `flock`, and a ChatGPT refresh holds its own lock and re-reads the account, so two Tag sessions no longer spend the same rotating refresh token (which signs the user out). The file tools, `code_search` and `bash` refuse Tag's config directory. The Keychain was considered and left out ([0012](decisions/0012-model-providers.md)). See [models and providers](concepts/model-providers.md#credentials-and-settings).
+
+## [2026-10-19] update | OpenCode Go live; ChatGPT Business blocked
+The maintainer used OpenCode Go live. The ChatGPT sign-in failed on a Business workspace with `3p_delegated_access_policy_denied`: plan usage in third-party apps is for personal Plus and Pro plans, with no admin setting found. Whether to offer the Codex CLI's undocumented route is open. See [models and providers](concepts/model-providers.md#gotchas).

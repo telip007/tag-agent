@@ -182,8 +182,20 @@ mapped in [`ResponsesStream`](../../Sources/ModelKit/Wire/ResponsesStream.swift)
 - **OpenAI's authorize page is behind a browser check.** Fetching it from a
   script gets a 403 challenge, so the sign-in can only be tried in a real
   browser, which is how Tag opens it.
-- **Not tried live yet**: a real ChatGPT sign-in, and OpenCode Go requests.
-  They are tested against recorded-shape fixtures and a local loopback
-  listener only. Unknowns: the field names for context and reasoning levels
+- **ChatGPT Business workspaces refuse the sign-in** with
+  `3p_delegated_access_policy_denied` in the browser (seen 2026-10-19, also
+  reported by users of other open-source agents). Plan usage in third-party
+  apps is offered to personal Plus and Pro plans; no admin setting for
+  Business was found (the Admin Console's External access, global admins
+  only, governs identity sign-in and delegated data access). The workaround
+  is to choose a personal Plus or Pro workspace when signing in. The
+  Codex CLI's own sign-in still works for Business because it is OpenAI's app;
+  using it from Tag would mean posing as the Codex CLI on an undocumented
+  backend, which was left as an open decision.
+- **OpenCode Go works live**: the maintainer connected a key and chatted
+  through it (2026-10-19).
+- **Not tried live yet**: a successful ChatGPT sign-in (only a Business
+  workspace was tried), tested so far against fixtures and a local loopback
+  listener. Unknowns: the field names for context and reasoning levels
   in `/v1/models`; whether Go's Anthropic route accepts adaptive thinking;
   Gemini's `thinkingLevel` values.
