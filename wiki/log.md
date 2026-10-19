@@ -183,3 +183,6 @@ Without credentials: OpenCode Go demands `x-opencode-session` (400 otherwise) an
 
 ## [2026-10-19] update | Live adapter tests through OpenRouter
 `LiveAdapterTests` (opt-in with `TAG_LIVE_TESTS=1`) ran a real tool-call round trip through the Chat Completions, Responses and Anthropic Messages adapters on OpenRouter; all pass. They found that gateways end Anthropic streams with `data: [DONE]`, which the Anthropic and Gemini decoders now ignore. See [models and providers](concepts/model-providers.md#gotchas).
+
+## [2026-10-19] update | Arrows in "connect a provider"
+↑↓ moved the highlight but the list didn't redraw: the row closure of a `ForEach` read it, and Stipple didn't track reads there (fixed in Stipple 0.5.2). `ProviderSetup` reads the highlight in its body, and `OnboardingRunTests` types the keys through the runtime. See [terminal UI](concepts/terminal-ui.md#gotchas).

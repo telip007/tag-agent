@@ -51,9 +51,11 @@ struct ProviderSetup: View {
     }
 
     private var list: some View {
-        VStack(alignment: .leading) {
+        // Read here, in the body, so a new highlight redraws the list.
+        let highlighted = state.highlighted
+        return VStack(alignment: .leading) {
             ForEach(Array(state.items.enumerated()), id: \.offset) { index, item in
-                let isHighlighted = index == state.highlighted
+                let isHighlighted = index == highlighted
                 itemLine(item, isHighlighted: isHighlighted)
                     .frame(width: width - 4, alignment: .leading)
                     .background(isHighlighted ? Theme.selection : Theme.overlay)

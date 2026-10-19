@@ -459,6 +459,12 @@ How to measure it, and the traps on the way:
   only recoloured cells, so the session panel's text showed through the
   model picker wherever the picker's own content was blank. 0.5.1 paints
   background-coloured spaces, as Ink does.
+- **Before Stipple 0.5.2 a value read only inside a `ForEach` row closure
+  didn't redraw.** ↑↓ in "connect a provider" moved the highlight, but the
+  list stayed put. `ProviderSetup` reads the highlight in its body, and 0.5.2
+  tracks `ForEach` updates. `OnboardingRunTests` and `WorkspaceRunTests`
+  drive the real views through Stipple's runtime with typed keys, which
+  catches this kind of bug where `renderToString` can't.
 - **A paste without an `.onPaste` handler arrives as one `KeyPress`** with
   the whole text in `characters`. Typing paths read `typedText`, which
   covers both cases.
