@@ -41,7 +41,7 @@ struct CommandPalette: View {
         .padding(.horizontal, 2)
         .padding(.vertical, 1)
         .frame(width: 48)
-        .background(Color(red: 36, green: 39, blue: 52))
+        .background(Theme.overlay)
         .border(.rounded, color: Theme.accent)
     }
 }

@@ -8,6 +8,7 @@ enum Theme {
     static let tile = Color(red: 64, green: 184, blue: 175)
     static let rule = Color.gray
     static let selection = Color(red: 58, green: 62, blue: 80)
+    static let overlay = Color(red: 36, green: 39, blue: 52)
     static let added = Color.green
     static let removed = Color.red
 }
