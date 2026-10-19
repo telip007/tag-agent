@@ -19,6 +19,9 @@ struct FakeProvider: Provider {
     }
 
     func models() throws -> [ModelEntry] {
+        guard isConnected() else {
+            throw ProviderError.notConnected(id)
+        }
         if let failure {
             throw failure
         }
@@ -90,4 +93,27 @@ enum Models {
 func temporaryConfigDirectory() -> URL {
     FileManager.default.temporaryDirectory.appending(
         path: "tag-tests-\(UUID().uuidString)", directoryHint: .isDirectory)
+}
+
+/// A selection over ``Models/registry(credentials:connected:)`` with its
+/// settings and credentials in `directory`.
+@MainActor
+func makeSelection(
+    directory: URL = temporaryConfigDirectory(),
+    connected: Bool = true,
+    signIn: (@MainActor (ProviderID) async throws -> Void)? = nil,
+) -> ModelSelection {
+    let credentials = CredentialStore(directory: directory, environment: [:])
+    return ModelSelection(
+        registry: Models.registry(credentials: credentials, connected: connected),
+        settings: SettingsStore(directory: directory),
+        credentials: credentials,
+        signIn: signIn,
+    )
+}
+
+/// The providers a fake sign-in was asked for.
+@MainActor
+final class SignIns {
+    var providers: [ProviderID] = []
 }

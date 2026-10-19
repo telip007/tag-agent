@@ -50,43 +50,16 @@ public struct OnboardingView: View {
             if flow.isOpen {
                 ModelFlowView(flow: flow, width: width)
             } else {
-                Welcome(hasLostModel: hasLostModel, width: width) { start() }
+                Welcome(hasLostModel: hasLostModel, width: width) { [flow] in flow.start() }
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-        .onKeyPress { press in handle(press) }
+        .onKeyPress { [flow, exit] press in flow.handleOnboardingKey(press) { exit() } ? .handled : .ignored }
         .onPaste { [flow] in flow.paste($0) }
         .task {
             flow.rowLimit = max(terminalSize.height - 14, 5)
             flow.onChosen = { exit() }
             await selection.load()
-        }
-    }
-
-    private func handle(_ press: KeyPress) -> KeyPress.Result {
-        guard press.phase != .up else {
-            return .ignored
-        }
-        if press.key == "c", press.modifiers.contains(.control) {
-            exit()
-            return .handled
-        }
-        if flow.isOpen {
-            return flow.handle(press) ? .handled : .ignored
-        }
-        guard press.key == .return else {
-            return .ignored
-        }
-        start()
-        return .handled
-    }
-
-    /// Past the welcome: to the picker when a provider is connected, else to connecting one.
-    private func start() {
-        if selection.connected.isEmpty {
-            flow.openConnect()
-        } else {
-            flow.openPicker()
         }
     }
 }

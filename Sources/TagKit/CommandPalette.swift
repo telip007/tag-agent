@@ -3,6 +3,8 @@ import Stipple
 
 /// What the command palette offers.
 enum PaletteCommand: String, CaseIterable, Identifiable {
+    case switchModel = "Switch model"
+    case connectProvider = "Connect a provider"
     case togglePanel = "Show or hide the session panel"
     case copyLastReply = "Copy the last reply"
     case browse = "Browse the conversation"
@@ -12,6 +14,8 @@ enum PaletteCommand: String, CaseIterable, Identifiable {
 
     var key: String {
         switch self {
+        case .switchModel: "/model"
+        case .connectProvider: ""
         case .togglePanel: "tab"
         case .copyLastReply: ""
         case .browse: "esc"

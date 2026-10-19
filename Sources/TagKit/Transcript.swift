@@ -15,6 +15,8 @@ public struct TranscriptBlock: Identifiable, Sendable, Equatable {
         case tools([ToolRun])
         /// A change `edit_file` made.
         case edit(FileEdit)
+        /// A model call that failed, and what the user can do about it.
+        case failure(message: String, recovery: String?)
     }
 
     /// The block's position in the transcript.

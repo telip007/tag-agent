@@ -92,6 +92,73 @@ final class ModelFlow {
         }
     }
 
+    /// `/model` opens the picker; `/model provider/model` switches, or opens
+    /// the picker searching for the text when nothing matches exactly.
+    func run(_ command: ModelCommand) async {
+        switch command {
+        case .openPicker:
+            openPicker()
+        case .switchTo(let text):
+            if await selection.quickSwitch(text) == nil {
+                openPicker(query: text)
+            }
+        }
+    }
+
+    /// Keys while the flow or the ChatGPT plan notice covers the workspace:
+    /// everything typed is theirs, Ctrl-C closes the flow, and Enter or Esc
+    /// dismiss the notice.
+    ///
+    /// - Returns: `nil` when neither is shown, so the key is the workspace's.
+    func handleWorkspaceKey(_ press: KeyPress) -> Bool? {
+        if isOpen {
+            if press.key == "c", press.modifiers.contains(.control) {
+                close()
+            } else {
+                _ = handle(press)
+            }
+            return true
+        }
+        guard selection.isChatGPTWelcomeDue else {
+            return nil
+        }
+        if press.phase != .up, press.key == .return || press.key == .escape {
+            selection.dismissChatGPTWelcome()
+        }
+        return true
+    }
+
+    /// Onboarding keys: Ctrl-C quits, and on the welcome Enter goes on.
+    ///
+    /// - Returns: Whether the press was taken.
+    func handleOnboardingKey(_ press: KeyPress, quit: () -> Void) -> Bool {
+        guard press.phase != .up else {
+            return false
+        }
+        if press.key == "c", press.modifiers.contains(.control) {
+            quit()
+            return true
+        }
+        if isOpen {
+            return handle(press)
+        }
+        guard press.key == .return else {
+            return false
+        }
+        start()
+        return true
+    }
+
+    /// Past the welcome: to the picker when a provider is connected, else to
+    /// connecting one.
+    func start() {
+        if selection.connected.isEmpty {
+            openConnect()
+        } else {
+            openPicker()
+        }
+    }
+
     /// Types pasted text into what's shown.
     func paste(_ text: String) {
         switch screen {

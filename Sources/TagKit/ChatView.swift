@@ -7,8 +7,9 @@ public import Stipple
 /// (↑↓ to move, Enter to expand, c to copy); Ctrl-P opens the command
 /// palette; Tab shows or hides the panel. ↑/↓ recall sent messages, typing
 /// while the agent works queues the message, `/clear` on its own line starts
-/// the conversation over, Ctrl-C clears the line and quits when pressed
-/// twice, and Ctrl-D on an empty line quits.
+/// the conversation over, `/model` opens the model picker (`/model
+/// provider/model` switches at once), Ctrl-C clears the line and quits when
+/// pressed twice, and Ctrl-D on an empty line quits.
 ///
 /// The view starts the agent when it appears and exits the app when the
 /// agent's loop ends, rethrowing its error.
@@ -33,6 +34,7 @@ public struct ChatView: View {
 
     let session: ChatSession
     let agent: Agent
+    let selection: ModelSelection
     let copy: @MainActor (String) -> Void
 
     @State private var input = ""
@@ -43,6 +45,7 @@ public struct ChatView: View {
     @State private var isPaletteOpen = false
     @State private var paletteSelection: PaletteCommand?
     @State private var scroll = ScrollPosition(edge: .bottom)
+    @State private var models: ModelFlow
     @FocusState private var isInputFocused = true
     @Environment(\.exit) private var exit
     @Environment(\.terminalSize) private var terminalSize
@@ -52,12 +55,21 @@ public struct ChatView: View {
     /// - Parameters:
     ///   - session: The state the view shows and the hand-off of input.
     ///   - agent: The agent loop the view starts.
+    ///   - selection: The model in use, which `/model` changes; the agent
+    ///     should read its ``ModelSelection/current``.
     ///   - copy: Puts text on the clipboard; defaults to the terminal's
     ///     clipboard escape (OSC 52).
-    public init(session: ChatSession, agent: Agent, copy: @escaping @MainActor (String) -> Void = Clipboard.copy) {
+    public init(
+        session: ChatSession,
+        agent: Agent,
+        selection: ModelSelection,
+        copy: @escaping @MainActor (String) -> Void = Clipboard.copy,
+    ) {
         self.session = session
         self.agent = agent
+        self.selection = selection
         self.copy = copy
+        _models = State(initialValue: ModelFlow(selection: selection))
     }
 
     /// The panes, the input line and the footer.
@@ -67,7 +79,7 @@ public struct ChatView: View {
                 TranscriptPane(session: session, selected: browsing, position: $scroll)
                     .pane(title: "tag", isActive: browsing != nil)
                 if isPanelShown, terminalSize.width >= Self.panelMinimumWidth {
-                    SessionPanel(session: session)
+                    SessionPanel(session: session, selection: selection)
                         .pane(title: "session", isActive: false)
                         .frame(width: SessionPanel.width + 4)
                 }
@@ -77,6 +89,7 @@ public struct ChatView: View {
                 Text("› ").foregroundStyle(session.isWaitingForInput ? Theme.accent : Theme.rule)
                 TextField(session.isWaitingForInput ? "ask anything" : "type ahead…", text: $input)
                     .focused($isInputFocused)
+                    .focusable(!isOverlayOpen)
             }
             .padding(.horizontal, 1)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -89,10 +102,26 @@ public struct ChatView: View {
                     isPaletteOpen = false
                     run(command)
                 }
+            } else if models.isOpen {
+                ModelFlowView(flow: models, width: min(terminalSize.width - 4, 84))
+            } else if selection.isChatGPTWelcomeDue {
+                ChatGPTWelcomeNotice { dismissWelcome() }
             }
         }
+        .onPaste { [models] text in
+            if models.isOpen {
+                models.paste(text)
+            }
+        }
+        .onChange(of: isOverlayOpen) {
+            isInputFocused = !isOverlayOpen
+        }
         .onSubmit {
-            if session.submit(input) {
+            if let command = ModelCommand(input) {
+                input = ""
+                history.reset()
+                openModels { models in Task { await models.run(command) } }
+            } else if session.submit(input) {
                 input = ""
                 history.reset()
             }
@@ -107,6 +136,10 @@ public struct ChatView: View {
             } catch {
                 exit(throwing: error)
             }
+        }
+        .task {
+            // The catalogue behind the picker, so `/model` opens on a full list.
+            await selection.load()
         }
         .task(id: isQuitArmed) {
             guard isQuitArmed else {
@@ -123,6 +156,9 @@ public struct ChatView: View {
     private func handle(_ press: KeyPress) -> KeyPress.Result {
         if isPaletteOpen {
             return handlePalette(press)
+        }
+        if let result = handleModelKeys(press) {
+            return result
         }
         if let selected = browsing {
             // A `/clear` may have emptied the transcript under the selection.
@@ -179,23 +215,6 @@ public struct ChatView: View {
         isPaletteOpen = false
         isInputFocused = true
         return .handled
-    }
-
-    private func run(_ command: PaletteCommand) {
-        isInputFocused = true
-        switch command {
-        case .togglePanel:
-            isPanelShown.toggle()
-        case .copyLastReply:
-            let reply = session.transcript.last { if case .reply = $0.content { true } else { false } }
-            if let reply {
-                copy(reply.plainText)
-            }
-        case .browse:
-            startBrowsing()
-        case .quit:
-            exit()
-        }
     }
 
     /// Ctrl-C clears the line; on an empty line, a second press quits.
@@ -343,5 +362,51 @@ extension KeyPress {
             return nil
         }
         return characters.isEmpty ? String(character) : characters
+    }
+}
+
+extension ChatView {
+    fileprivate func run(_ command: PaletteCommand) {
+        isInputFocused = true
+        switch command {
+        case .switchModel:
+            openModels { $0.openPicker() }
+        case .connectProvider:
+            openModels { $0.openConnect() }
+        case .togglePanel:
+            isPanelShown.toggle()
+        case .copyLastReply:
+            let reply = session.transcript.last { if case .reply = $0.content { true } else { false } }
+            if let reply {
+                copy(reply.plainText)
+            }
+        case .browse:
+            startBrowsing()
+        case .quit:
+            exit()
+        }
+    }
+
+    /// Whether the model picker, connecting a provider or the ChatGPT plan
+    /// notice covers the workspace, so keys are theirs and not the input's.
+    fileprivate var isOverlayOpen: Bool {
+        models.isOpen || selection.isChatGPTWelcomeDue
+    }
+
+    /// Opens the picker or connecting a provider, sized for the terminal.
+    fileprivate func openModels(_ open: (ModelFlow) -> Void) {
+        models.rowLimit = max(terminalSize.height - 14, 5)
+        isInputFocused = false
+        open(models)
+    }
+
+    /// Keys for the model overlays, or `nil` when none is open.
+    fileprivate func handleModelKeys(_ press: KeyPress) -> KeyPress.Result? {
+        models.handleWorkspaceKey(press).map { _ in .handled }
+    }
+
+    fileprivate func dismissWelcome() {
+        selection.dismissChatGPTWelcome()
+        isInputFocused = true
     }
 }

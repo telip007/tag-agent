@@ -171,6 +171,8 @@ final class ProviderSetupState {
         key = ""
         if let failure = selection.catalogue?.failures[provider] {
             error = failure
+        } else if !selection.connected.contains(provider) {
+            error = "\(provider.displayName) isn't connected yet. Try again."
         } else {
             notice = "\(provider.displayName) connected."
             if offersProceed, let index = items.firstIndex(of: .proceed) {

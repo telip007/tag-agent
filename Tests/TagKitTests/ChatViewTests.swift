@@ -26,7 +26,7 @@ struct ChatViewTests {
         let session = ChatSession()
         configure(session)
         let agent = Terminal([]).agent(model: ScriptedModel([]))
-        let view = ChatView(session: session, agent: agent, copy: { _ in })
+        let view = ChatView(session: session, agent: agent, selection: makeSelection(), copy: { _ in })
             .frame(height: height)
             .environment(\.terminalSize, Size(width: width, height: height))
         return plainText(view, width: width)
@@ -193,7 +193,7 @@ struct ChatViewTests {
         for index in 1...20 {
             session.handle(.reply("reply \(index)"))
         }
-        let view = ChatView(session: session, agent: agent, copy: { _ in })
+        let view = ChatView(session: session, agent: agent, selection: makeSelection(), copy: { _ in })
             .frame(height: 16)
             .environment(\.terminalSize, Size(width: 100, height: 16))
         let text = plainText(view, width: 100)

@@ -7,7 +7,8 @@ struct SearchableModel {
     let entry: ModelEntry
     /// The words of the name, the model id, and the provider's name and aliases.
     let words: [String]
-    /// The name and the model id, for substring and subsequence matches.
+    /// The name, the model id and the provider's name, for substring and
+    /// subsequence matches.
     let text: String
 
     init(_ entry: ModelEntry) {
@@ -15,12 +16,12 @@ struct SearchableModel {
         let provider = entry.ref.provider
         let sources = [entry.name, entry.ref.model, provider.displayName] + provider.aliases
         words = sources.flatMap(Self.words(in:))
-        text = "\(entry.name) \(entry.ref.model)".lowercased()
+        text = "\(entry.name) \(entry.ref.model) \(provider.displayName)".lowercased()
     }
 
     /// How well the model matches every token of a search, or `nil` when one
     /// doesn't match. A word starting with the token counts most, then the
-    /// token anywhere in the name or id, then its letters in order.
+    /// token anywhere in the text, then its letters in order.
     func score(_ tokens: [String]) -> Int? {
         var total = 0
         for token in tokens {
@@ -42,9 +43,10 @@ struct SearchableModel {
         text.lowercased().split { !$0.isLetter && !$0.isNumber }.map(String.init)
     }
 
-    /// The tokens of a search: its words, lowercased.
+    /// The tokens of a search: its words, lowercased. A `/` separates words
+    /// too, so `go/kimi` finds Kimi on OpenCode Go.
     static func tokens(of query: String) -> [String] {
-        query.lowercased().split(whereSeparator: \.isWhitespace).map(String.init)
+        query.lowercased().split { $0.isWhitespace || $0 == "/" }.map(String.init)
     }
 
     /// Whether `needle`'s characters appear in `haystack` in order.
