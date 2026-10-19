@@ -18,6 +18,22 @@ protocol WireDecoder {
     /// - Throws: ``ProviderError/malformedResponse(_:detail:)`` when the
     ///   stream ended without a reply.
     func reply() throws -> ModelReply
+
+    /// The error for a request that failed before the stream opened.
+    ///
+    /// - Parameters:
+    ///   - status: The HTTP status.
+    ///   - body: The response body.
+    ///   - provider: The provider that answered.
+    /// - Returns: The error to throw.
+    static func error(status: Int, body: String, provider: ProviderID) -> ProviderError
+}
+
+extension WireDecoder {
+    /// The shared mapping: ``ProviderError/from(status:body:provider:)``.
+    static func error(status: Int, body: String, provider: ProviderID) -> ProviderError {
+        ProviderError.from(status: status, body: body, provider: provider)
+    }
 }
 
 /// Runs an adapter's request away from the caller's actor. The agent runs on
@@ -49,7 +65,7 @@ enum WireStream {
             let request = try await endpoint.request(body: try makeBody().encoded())
             let provider = endpoint.provider
             let events = try await endpoint.transport.events(for: request) { status, body in
-                ProviderError.from(status: status, body: body, provider: provider)
+                Decoder.error(status: status, body: body, provider: provider)
             }
             var decoder = Decoder(provider: provider)
             for try await event in events {

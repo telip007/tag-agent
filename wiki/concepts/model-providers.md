@@ -163,9 +163,13 @@ mapped in [`ResponsesStream`](../../Sources/ModelKit/Wire/ResponsesStream.swift)
   switching providers loses the old reasoning but keeps the conversation.
 - **Gemini rejects some JSON Schema keys** (`additionalProperties`,
   `$schema`), so the adapter strips them from tool schemas.
-- **There are two streaming helpers.** `WireStream` (Chat Completions,
-  Anthropic, Gemini) and `ResponsesStream` were written in parallel. Merging
-  them into one is a follow-up.
+- **One streaming path for every format.** Each adapter has a `WireDecoder`
+  (Chat Completions, Anthropic, Gemini, and `ResponsesDecoder`), and
+  [`WireStream`](../../Sources/ModelKit/Wire/WireStream.swift) runs encoding,
+  the request and decoding in a detached task. A decoder may map HTTP errors
+  its own way: Responses maps the ChatGPT plan codes (`ResponsesError`).
+  The Responses adapter first had its own copy of this (written in
+  parallel), merged into `WireStream` on 2026-10-19.
 - **Gateways end Anthropic and Gemini streams with `data: [DONE]`** too.
   OpenRouter's Anthropic-compatible route sends it after `message_stop`, so
   every decoder ignores it.

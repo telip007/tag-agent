@@ -37,42 +37,14 @@ public struct ResponsesChatModel: ChatModel {
         options: ReplyOptions,
         onDelta: (ReplyDelta) -> Void,
     ) async throws -> ModelReply {
-        let body = Self.body(
-            for: conversation, tools: tools, options: options, model: endpoint.model,
-            includeEncryptedReasoning: includeEncryptedReasoning)
-        var accumulator = ResponsesAccumulator(provider: endpoint.provider)
-        for try await event in Self.events(posting: body, to: endpoint) {
-            if let delta = try accumulator.apply(event) {
-                onDelta(delta)
-            }
-        }
-        return try accumulator.reply()
-    }
-
-    /// Sends `body` and decodes the events off the caller's actor. The agent
-    /// runs on the main actor with the UI, and encoding a long conversation
-    /// or decoding every event there would hold up typing.
-    private static func events(
-        posting body: JSONValue, to endpoint: WireEndpoint,
-    ) -> AsyncThrowingStream<ResponsesEvent, any Error> {
-        AsyncThrowingStream { continuation in
-            let task = Task.detached {
-                do {
-                    let provider = endpoint.provider
-                    let request = try await endpoint.request(body: try JSONEncoder().encode(body))
-                    let events = try await endpoint.transport.events(for: request) { status, body in
-                        ResponsesError.from(status: status, body: body, provider: provider)
-                    }
-                    for try await event in events {
-                        continuation.yield(ResponsesEvent(data: event.data, provider: provider))
-                    }
-                    continuation.finish()
-                } catch {
-                    continuation.finish(throwing: error)
-                }
-            }
-            continuation.onTermination = { _ in task.cancel() }
-        }
+        let (model, includeEncryptedReasoning) = (endpoint.model, includeEncryptedReasoning)
+        return try await WireStream.send(
+            {
+                Self.body(
+                    for: conversation, tools: tools, options: options, model: model,
+                    includeEncryptedReasoning: includeEncryptedReasoning)
+            },
+            to: endpoint, decoder: ResponsesDecoder.self, onDelta: onDelta)
     }
 
     /// The request body: the conversation as `input`, the system prompt as

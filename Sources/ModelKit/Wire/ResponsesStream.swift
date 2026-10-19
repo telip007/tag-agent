@@ -192,6 +192,31 @@ struct ResponsesAccumulator {
     }
 }
 
+/// The ``WireDecoder`` for OpenAI Responses: each event parsed as a
+/// ``ResponsesEvent`` and gathered by a ``ResponsesAccumulator``, with the
+/// ChatGPT plan's error codes mapped by ``ResponsesError``.
+struct ResponsesDecoder: WireDecoder {
+    private let provider: ProviderID
+    private var accumulator: ResponsesAccumulator
+
+    init(provider: ProviderID) {
+        self.provider = provider
+        accumulator = ResponsesAccumulator(provider: provider)
+    }
+
+    mutating func decode(_ event: ServerSentEvent) throws -> [ReplyDelta] {
+        try accumulator.apply(ResponsesEvent(data: event.data, provider: provider)).map { [$0] } ?? []
+    }
+
+    func reply() throws -> ModelReply {
+        try accumulator.reply()
+    }
+
+    static func error(status: Int, body: String, provider: ProviderID) -> ProviderError {
+        ResponsesError.from(status: status, body: body, provider: provider)
+    }
+}
+
 /// Turns OpenAI Responses errors into ``ProviderError``s, including the
 /// codes of ChatGPT plan usage.
 enum ResponsesError {

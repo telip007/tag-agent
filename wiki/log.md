@@ -192,3 +192,6 @@ Credential and settings writes hold a cross-process `flock`, and a ChatGPT refre
 
 ## [2026-10-19] update | OpenCode Go live; ChatGPT Business blocked
 The maintainer used OpenCode Go live. The ChatGPT sign-in failed on a Business workspace with `3p_delegated_access_policy_denied`: plan usage in third-party apps is for personal Plus and Pro plans, with no admin setting found. Whether to offer the Codex CLI's undocumented route is open. See [models and providers](concepts/model-providers.md#gotchas).
+
+## [2026-10-19] update | One streaming helper
+The Responses adapter now streams through `WireStream` with a `ResponsesDecoder`, like the other formats, instead of its own detached-task stream. `WireDecoder` gained an `error(status:body:provider:)` hook so Responses keeps its ChatGPT plan error codes. See [models and providers](concepts/model-providers.md#gotchas).
