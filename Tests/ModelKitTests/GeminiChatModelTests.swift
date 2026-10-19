@@ -17,6 +17,8 @@ struct GeminiChatModelTests {
 
         data: {"candidates":[{"content":{"role":"model","parts":[{"functionCall":{"name":"read_file","args":{"path":"a.txt"}},"thoughtSignature":"t2"}]},"finishReason":"STOP"}],"usageMetadata":{"promptTokenCount":50,"candidatesTokenCount":12,"thoughtsTokenCount":8,"totalTokenCount":70}}
 
+        data: [DONE]
+
         """#
 
     @Test func streamsThoughtsTextAndCalls() async throws {

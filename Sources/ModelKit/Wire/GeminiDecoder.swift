@@ -39,6 +39,11 @@ struct GeminiDecoder: WireDecoder {
     }
 
     mutating func decode(_ event: ServerSentEvent) throws -> [ReplyDelta] {
+        // OpenAI-style gateways (OpenRouter among them) end every stream with
+        // `data: [DONE]`, also in this format.
+        guard event.data != "[DONE]" else {
+            return []
+        }
         guard let chunk = JSONValue.parse(event.data) else {
             throw ProviderError.malformedResponse(provider, detail: "A stream chunk wasn't JSON.")
         }

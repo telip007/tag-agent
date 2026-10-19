@@ -141,6 +141,15 @@ mapped in [`ResponsesStream`](../../Sources/ModelKit/Wire/ResponsesStream.swift)
 - **There are two streaming helpers.** `WireStream` (Chat Completions,
   Anthropic, Gemini) and `ResponsesStream` were written in parallel. Merging
   them into one is a follow-up.
+- **Gateways end Anthropic and Gemini streams with `data: [DONE]`** too.
+  OpenRouter's Anthropic-compatible route sends it after `message_stop`, so
+  every decoder ignores it.
+- **Live adapter tests:** `TAG_LIVE_TESTS=1 swift test --filter
+  LiveAdapterTests` (with `OPENROUTER_API_KEY`) sends a real tool call and
+  its result through the Chat Completions, Responses and Anthropic Messages
+  adapters via OpenRouter, which serves all three formats. They're skipped
+  otherwise. They passed on 2026-10-19. Gemini's native format needs a
+  Google or OpenCode Go key.
 - **OpenCode Go rejects a request without `x-opencode-session`** (HTTP 400
   `MissingSessionID`) before it even checks the key. With the header and no
   key it answers 401 "Go requires a credential", which Tag reports as sign in

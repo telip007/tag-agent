@@ -52,6 +52,9 @@ struct AnthropicChatModelTests {
         event: message_stop
         data: {"type":"message_stop"}
 
+        event: data
+        data: [DONE]
+
         """#
 
     @Test func streamsThinkingTextAndToolUse() async throws {

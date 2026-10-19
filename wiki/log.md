@@ -180,3 +180,6 @@ The model picker over the workspace let the session panel show through its blank
 
 ## [2026-10-19] update | Live probes of the Go and ChatGPT endpoints
 Without credentials: OpenCode Go demands `x-opencode-session` (400 otherwise) and answers 401 without a key; OpenAI's authorize page sits behind a browser check. Gotchas on [models and providers](concepts/model-providers.md#gotchas). A real ChatGPT sign-in and Go requests with a key still need the maintainer.
+
+## [2026-10-19] update | Live adapter tests through OpenRouter
+`LiveAdapterTests` (opt-in with `TAG_LIVE_TESTS=1`) ran a real tool-call round trip through the Chat Completions, Responses and Anthropic Messages adapters on OpenRouter; all pass. They found that gateways end Anthropic streams with `data: [DONE]`, which the Anthropic and Gemini decoders now ignore. See [models and providers](concepts/model-providers.md#gotchas).

@@ -46,6 +46,11 @@ struct AnthropicDecoder: WireDecoder {
     }
 
     mutating func decode(_ event: ServerSentEvent) throws -> [ReplyDelta] {
+        // OpenAI-style gateways (OpenRouter among them) end every stream with
+        // `data: [DONE]`, also in this format.
+        guard event.data != "[DONE]" else {
+            return []
+        }
         guard let data = JSONValue.parse(event.data) else {
             throw ProviderError.malformedResponse(provider, detail: "An event wasn't JSON.")
         }
