@@ -150,3 +150,6 @@ Typing lagged while replies streamed and the workspace slowed to about a frame a
 
 ## [2026-10-19] update | Typing stays smooth under any reply
 Stipple 0.3.3: text that only grew resumes wrapping, and key presses draw at once. `OpenRouterChatModel` runs the request and chunk decoding in a detached task: under `NonisolatedNonsendingByDefault` they ran on the main actor and held up the first key after sending. `Markdown.inline` skips its regex on lines without markers. Live: typing echo at 10–12 ms median and at most 36 ms through four long replies, one of them a single 700-word paragraph; the harness pitfalls that faked stalls are on the [terminal UI](concepts/terminal-ui.md#keeping-frames-cheap) page.
+
+## [2026-10-19] update | Smooth at any length, size and load
+Stipple 0.4.0 (frames cost what is on screen). `BlockRow` applies the row's frame, tap and hover itself and fills the pane, hover lives in a `HoverState` object, the footer reads the scroll position so scrolling doesn't rebuild `ChatView`, and incremental rendering writes only changed rows. Measured across sizes, 1,500 blocks, debug and release, and live while resizing, scrolling and under full CPU load; numbers and method in [terminal UI](concepts/terminal-ui.md#keeping-frames-cheap).

@@ -82,12 +82,27 @@ struct TranscriptBlockTests {
         session.handle(.reply("a"))
         session.handle(.reply("b"))
         let first = session.blocks[0]
-        let row = BlockRow(block: first, isExpanded: false, isSelected: false, isHovered: false)
-        #expect(row == BlockRow(block: first, isExpanded: false, isSelected: false, isHovered: false))
-        #expect(row != BlockRow(block: first, isExpanded: true, isSelected: false, isHovered: false))
-        #expect(row != BlockRow(block: session.blocks[1], isExpanded: false, isSelected: false, isHovered: false))
+        let hover = HoverState()
+        let row = BlockRow(
+            block: first, session: session, hover: hover, isExpanded: false, isSelected: false, isHovered: false)
+        #expect(
+            row
+                == BlockRow(
+                    block: first, session: session, hover: hover, isExpanded: false, isSelected: false, isHovered: false
+                ))
+        #expect(
+            row
+                != BlockRow(
+                    block: first, session: session, hover: hover, isExpanded: true, isSelected: false, isHovered: false)
+        )
+        #expect(
+            row
+                != BlockRow(
+                    block: session.blocks[1], session: session, hover: hover, isExpanded: false, isSelected: false,
+                    isHovered: false))
         // A hovered row lights up only when a click would change it.
-        let hovered = BlockRow(block: first, isExpanded: false, isSelected: false, isHovered: true)
+        let hovered = BlockRow(
+            block: first, session: session, hover: hover, isExpanded: false, isSelected: false, isHovered: true)
         #expect(plainText(hovered) == plainText(row))
     }
 }

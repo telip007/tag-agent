@@ -141,12 +141,16 @@ handling; the parts are in
   than a messaging app's bottom-up layout), and once it overflows the view
   follows the newest block. Also `.scrollOnPageKeys()`, so Page Up/Down scroll while the input has
   focus. The `ScrollPosition` lives in `ChatView`: browse mode calls
-  `scrollTo(id:)` on the selected block (each block has `.id(block.id)`), and
-  leaving it calls `scrollTo(edge: .bottom)`. Once the user scrolls away
-  (`isPositionedByUser` and `edge != .bottom`), the footer offers `↓ latest`.
+  `scrollTo(id:)` on the selected block (the `ForEach` gives each row its
+  block's id), and leaving it calls `scrollTo(edge: .bottom)`. Once the user
+  scrolls away (`isPositionedByUser` and `edge != .bottom`), the footer
+  offers `↓ latest`; the footer reads the position itself through a binding,
+  so a scroll rebuilds the footer and not `ChatView`.
   A scroll indicator takes the rightmost column when the content overflows.
-  Each block is a `BlockRow`, which reads its `LiveBlock` and is `Equatable`
-  (same block object, same flags), around `BlockView`, which draws it: user messages bold after a gold `▌`;
+  Each block is a `BlockRow`, which reads its `LiveBlock`, fills the pane's
+  width, takes clicks and hover itself (hover goes to the pane's
+  `HoverState` object), and is `Equatable` (same objects, same flags), around
+  `BlockView`, which draws it: user messages bold after a gold `▌`;
   replies through [`Markdown`](../../Sources/TagKit/Markdown.swift), one
   `Text` per line in a `VStack` (a blank line is a space so it keeps its row);
   `ReasoningView`, dim: `◌ thinking` and the last three lines of the
@@ -271,6 +275,42 @@ second after a few messages. Now:
   markers.
 - **The model call runs off the main actor** ([why](#why-the-main-actor)).
 
+- **Stipple 0.4.0 makes a frame cost what is on screen**: lazy moves,
+  off-screen rows skipped in drawing and hit testing, tree walks that skip
+  subtrees, text measured from word widths with lines only for drawn text,
+  and a resize that updates an observable size instead of the environment.
+- **Nothing rebuilds every row.** `BlockRow` applies the row's frame, tap
+  and hover itself, so the `ForEach` element is one `Equatable` view: a pane
+  rebuild compares rows instead of rebuilding four modifier nodes for each.
+  Rows fill the pane, so the stack's width never follows its widest row: a
+  streamed line growing past the others re-measured every row at each new
+  width. Scrolling doesn't rebuild `ChatView` (the footer reads the scroll
+  position), so it doesn't rebuild the pane either.
+- **Only changed rows are written.** `renderOptions` turns on Stipple's
+  incremental rendering, which rewrites each changed row from its first
+  changed column: a typed key writes about 350 bytes instead of a whole
+  frame, which matters most when the machine is busy.
+
+Measured with the real view tree (debug and release builds, 80×24, 140×40
+and 250×70, up to 1,500 blocks) for the worst frame of each interaction while
+a reply streams. Release, 1,500 blocks: idle about 1 ms, a streamed delta
+3 ms, a scroll 6 ms, expanding a block 3 ms, a resize 30–60 ms (the first
+one measures every text). Debug, 1,500 blocks: under 30 ms except a resize,
+up to about 400 ms. Live, in a pseudo-terminal, typing a character every
+200 ms while long replies streamed, in rounds that also resized the
+terminal every 400 ms, paged the transcript every 700 ms, or ran a busy loop
+on every core:
+
+| build | plain | resizing | scrolling | busy machine |
+| --- | --- | --- | --- | --- |
+| release, echo p95 / max | 8 / 23 ms | 9 / 16 ms | 7 / 11 ms | 21 / 30 ms |
+| debug, echo p95 / max | 16 / 29 ms | 16 / 21 ms | 15 / 19 ms | 30 / 32 ms |
+
+On the busy machine, a program that only echoes the line reached 9 ms p95,
+so about half of that tail is the machine. Raising the main thread's QoS
+was tried and had no measurable effect here: processes started by the tool
+runner stayed at the default priority.
+
 Measured on a debug build at 242 blocks: an idle frame (the spinner) takes
 4 ms instead of ~800, a frame per streamed delta 8 ms instead of 640, and a
 delta of a 4,000-character paragraph 9 ms. Checked live by typing a
@@ -293,6 +333,10 @@ How to measure it, and the traps on the way:
   arrives and is drawn, and a main-actor watchdog that logs late wake-ups.
 - Keep the typed line shorter than the input field, or the run scrolls out
   of view and never matches.
+- With incremental rendering the bytes no longer contain whole rows:
+  feed them to a small terminal emulator and search the screen.
+- Compare against a baseline under load: an echo-only program shows what
+  any process gets from a busy machine.
 
 ## Testing
 
@@ -331,7 +375,10 @@ How to measure it, and the traps on the way:
   that view rebuilds on every delta. Views read `blocks` and the one
   `LiveBlock` they show.
 - **`BlockRow.==` must compare everything its body reads but doesn't observe**
-  (the flags); otherwise Stipple keeps a stale row.
+  (the flags, the session and hover objects); otherwise Stipple keeps a stale
+  row.
+- **Don't read the scroll position in `ChatView`'s body**: every scroll would
+  rebuild the whole workspace. The footer reads it.
 
 - **A public `@Observable` class needs `public import Observation`** under
   `InternalImportsByDefault`: the macro expands into public members that use

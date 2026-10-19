@@ -32,27 +32,21 @@ struct TranscriptPane: View {
     let session: ChatSession
     let selected: Int?
     @Binding var position: ScrollPosition
-    @State private var hovered: Int?
+    @State private var hover = HoverState()
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
+                // `ForEach` gives each row its block's id, for `scrollTo(id:)`.
                 ForEach(session.blocks) { block in
                     BlockRow(
                         block: block,
+                        session: session,
+                        hover: hover,
                         isExpanded: session.expanded.contains(block.id),
                         isSelected: block.id == selected,
-                        isHovered: block.id == hovered,
+                        isHovered: block.id == hover.block,
                     )
-                    .id(block.id)
-                    .onTapGesture { session.toggle(block.id) }
-                    .onHover { isHovering in
-                        if isHovering {
-                            hovered = block.id
-                        } else if hovered == block.id {
-                            hovered = nil
-                        }
-                    }
                 }
             }
             .padding(.bottom, 1)
@@ -64,23 +58,46 @@ struct TranscriptPane: View {
     }
 }
 
-/// A block of the session: reads the block's content itself, so the pane
-/// doesn't rebuild when one block changes, and is equal to the same row with
-/// the same flags, so the pane rebuilding leaves the other rows alone.
+/// Which block the pointer is over. The pane reads it and the rows set it,
+/// so the rows stay equal to themselves when the pane rebuilds.
+@MainActor
+@Observable
+final class HoverState {
+    var block: Int?
+}
+
+/// A block of the session, the unit the pane is made of. It reads the
+/// block's content itself, so the pane doesn't rebuild when one block
+/// changes, and it is `Equatable`, so the pane rebuilding (on a scroll, a new
+/// block, an expanded one) leaves the other rows alone. Rows fill the pane:
+/// the stack is then as wide as the pane and not as its widest row, which a
+/// streamed line growing wider than the rest would change on every delta.
 struct BlockRow: View, Equatable {
     let block: LiveBlock
+    let session: ChatSession
+    let hover: HoverState
     let isExpanded: Bool
     let isSelected: Bool
     let isHovered: Bool
 
     var body: some View {
-        let block = TranscriptBlock(id: block.id, content: block.content)
-        BlockView(block: block, isExpanded: isExpanded, isSelected: isSelected || (isHovered && block.isExpandable))
+        let id = block.id
+        let value = TranscriptBlock(id: id, content: block.content)
+        BlockView(block: value, isExpanded: isExpanded, isSelected: isSelected || (isHovered && value.isExpandable))
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .onTapGesture { [session] in session.toggle(id) }
+            .onHover { [hover] isHovering in
+                if isHovering {
+                    hover.block = id
+                } else if hover.block == id {
+                    hover.block = nil
+                }
+            }
     }
 
     static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.block === rhs.block && lhs.isExpanded == rhs.isExpanded && lhs.isSelected == rhs.isSelected
-            && lhs.isHovered == rhs.isHovered
+        lhs.block === rhs.block && lhs.session === rhs.session && lhs.hover === rhs.hover
+            && lhs.isExpanded == rhs.isExpanded && lhs.isSelected == rhs.isSelected && lhs.isHovered == rhs.isHovered
     }
 }
 
@@ -350,6 +367,10 @@ struct Footer: View {
 
     let session: ChatSession
     let hint: Hint
+    /// Whether the everyday keys start with `↓ latest` while the user has
+    /// scrolled away from the newest block.
+    var offersLatest = false
+    @Binding var scroll: ScrollPosition
 
     var body: some View {
         HStack {
@@ -369,11 +390,20 @@ struct Footer: View {
         }
     }
 
+    private var isScrolledAway: Bool {
+        offersLatest && scroll.isPositionedByUser && scroll.edge != .bottom
+    }
+
+    private var latest: Key {
+        Key(key: "↓", label: "latest") { scroll.scrollTo(edge: .bottom) }
+    }
+
     @ViewBuilder private var hints: some View {
         switch hint {
         case .warning(let text):
             Text(text).foregroundStyle(Theme.accent)
-        case .keys(let keys):
+        case .keys(let everyday):
+            let keys = (isScrolledAway ? [latest] : []) + everyday
             HStack {
                 ForEach(Array(keys.enumerated()), id: \.offset) { offset, key in
                     if offset > 0 {

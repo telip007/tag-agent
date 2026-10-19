@@ -25,6 +25,9 @@ public struct ChatView: View {
         options.exitOnCtrlC = false
         options.alternateScreen = true
         options.mouseReporting = true
+        // Rewrite only the rows that changed: a streamed word or a typed key
+        // changes a few rows, not the whole screen.
+        options.incrementalRendering = true
         return options
     }
 
@@ -78,7 +81,7 @@ public struct ChatView: View {
             .padding(.horizontal, 1)
             .frame(maxWidth: .infinity, alignment: .leading)
             .border(.rounded, color: session.isWaitingForInput && browsing == nil ? Theme.accent : Theme.rule)
-            Footer(session: session, hint: hint)
+            Footer(session: session, hint: hint, offersLatest: !isQuitArmed && browsing == nil, scroll: $scroll)
         }
         .overlay {
             if isPaletteOpen {
@@ -210,8 +213,8 @@ public struct ChatView: View {
 }
 
 extension ChatView {
-    /// What the footer's left side says: a pending quit, the browse keys, a
-    /// way back to the newest block when scrolled away, or the everyday keys.
+    /// What the footer's left side says: a pending quit, the browse keys, or
+    /// the everyday keys.
     fileprivate var hint: Footer.Hint {
         if isQuitArmed {
             return .warning("press ctrl-c again to quit")
@@ -228,15 +231,13 @@ extension ChatView {
                 Footer.Key(key: "esc", label: "back") { leaveBrowsing() },
             ])
         }
-        var keys = [
+        // `↓ latest` is the footer's to add: it reads the scroll position,
+        // which changes on every scroll, and this view should not.
+        return .keys([
             Footer.Key(key: "esc", label: "browse") { startBrowsing() },
             Footer.Key(key: "^p", label: "commands") { isPaletteOpen = true },
             Footer.Key(key: "tab", label: "panel") { isPanelShown.toggle() },
-        ]
-        if scroll.isPositionedByUser, scroll.edge != .bottom {
-            keys.insert(Footer.Key(key: "↓", label: "latest") { scroll.scrollTo(edge: .bottom) }, at: 0)
-        }
-        return .keys(keys)
+        ])
     }
 
     fileprivate func startBrowsing() {

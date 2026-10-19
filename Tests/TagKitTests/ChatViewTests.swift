@@ -1,7 +1,7 @@
 import Foundation
-import Stipple
 import Testing
 
+@testable import Stipple
 @testable import TagKit
 
 /// Renders `view` and strips its styling and trailing spaces, leaving what
@@ -173,19 +173,6 @@ struct ChatViewTests {
         #expect(SessionPanel.fileName("A.swift") == "A.swift")
     }
 
-    @Test func footerShowsWarningsAndActivity() {
-        let session = ChatSession()
-        session.handle(.thinking)
-        let footer = plainText(Footer(session: session, hint: .warning("press ctrl-c again to quit")), width: 60)
-        #expect(footer.hasPrefix(" press ctrl-c again to quit"))
-        #expect(footer.hasSuffix("⠋ thinking"))
-        let keys = plainText(
-            Footer(
-                session: ChatSession(),
-                hint: .keys([Footer.Key(key: "a", label: "b") {}, Footer.Key(key: "c", label: "d") {}])))
-        #expect(keys == " a b · c d")
-    }
-
     @Test func paletteListsTheCommands() {
         let palette = plainText(CommandPalette(selection: .constant(nil)) { _ in }, width: 60)
         for command in PaletteCommand.allCases {
@@ -325,5 +312,36 @@ struct MarkdownTests {
 
     @Test func fencedCodeIsIndentedWithoutFences() {
         #expect(plainText(Markdown.view("Run:\n```sh\nmake check\n```\nDone.")) == "Run:\n  make check\nDone.")
+    }
+}
+
+@MainActor
+struct FooterTests {
+    @Test func footerShowsWarningsAndActivity() {
+        let session = ChatSession()
+        session.handle(.thinking)
+        let footer = plainText(
+            Footer(session: session, hint: .warning("press ctrl-c again to quit"), scroll: .constant(ScrollPosition())),
+            width: 60)
+        #expect(footer.hasPrefix(" press ctrl-c again to quit"))
+        #expect(footer.hasSuffix("⠋ thinking"))
+        let keys = plainText(
+            Footer(
+                session: ChatSession(),
+                hint: .keys([Footer.Key(key: "a", label: "b") {}, Footer.Key(key: "c", label: "d") {}]),
+                scroll: .constant(ScrollPosition())))
+        #expect(keys == " a b · c d")
+    }
+
+    @Test func footerOffersTheLatestBlockWhenScrolledAway() {
+        let away = ScrollPosition.resting(at: 0, maxOffset: 10, byUser: true)
+        let keys = Footer.Hint.keys([Footer.Key(key: "a", label: "b") {}])
+        #expect(
+            plainText(Footer(session: ChatSession(), hint: keys, offersLatest: true, scroll: .constant(away)))
+                == " ↓ latest · a b")
+        // Browsing or a pending quit keep their own hints.
+        #expect(
+            plainText(Footer(session: ChatSession(), hint: keys, offersLatest: false, scroll: .constant(away)))
+                == " a b")
     }
 }
