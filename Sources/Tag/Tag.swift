@@ -15,8 +15,18 @@ struct Tag: AsyncParsableCommand {
     private static func chat() async throws {
         let workingDirectory = URL(filePath: FileManager.default.currentDirectoryPath, directoryHint: .isDirectory)
         let credentials = CredentialStore()
-        let registry = ProviderRegistry(providers: [OpenRouterProvider(credentials: credentials)])
-        let selection = ModelSelection(registry: registry, credentials: credentials)
+        let codex = CodexProvider(store: credentials)
+        let registry = ProviderRegistry(providers: [
+            codex,
+            OpenCodeGoProvider(credentials: credentials),
+            OpenRouterProvider(credentials: credentials),
+        ])
+        let selection = ModelSelection(registry: registry, credentials: credentials) { provider in
+            guard provider == .codex else {
+                throw ProviderError.unsupported(provider, detail: "It connects with an API key.")
+            }
+            try await signIn(codex)
+        }
         if await !selection.restoreLastModel() {
             try await Stipple.run(OnboardingView(selection: selection), options: OnboardingView.renderOptions)
         }
@@ -34,5 +44,15 @@ struct Tag: AsyncParsableCommand {
         )
         try await Stipple.run(
             ChatView(session: session, agent: agent, selection: selection), options: ChatView.renderOptions)
+    }
+
+    /// Signs in to ChatGPT. When plan usage wasn't granted, asks once more
+    /// with the consent screen, where the user can turn it on.
+    private static func signIn(_ codex: CodexProvider) async throws {
+        do {
+            _ = try await codex.signIn()
+        } catch ChatGPTSignInError.planUsageNotEnabled {
+            _ = try await codex.signIn(forceConsent: true)
+        }
     }
 }
