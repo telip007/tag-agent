@@ -49,6 +49,11 @@ enum Markdown {
 
     /// Inline `code` and **bold**. An unclosed marker is shown as written.
     static func inline(_ line: String) -> Text {
+        // Most lines have no markers; skip the regex, which scans the whole
+        // line again each time a streamed reply grows.
+        guard line.contains("`") || line.contains("**") else {
+            return Text(line)
+        }
         var result = Text("")
         var rest = Substring(line)
         while !rest.isEmpty {

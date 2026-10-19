@@ -123,13 +123,34 @@ public struct OpenRouterChatModel: ChatModel {
             tools: tools.isEmpty ? nil : tools,
         )
         var accumulator = ChatStreamAccumulator()
-        for try await chunk in try await openRouterClient.chat.stream(request) {
+        for try await chunk in Self.chunks(of: request, from: openRouterClient) {
             accumulator.add(chunk)
             for delta in Self.deltas(in: chunk) {
                 onDelta(delta)
             }
         }
         return ModelReply(message: accumulator.message, usage: accumulator.usage)
+    }
+
+    /// Sends `request` and decodes the reply's chunks off the caller's actor.
+    /// The agent runs on the main actor with the UI, and encoding a long
+    /// conversation or decoding every chunk there would hold up typing.
+    private static func chunks(
+        of request: ChatRequest, from client: OpenRouterClient,
+    ) -> AsyncThrowingStream<ChatStreamChunk, any Error> {
+        AsyncThrowingStream { continuation in
+            let task = Task.detached {
+                do {
+                    for try await chunk in try await client.chat.stream(request) {
+                        continuation.yield(chunk)
+                    }
+                    continuation.finish()
+                } catch {
+                    continuation.finish(throwing: error)
+                }
+            }
+            continuation.onTermination = { _ in task.cancel() }
+        }
     }
 
     /// What a streamed chunk adds: reasoning, text, and the names of tool

@@ -219,6 +219,14 @@ the UI has the event before the loop moves on), `Agent` became `@MainActor`
 too. It only awaits the model and the tools, so the UI stays live while they
 run.
 
+"Only awaits" needs care: with `NonisolatedNonsendingByDefault` (on in Tag and
+the SDK), a nonisolated `async` function runs on its caller's actor. The
+SDK's `chat.stream` therefore encoded the whole conversation and decoded
+every chunk on the main actor, and the first key typed after sending a
+message waited for the request. `OpenRouterChatModel.chunks(of:from:)` runs
+the request in a `Task.detached` and hands decoded chunks to the main actor
+through an `AsyncThrowingStream`; cancelling the consumer cancels it.
+
 `AsyncParsableCommand.run()` is nonisolated, so `Tag` calls a `@MainActor`
 static helper (`chat()`) that builds everything and runs the view.
 
@@ -257,11 +265,34 @@ second after a few messages. Now:
   wrapped layout.
 - **Streaming reasoning wraps its tail**, not everything the model reasoned.
 
+- **Stipple 0.3.3 resumes wrapping text that only grew** and draws a key
+  press at once instead of at the next throttled frame (30 fps would make a
+  key wait up to 33 ms). `Markdown.inline` skips its regex on lines without
+  markers.
+- **The model call runs off the main actor** ([why](#why-the-main-actor)).
+
 Measured on a debug build at 242 blocks: an idle frame (the spinner) takes
-4 ms instead of ~800, and a frame per streamed delta 8 ms instead of 640.
-Checked live by typing into the pseudo-terminal while three long replies
-streamed: echo stays at about 13 ms (median) from the first reply to the
-third, where the version before took 63, 95 and then 132 ms.
+4 ms instead of ~800, a frame per streamed delta 8 ms instead of 640, and a
+delta of a 4,000-character paragraph 9 ms. Checked live by typing a
+character every 200 ms into the pseudo-terminal while four long replies
+streamed (the last one a single 700-word paragraph): typing echo stays at
+10–12 ms median, 14–16 ms p95 and at most 36 ms in every reply, and the main
+actor was never more than 40 ms late. The version before took 63, 95 and then
+132 ms (median) and kept growing.
+
+How to measure it, and the traps on the way:
+
+- Search the pty output **as one buffer**: a frame arrives in pieces of about
+  1 KB, and a typed run split between two pieces looked like a key that
+  took hundreds of milliseconds.
+- Don't rescan everything the pty sent on every poll: the scan starved the
+  harness's reader thread, the pty filled up and Tag's writes blocked, which
+  looked like a 1–2 s freeze.
+- Don't attach `sample` during the run: attaching suspends the process.
+- To tell Tag from the harness, log inside the process: the time each key
+  arrives and is drawn, and a main-actor watchdog that logs late wake-ups.
+- Keep the typed line shorter than the input field, or the run scrolls out
+  of view and never matches.
 
 ## Testing
 
