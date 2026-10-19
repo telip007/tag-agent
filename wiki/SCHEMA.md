@@ -13,6 +13,7 @@ once and kept current instead of being re-derived every session.
 | `sources/` | One summary page per raw source | Agent |
 | `concepts/` | How things work: architecture, tooling, workflows, plus a **Gotchas** section | Agent |
 | `decisions/` | Numbered decision records: context, decision, consequences | Agent, after human agrees |
+| `designs/` | Design work before building: brainstorm outcomes, mockups (as text), specs and plans | Agent, with the human |
 | `index.md` | Catalog of every page with a one-line summary | Agent, on every change |
 | `log.md` | Append-only timeline of ingests, updates, decisions, lints | Agent |
 
@@ -41,6 +42,14 @@ updated: YYYY-MM-DD
   repository-relative paths. `wiki-lint` rejects home paths and emails.
 - Copyrighted web content: `raw/` keeps the URL, the capture date, short
   quoted excerpts and our own notes. It never holds a full copy.
+
+## Designs
+
+Brainstorming, design specs, mockups and implementation plans (for example
+from the superpowers skills) go in `designs/<topic>.md`, not in
+`docs/superpowers/` or `.superpowers/`. Mockups shown in a browser are kept
+as text blocks. A design links to the decision record and concept page that
+came out of it.
 
 ## Decision records
 

@@ -13,3 +13,5 @@ DerivedData/
 # Secrets.
 .env
 .env.*
+# Brainstorm companion server state; designs are kept in wiki/designs/.
+.superpowers/

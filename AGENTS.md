@@ -54,6 +54,9 @@ After any change to code, configuration, tooling or decisions:
 3. Append `## [YYYY-MM-DD] update | <what>` to `wiki/log.md`.
 4. `make wiki-lint`.
 
+Design work (brainstorms, specs, mockups, plans, also from skills that
+default to `docs/superpowers/`) goes in `wiki/designs/`.
+
 Record what was learned while building (concepts, mistakes, design choices)
 in the wiki too, whoever wrote the code.
 
