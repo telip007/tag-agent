@@ -159,3 +159,12 @@ The README and `make run` start Tag with `swift run -c release Tag`: the debug b
 
 ## [2026-10-19] update | Lazy transcript
 Stipple 0.5.0: the transcript is a `LazyVStack`, so resizing a long session lays out the rows in view first, pinned or scrolled up (the first row in view stays put). `TranscriptPane` is `Equatable`, so a resize no longer rebuilds it. Release, 1,500 blocks: every interaction at most about 8 ms except resizing while scrolled up (8–24 ms); debug at most about 26 ms. See [terminal UI](concepts/terminal-ui.md#keeping-frames-cheap).
+
+## [2026-10-19] decision | Model providers and user-chosen models
+[0011](decisions/0011-model-providers.md): a new `ModelKit` module with neutral messages, one adapter per wire format (Chat Completions, Responses, Anthropic Messages, Gemini, OpenRouter SDK), providers for OpenRouter, ChatGPT plans (official Sign in with ChatGPT) and OpenCode Go, and `0600` credential and settings files. The agent reads the active model before every call and reports failed calls instead of ending. See [models and providers](concepts/model-providers.md).
+
+## [2026-10-19] update | Designs live in the wiki
+New `designs/` layer for brainstorms, specs, mockups and plans, including those from skills that default to `docs/superpowers/`; the model picker brainstorm moved there as [model picker design](designs/model-picker.md). `.superpowers/` is ignored.
+
+## [2026-10-19] update | Coverage across test bundles
+`make coverage` exports the merged profile against every `*Tests.xctest`: with `ModelKitTests` added, SwiftPM's codecov JSON covered only one bundle. See [backpressure setup](concepts/backpressure-setup.md#gotchas).

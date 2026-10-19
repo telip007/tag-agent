@@ -11,6 +11,7 @@ Start here. Conventions: [SCHEMA.md](SCHEMA.md). Timeline: [log.md](log.md).
 - [System prompt](concepts/system-prompt.md): How Tag's system prompt is built (sections in Swift, tool rules on each tool, a probed environment, AGENTS.md, the date on user messages) and the best practices behind it.
 - [Prompt caching](concepts/prompt-caching.md): What Tag does about OpenRouter prompt caching today, what it leaves unused, and the steps to use all of it.
 - [Evaluation loop](concepts/evaluation-loop.md): A plan for measuring system prompt changes across frontier, cheap and open-weight models, so the prompt works as well on non-frontier models as on frontier ones. Not built yet.
+- [Models and providers](concepts/model-providers.md): How ModelKit connects Tag to OpenRouter, ChatGPT plans (Codex) and OpenCode Go: neutral messages, one adapter per wire format, the catalogue, sign-in, credentials and settings, and the gotchas from the providers' docs.
 - [OpenRouter SDK](concepts/openrouter-sdk.md): how Tag Agent consumes the swift-openrouter submodule and where its own docs live.
 
 ## Decisions
@@ -25,6 +26,11 @@ Start here. Conventions: [SCHEMA.md](SCHEMA.md). Timeline: [log.md](log.md).
 - [0008 Stipple for the terminal UI](decisions/0008-stipple-terminal-ui.md): The chat UI is a Stipple view instead of print/readLine with raw ANSI escapes, and the views live in TagKit so they can be tested.
 - [0009 System prompt](decisions/0009-system-prompt.md): A short system prompt built in Swift from sections, with tool rules on each ToolDefinition, a probed environment and AGENTS.md; the date rides on user messages.
 - [0010 Street cat branding](decisions/0010-street-cat-branding.md): Tag Agent keeps its name and gets a tabby street cat in a fez as a quiet mascot, used in the README banner and logo, not as UI decoration.
+- [0011 Model providers and user-chosen models](decisions/0011-model-providers.md): Tag talks to OpenRouter, ChatGPT plans (Codex) and OpenCode Go through a provider-neutral ModelKit module with one adapter per wire format, and the user picks the model; nothing is hard-coded.
+
+## Designs
+
+- [Model picker design](designs/model-picker.md): The brainstormed design for choosing models: the agreed behaviour (defaults, onboarding, /model and quick switch) and the three picker mockups, of which the search-first overlay was chosen.
 
 ## Sources
 
