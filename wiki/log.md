@@ -159,3 +159,6 @@ The README and `make run` start Tag with `swift run -c release Tag`: the debug b
 
 ## [2026-10-19] update | Lazy transcript
 Stipple 0.5.0: the transcript is a `LazyVStack`, so resizing a long session lays out the rows in view first, pinned or scrolled up (the first row in view stays put). `TranscriptPane` is `Equatable`, so a resize no longer rebuilds it. Release, 1,500 blocks: every interaction at most about 8 ms except resizing while scrolled up (8–24 ms); debug at most about 26 ms. See [terminal UI](concepts/terminal-ui.md#keeping-frames-cheap).
+
+## [2026-10-19] decision | Pixel-art mascot
+[0011](decisions/0011-pixel-art-mascot.md): the street cat in a fez is now an 18 × 17 pixel sprite in `Mascot.swift`. `Welcome` draws it with half blocks in an empty conversation (start and after `/clear`), with the name and where to start. `render-assets.swift` replaces `compose-banner.swift` and draws `logo.png` and `banner.png` from the sprite and a real rendered screen (`banner-screen.ansi`, from `BannerScreenTests`), so the banner shows the current workspace instead of the old REPL. The README documents `/clear`, the palette, the default model and `AGENTS.md`. See [terminal UI](concepts/terminal-ui.md#chatview-the-workspace).

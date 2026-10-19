@@ -1,6 +1,6 @@
 ---
 title: Terminal UI
-summary: How the full-screen workspace is built on Stipple: the design history, the agent's event seam, the observable session and its blocks, the panes and keys, why it runs on the main actor, and how it is tested.
+summary: How the full-screen workspace is built on Stipple: the design history, the welcome cat, the agent's event seam, the observable session and its blocks, the panes and keys, why it runs on the main actor, and how it is tested.
 updated: 2026-10-19
 ---
 
@@ -48,6 +48,11 @@ How it got here (all on 2026-10-18), so the next redesign doesn't repeat it:
    redraws only what changed and lets you interact with past output; Crush has
    a split-pane layout and a diff view; Warp groups output into blocks. Of
    three full-screen sketches, the workspace with a side panel was chosen.
+
+5. (2026-10-19) A pixel-art cat in a fez greets an empty conversation, as
+   Claude Code's and Codex's mascots do. Unlike round 2's mascot it is its
+   own character, not a copy, and it shows only while there is nothing else
+   to show ([0011](../decisions/0011-pixel-art-mascot.md)).
 
 What stayed from the earlier rounds: the gold accent (`Theme.accent`),
 turquoise for code (`Theme.tile`), light Markdown in replies, type-ahead,
@@ -163,6 +168,16 @@ handling; the parts are in
   with the first six lines of each output; `EditCard`, a bordered diff with
   the path and `+n −m` in its top edge, the first eight lines until expanded.
   The block selected in browse mode gets a tinted background.
+- `Welcome` ([Mascot.swift](../../Sources/TagKit/Mascot.swift)): what the
+  pane shows instead of the scroll view while `session.blocks` is empty, at
+  start and after `/clear`. The cat, `Tag Agent` in gold and
+  `ask anything below · ^p commands`, centred. Terminals shorter than
+  `Welcome.catMinimumHeight` (20 rows) leave out the cat. `Mascot.sprite` is
+  the cat as one character per pixel with a `palette`; `Mascot.lines` draws
+  it with `▀`, two pixels to a cell (the upper one as foreground, the lower
+  as background; `▄` or a space where one is transparent), 18 × 9 cells. The
+  README images are drawn from the same sprite
+  ([0011](../decisions/0011-pixel-art-mascot.md)).
 - `SessionPanel` (30 columns, hidden below 90): the model, the folder, a
   context gauge (`━`, turquoise, gold past 50%, red past 80%), tokens, cost and
   session time, the files changed and the queued messages.
@@ -350,6 +365,13 @@ How to measure it, and the traps on the way:
 
 ## Testing
 
+- [MascotTests.swift](../../Tests/TagKitTests/MascotTests.swift): the welcome
+  shows the cat only in an empty conversation and only when tall enough, and
+  the sprite's half blocks and colours.
+- [BannerScreenTests.swift](../../Tests/TagKitTests/BannerScreenTests.swift)
+  is not a check: with `TAG_BANNER_SCREEN` set it renders a scripted session
+  into the ANSI screen the README banner is drawn from, and it is skipped
+  otherwise.
 - The agent loop is tested by collecting `AgentEvent`s from a scripted model
   ([AgentTests.swift](../../Tests/TagKitTests/AgentTests.swift)).
 - `ChatSession` and `FileEdit` are tested directly with an injected clock
@@ -389,6 +411,10 @@ How to measure it, and the traps on the way:
   row.
 - **Don't read the scroll position in `ChatView`'s body**: every scroll would
   rebuild the whole workspace. The footer reads it.
+- **A submitted message becomes a block when the agent takes it**, not on
+  `submit(_:)`: the waiting `nextMessage()` resumes later. A scripted session
+  that sends events right after `submit` must wait for the block first, or the
+  message lands after the reply.
 
 - **A public `@Observable` class needs `public import Observation`** under
   `InternalImportsByDefault`: the macro expands into public members that use

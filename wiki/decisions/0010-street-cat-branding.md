@@ -1,8 +1,11 @@
 ---
 title: Street cat branding
-summary: Tag Agent keeps its name and gets a tabby street cat in a fez as a quiet mascot, used in the README banner and logo, not as UI decoration.
-updated: 2026-10-18
+summary: Partly superseded by 0011. Tag Agent keeps its name and gets a tabby street cat in a fez as a quiet mascot, used in the README banner and logo, not as UI decoration.
+updated: 2026-10-19
 ---
+
+Superseded by [0011](0011-pixel-art-mascot.md) on how the mascot is drawn
+and where it appears; the name and the cat in a fez stay.
 
 # 0010 Street cat branding
 

@@ -7,7 +7,7 @@ Start here. Conventions: [SCHEMA.md](SCHEMA.md). Timeline: [log.md](log.md).
 - [Backpressure setup](concepts/backpressure-setup.md): every automated check in this repo, where it runs, and the traps we hit wiring it up.
 - [Agent workflow](concepts/agent-workflow.md): how hooks, skills, AGENTS.md and the wiki make every agent session follow the same rules.
 - [Agent loop and tools](concepts/tools.md): How the agent loop runs tool calls, the five built-in tools, and where they differ from their Go originals.
-- [Terminal UI](concepts/terminal-ui.md): How the chat UI is built on Stipple: the design intent, the agent's event seam, the observable session, the view and its hidden keys, why it runs on the main actor, and how it is tested.
+- [Terminal UI](concepts/terminal-ui.md): How the chat UI is built on Stipple: the design intent, the welcome cat, the agent's event seam, the observable session, the view and its hidden keys, why it runs on the main actor, and how it is tested.
 - [System prompt](concepts/system-prompt.md): How Tag's system prompt is built (sections in Swift, tool rules on each tool, a probed environment, AGENTS.md, the date on user messages) and the best practices behind it.
 - [Prompt caching](concepts/prompt-caching.md): What Tag does about OpenRouter prompt caching today, what it leaves unused, and the steps to use all of it.
 - [Evaluation loop](concepts/evaluation-loop.md): A plan for measuring system prompt changes across frontier, cheap and open-weight models, so the prompt works as well on non-frontier models as on frontier ones. Not built yet.
@@ -24,7 +24,8 @@ Start here. Conventions: [SCHEMA.md](SCHEMA.md). Timeline: [log.md](log.md).
 - [0007 Conventional Commits](decisions/0007-conventional-commits.md): Commit messages and PR titles use the same Conventional Commits format as the SDK; no release tooling yet.
 - [0008 Stipple for the terminal UI](decisions/0008-stipple-terminal-ui.md): The chat UI is a Stipple view instead of print/readLine with raw ANSI escapes, and the views live in TagKit so they can be tested.
 - [0009 System prompt](decisions/0009-system-prompt.md): A short system prompt built in Swift from sections, with tool rules on each ToolDefinition, a probed environment and AGENTS.md; the date rides on user messages.
-- [0010 Street cat branding](decisions/0010-street-cat-branding.md): Tag Agent keeps its name and gets a tabby street cat in a fez as a quiet mascot, used in the README banner and logo, not as UI decoration.
+- [0010 Street cat branding](decisions/0010-street-cat-branding.md): partly superseded by 0011. Tag Agent keeps its name and gets a tabby street cat in a fez as its mascot.
+- [0011 Pixel-art mascot](decisions/0011-pixel-art-mascot.md): The cat is a pixel-art sprite in TagKit that greets an empty conversation; the logo and banner are drawn from it and a real rendered screen.
 
 ## Sources
 
