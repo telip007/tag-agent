@@ -10,6 +10,9 @@ struct SearchableModel {
     /// The name, the model id and the provider's name, for substring and
     /// subsequence matches.
     let text: String
+    /// The name and the model id as one search's words would spell them,
+    /// so a search for the whole name ranks that model first.
+    let phrases: [String]
 
     init(_ entry: ModelEntry) {
         self.entry = entry
@@ -17,13 +20,16 @@ struct SearchableModel {
         let sources = [entry.name, entry.ref.model, provider.displayName] + provider.aliases
         words = sources.flatMap(Self.words(in:))
         text = "\(entry.name) \(entry.ref.model) \(provider.displayName)".lowercased()
+        phrases = [entry.name, entry.ref.model].map { Self.tokens(of: $0).joined(separator: " ") }
     }
 
     /// How well the model matches every token of a search, or `nil` when one
     /// doesn't match. A word starting with the token counts most, then the
-    /// token anywhere in the text, then its letters in order.
+    /// token anywhere in the text, then its letters in order. A search that
+    /// spells the whole name or id counts extra.
     func score(_ tokens: [String]) -> Int? {
-        var total = 0
+        let phrase = tokens.joined(separator: " ")
+        var total = phrases.contains(phrase) ? 6 : 0
         for token in tokens {
             if words.contains(where: { $0.hasPrefix(token) }) {
                 total += 3

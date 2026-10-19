@@ -23,6 +23,19 @@ struct ModelSearchTests {
         #expect(kimi.score([]) == 0)
     }
 
+    @Test func theWholeNameOrIdRanksFirst() {
+        let longer = ModelEntry(
+            ref: ModelRef(provider: .openRouter, model: "deepseek/deepseek-v4.1-flash-1017"),
+            name: "DeepSeek V4.1 Flash 1017", format: .openRouter)
+        let exact = ModelEntry(
+            ref: ModelRef(provider: .openRouter, model: "deepseek/deepseek-v4.1-flash"),
+            name: "DeepSeek V4.1 Flash", format: .openRouter)
+        let rows = PickerList.rows(
+            models: [longer, exact].map(SearchableModel.init), query: "deepseek v4.1 flash", recent: [], failures: [:])
+        #expect(names(rows) == ["DeepSeek V4.1 Flash", "DeepSeek V4.1 Flash 1017"])
+        #expect(SearchableModel(exact).score(SearchableModel.tokens(of: "deepseek/deepseek-v4.1-flash")) != nil)
+    }
+
     @Test func providerNamesAndAliasesAreWordsToo() {
         let kimi = SearchableModel(Models.kimi)
         #expect(kimi.words.contains("opencode") && kimi.words.contains("go"))

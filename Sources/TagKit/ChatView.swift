@@ -394,9 +394,10 @@ extension ChatView {
     }
 
     /// Opens the picker or connecting a provider, sized for the terminal.
+    /// Focus follows ``isOverlayOpen``: a `/model x/y` that switches at once
+    /// opens nothing, and the input must keep its focus.
     fileprivate func openModels(_ open: (ModelFlow) -> Void) {
         models.rowLimit = max(terminalSize.height - 14, 5)
-        isInputFocused = false
         open(models)
     }
 
