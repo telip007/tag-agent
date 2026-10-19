@@ -4,24 +4,29 @@ import Testing
 
 @testable import ModelKit
 
+/// A copyable reference for sharing the noncopyable mutex between tasks.
+private final class LockOrder: Sendable {
+    let events = Mutex<[String]>([])
+}
+
 struct FileLockTests {
     private let url = FileManager.default.temporaryDirectory
         .appending(path: "tag-tests-\(UUID().uuidString)/.lock")
 
     @Test func aSecondHolderWaitsUntilTheFirstLetsGo() async throws {
-        let order = Mutex<[String]>([])
+        let order = LockOrder()
         let first = FileLock(url: url)
         let second = FileLock(url: url)
         try await first.waitingWithLock {
             let waiting = Task {
-                try await second.waitingWithLock { order.withLock { $0.append("second") } }
+                try await second.waitingWithLock { order.events.withLock { $0.append("second") } }
             }
             try await Task.sleep(for: .milliseconds(100))
-            order.withLock { $0.append("first") }
+            order.events.withLock { $0.append("first") }
             return waiting
         }
         .value
-        #expect(order.withLock { $0 } == ["first", "second"])
+        #expect(order.events.withLock { $0 } == ["first", "second"])
     }
 
     @Test func theBlockingLockExcludesTheWaitingOne() async throws {

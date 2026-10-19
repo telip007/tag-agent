@@ -39,6 +39,15 @@ strict settings and lint plugin as the sources.
 
 ## Gotchas
 
+- **Share a noncopyable `Mutex` through a `Sendable` reference in task tests.**
+  Swift 6.3 rejected `FileLockTests` when a nested `Task` directly captured
+  a local `Mutex`, diagnosing a reference to a "mutable let" accessible
+  from both tasks. Swift 6.4 accepted the test. The test now stores the
+  mutex in a checked `Sendable` final class, like the existing scripted
+  browser and fake transport, so tasks share a copyable reference and
+  every event read and write still goes through `withLock`. The lock
+  ordering assertion and compiler safety checks remain intact.
+
 - **Only use `public import` for modules exposed by public API.**
   `ModelSelection` uses Foundation's `LocalizedError` only in its internal
   `SignInUnavailable` error. Declaring Foundation as a public import failed

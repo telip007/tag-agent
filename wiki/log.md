@@ -206,3 +206,8 @@ New design page [Codex CLI route for ChatGPT plans](designs/codex-cli-route.md):
 Fixed the Swift 6.3 CI build: Foundation is only used by an internal error,
 so ModelSelection uses a plain import. Recorded the toolchain difference
 and retained every existing lint, warning and coverage gate.
+
+## [2026-10-19] update | Share lock-test events through a Sendable reference
+After the import fix, CI reached test compilation and Swift 6.3 rejected
+a nested task's direct capture of a noncopyable Mutex. A checked Sendable
+reference now owns the mutex; the ordering assertion and locking stay intact.
