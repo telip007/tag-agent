@@ -1,7 +1,7 @@
 ---
 title: Backpressure setup
 summary: Every automated check in this repo, where it runs, and the traps we hit wiring it up.
-updated: 2026-10-18
+updated: 2026-10-19
 ---
 
 # Backpressure setup
@@ -38,6 +38,13 @@ tests and the coverage gate when `Tests/` exists. The test target gets the same
 strict settings and lint plugin as the sources.
 
 ## Gotchas
+
+- **With two test targets, SwiftPM's coverage JSON measures one of them.**
+  `swift test --show-codecov-path` points at a `Tag.json` exported against a
+  single test bundle (`ModelKitTests` once it was added), so `TagKit` files
+  vanished from the gate and it reported about 52 %. `make coverage` now runs
+  `llvm-cov export` on the merged `default.profdata` with every
+  `*Tests.xctest` bundle as an `-object` and gates that (`all-tests.json`).
 
 - **Tests run by the pre-push hook inherit `GIT_DIR`.** Any `git` command a
   test starts then answers for Tag's repository, whatever its working
