@@ -122,6 +122,11 @@ server revokes the sign-in when one is spent twice
 (`refresh_token_reused`), so a second process waiting on the lock uses the
 first one's fresh tokens instead of refreshing again.
 
+A lock file is created with `.withoutOverwriting`: two processes that
+both found it missing and created it with `FileManager.createFile` replaced
+each other's file and locked two different inodes, so the lock did nothing
+(the two-session refresh test caught it under parallel tests).
+
 **Keeping the agent out.** Tag runs shell commands and reads files that the
 model chooses, so a `0600` file alone doesn't keep a prompt-injected model away
 from it. [`ProtectedPaths`](../../Sources/TagKit/ProtectedPaths.swift) makes

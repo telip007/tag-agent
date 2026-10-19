@@ -45,7 +45,12 @@ struct FileLock: Sendable {
             try manager.createDirectory(
                 at: url.deletingLastPathComponent(), withIntermediateDirectories: true,
                 attributes: [.posixPermissions: 0o700])
-            manager.createFile(atPath: url.path, contents: nil, attributes: [.posixPermissions: 0o600])
+            // Never replace a lock file another process just made: the two
+            // would lock different files. `.withoutOverwriting` creates it
+            // exclusively and fails harmlessly when it exists.
+            if (try? Data().write(to: url, options: .withoutOverwriting)) != nil {
+                try manager.setAttributes([.posixPermissions: 0o600], ofItemAtPath: url.path)
+            }
         }
         return try FileHandle(forUpdating: url)
     }
