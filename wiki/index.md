@@ -33,6 +33,8 @@ Start here. Conventions: [SCHEMA.md](SCHEMA.md). Timeline: [log.md](log.md).
 
 - [Model picker design](designs/model-picker.md): The brainstormed design for choosing models: the agreed behaviour (defaults, onboarding, /model and quick switch) and the three picker mockups, of which the search-first overlay was chosen.
 
+- [Codex CLI route for ChatGPT plans](designs/codex-cli-route.md): The undocumented route the Codex CLI uses to reach ChatGPT plans (also Business workspaces, which refuse Tag's official sign-in): how it works, its risks, and the options; not built, decision open.
+
 ## Sources
 
 - [Don't waste your back pressure](sources/dont-waste-your-backpressure.md): Moss's essay on automated feedback as the lever for agent autonomy.

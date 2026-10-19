@@ -195,7 +195,8 @@ mapped in [`ResponsesStream`](../../Sources/ModelKit/Wire/ResponsesStream.swift)
   is to choose a personal Plus or Pro workspace when signing in. The
   Codex CLI's own sign-in still works for Business because it is OpenAI's app;
   using it from Tag would mean posing as the Codex CLI on an undocumented
-  backend, which was left as an open decision.
+  backend, which was left as an open decision: see
+  [Codex CLI route](../designs/codex-cli-route.md).
 - **OpenCode Go works live**: the maintainer connected a key and chatted
   through it (2026-10-19).
 - **Not tried live yet**: a successful ChatGPT sign-in (only a Business

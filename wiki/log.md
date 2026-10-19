@@ -198,3 +198,6 @@ The Responses adapter now streams through `WireStream` with a `ResponsesDecoder`
 
 ## [2026-10-19] update | SendableMetatype warnings slip through
 `WireDecoder` now refines `SendableMetatype`: capturing a decoder's type in `WireStream`'s detached task warned, and those warnings didn't fail the build. Noted on [backpressure setup](concepts/backpressure-setup.md#gotchas).
+
+## [2026-10-19] update | Codex CLI route written up
+New design page [Codex CLI route for ChatGPT plans](designs/codex-cli-route.md): how the Codex CLI's sign-in and private backend work (from OpenAI's open-source Codex CLI), why it gets past the Business refusal, its risks and three options. Not built; the decision is open.
