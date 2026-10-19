@@ -40,6 +40,7 @@ let package = Package(
             name: "Tag",
             dependencies: [
                 "TagKit",
+                "ModelKit",
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .product(name: "Stipple", package: "stipple"),
             ],
@@ -48,9 +49,19 @@ let package = Package(
         ),
         // The agent itself (loop, model access, tools), kept in a library so
         // tests can import it.
+        // Providers, wire formats, sign-in and the model catalogue, with no UI.
+        .target(
+            name: "ModelKit",
+            dependencies: [
+                .product(name: "OpenRouter", package: "OpenRouter")
+            ],
+            swiftSettings: strictSettings,
+            plugins: lintPlugins,
+        ),
         .target(
             name: "TagKit",
             dependencies: [
+                "ModelKit",
                 .product(name: "OpenRouter", package: "OpenRouter"),
                 .product(name: "Subprocess", package: "swift-subprocess"),
                 .product(name: "Stipple", package: "stipple"),
@@ -59,9 +70,19 @@ let package = Package(
             plugins: lintPlugins,
         ),
         .testTarget(
+            name: "ModelKitTests",
+            dependencies: [
+                "ModelKit",
+                .product(name: "OpenRouter", package: "OpenRouter"),
+            ],
+            swiftSettings: strictSettings,
+            plugins: lintPlugins,
+        ),
+        .testTarget(
             name: "TagKitTests",
             dependencies: [
                 "TagKit",
+                "ModelKit",
                 .product(name: "OpenRouter", package: "OpenRouter"),
                 .product(name: "Stipple", package: "stipple"),
             ],
