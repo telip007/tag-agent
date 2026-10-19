@@ -17,11 +17,17 @@ It started as a Swift port of Thorsten Ball's
 the first chat loop was written by hand, everything since by coding agents
 under strict automated checks (see [the decisions](wiki/index.md#decisions)).
 
-Models are accessed through OpenRouter via
-[swift-openrouter](https://github.com/telip007/swift-openrouter) (a git
-submodule in `Packages/OpenRouter`). The model is
-`deepseek/deepseek-v4.1-flash` for now. The system prompt gives it the tools,
-the working directory and the project's `AGENTS.md` if there is one.
+You pick the model. Tag talks to your **ChatGPT plan** (Codex models, through
+OpenAI's Sign in with ChatGPT), an **OpenCode Go** subscription, or
+**OpenRouter** (through
+[swift-openrouter](https://github.com/telip007/swift-openrouter), a git
+submodule in `Packages/OpenRouter`). The first start walks you through
+connecting a provider and choosing a model. After that Tag starts with the
+model and reasoning effort you used last. `/model` opens a searchable picker,
+and `/model <provider>/<model>` (for example `/model go/kimi-k3`) switches
+straight away while keeping the conversation. The system prompt gives the
+model the tools, the working directory and the project's `AGENTS.md` if
+there is one.
 
 > Status: early. The harness is being built step by step.
 
@@ -77,10 +83,15 @@ supported.
 ```sh
 git clone --recurse-submodules https://github.com/telip007/tag-agent.git
 cd tag-agent
-make bootstrap                      # SwiftLint, ripgrep, git hooks, submodule
-export OPENROUTER_API_KEY=sk-or-... # https://openrouter.ai/keys
-make run                            # swift run -c release Tag
+make bootstrap   # SwiftLint, ripgrep, git hooks, submodule
+make run         # swift run -c release Tag
 ```
+
+The first start asks you to connect a provider: sign in with ChatGPT in the
+browser, or paste an OpenCode Go or OpenRouter API key. Keys can also come
+from `OPENCODE_API_KEY` and `OPENROUTER_API_KEY`. Credentials and settings
+are kept in `~/.config/tag/` (`$XDG_CONFIG_HOME/tag` or `$TAG_CONFIG_DIR`
+when set), readable only by you.
 
 Run the optimised build: a debug build (`swift run Tag`) draws several
 times slower, which shows when resizing a long session.
