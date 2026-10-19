@@ -1,5 +1,4 @@
 public import Foundation
-import Synchronization
 
 /// Where Tag Agent keeps its settings and credentials:
 /// `$TAG_CONFIG_DIR`, else `$XDG_CONFIG_HOME/tag`, else `~/.config/tag`.
@@ -56,12 +55,14 @@ public enum SecureFile {
     }
 }
 
-/// A JSON file of a `Codable` value, read and written whole under a lock.
+/// A JSON file of a `Codable` value, read and written whole. Changes hold a
+/// ``FileLock`` beside the file, so two threads or two Tag processes
+/// changing it at once don't lose either change.
 /// A missing or unreadable file reads as `Value()`.
 public final class JSONFileStore<Value: Codable & Sendable>: Sendable {
     /// The file.
     public let url: URL
-    private let lock = Mutex(())
+    private let fileLock: FileLock
     private let empty: @Sendable () -> Value
 
     /// Creates a store.
@@ -71,12 +72,14 @@ public final class JSONFileStore<Value: Codable & Sendable>: Sendable {
     ///   - empty: The value of a missing file.
     public init(url: URL, empty: @escaping @Sendable () -> Value) {
         self.url = url
+        self.fileLock = FileLock(url: url.deletingLastPathComponent().appending(path: ".\(url.lastPathComponent).lock"))
         self.empty = empty
     }
 
     /// The stored value.
     public func load() -> Value {
-        lock.withLock { _ in unlockedLoad() }
+        // Writes replace the file whole, so a read needs no lock.
+        unlockedLoad()
     }
 
     /// Changes the stored value and writes it back.
@@ -84,15 +87,17 @@ public final class JSONFileStore<Value: Codable & Sendable>: Sendable {
     /// - Throws: Encoding or file system errors.
     @discardableResult
     public func update<Result>(_ change: (inout Value) throws -> Result) throws -> Result {
-        try lock.withLock { _ in
-            var value = unlockedLoad()
-            let result = try change(&value)
-            let encoder = JSONEncoder()
-            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-            encoder.dateEncodingStrategy = .iso8601
-            try SecureFile.write(try encoder.encode(value), to: url)
-            return result
-        }
+        try fileLock.withLock { try unlockedUpdate(change) }
+    }
+
+    private func unlockedUpdate<Result>(_ change: (inout Value) throws -> Result) throws -> Result {
+        var value = unlockedLoad()
+        let result = try change(&value)
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        encoder.dateEncodingStrategy = .iso8601
+        try SecureFile.write(try encoder.encode(value), to: url)
+        return result
     }
 
     private func unlockedLoad() -> Value {
@@ -166,8 +171,12 @@ public struct Credentials: Sendable, Equatable, Codable {
 /// The user's credentials in `credentials.json` (`0600`), with API keys from
 /// the environment taking precedence over stored ones.
 public final class CredentialStore: Sendable {
+    /// The config directory the credentials live in.
+    public let directory: URL
     private let file: JSONFileStore<Credentials>
     private let environment: [String: String]
+    /// Held across processes while a ChatGPT token is refreshed.
+    let refreshLock: FileLock
 
     /// Creates a store.
     ///
@@ -178,8 +187,10 @@ public final class CredentialStore: Sendable {
         directory: URL = ConfigDirectory.url(),
         environment: [String: String] = ProcessInfo.processInfo.environment,
     ) {
+        self.directory = directory
         self.file = JSONFileStore(url: directory.appending(path: "credentials.json")) { Credentials() }
         self.environment = environment
+        self.refreshLock = FileLock(url: directory.appending(path: ".chatgpt-refresh.lock"))
     }
 
     /// Everything stored.

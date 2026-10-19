@@ -111,7 +111,27 @@ public actor ChatGPTSession {
         return try await task.value
     }
 
+    /// Refreshes holding a lock shared with other Tag processes. Refresh
+    /// tokens rotate: if two processes both spent the same one, the server
+    /// would see it reused and revoke the sign-in. Under the lock the
+    /// account is read again, so one another process just refreshed is used
+    /// as it is, or its newer refresh token is the one spent.
     private func renew(_ account: ChatGPTAccount) async throws -> ChatGPTAccount {
+        try await store.refreshLock.waitingWithLock {
+            var account = account
+            if let stored = store.load().chatGPT, stored.subject == account.subject,
+                stored.refreshToken != account.refreshToken
+            {
+                guard stored.expiresAt.timeIntervalSince(now()) <= refreshMargin else {
+                    return stored
+                }
+                account = stored
+            }
+            return try await exchange(account)
+        }
+    }
+
+    private func exchange(_ account: ChatGPTAccount) async throws -> ChatGPTAccount {
         let response: TokenResponse
         do {
             response = try await tokens.refresh(refreshToken: account.refreshToken, clientID: account.clientID)

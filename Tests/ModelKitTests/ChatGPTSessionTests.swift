@@ -58,6 +58,20 @@ struct ChatGPTSessionTests {
         #expect(store.load().chatGPT?.refreshToken == "refresh-0")
     }
 
+    @Test func twoProcessesSpendTheRotatingRefreshTokenOnce() async throws {
+        // Two sessions on one config directory stand in for two Tag processes.
+        let store = try Self.store(expiresAt: .now - 10)
+        let other = CredentialStore(directory: store.directory, environment: [:])
+        let transport = CodexTestTransport(delay: .milliseconds(100)) { _ in
+            .reply(status: 200, body: CodexFixtures.tokenBody(access: "access-2", refresh: "refresh-2"))
+        }
+        async let first = Self.session(store, transport).accessToken()
+        async let second = Self.session(other, transport).accessToken()
+        #expect(try await [first, second] == ["access-2", "access-2"])
+        #expect(transport.requests.count == 1)
+        #expect(store.load().chatGPT?.refreshToken == "refresh-2")
+    }
+
     @Test func clearsTheTokensWhenTheRefreshTokenIsDead() async throws {
         let store = try Self.store(expiresAt: .now)
         let hostID = store.load().chatGPTHostID
