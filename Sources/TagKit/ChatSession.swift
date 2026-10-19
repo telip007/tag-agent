@@ -283,7 +283,7 @@ extension ChatSession {
         finishReasoning()
         openReply = nil
         openTray = nil
-        append(.reply(["**\(message)**", recovery].compactMap(\.self).joined(separator: "\n\n")))
+        append(.failure(message: message, recovery: recovery))
         setActivity(nil)
     }
 

@@ -8,6 +8,7 @@ enum Theme {
     static let tile = Color(red: 64, green: 184, blue: 175)
     static let rule = Color.gray
     static let selection = Color(red: 58, green: 62, blue: 80)
+    static let overlay = Color(red: 36, green: 39, blue: 52)
     static let added = Color.green
     static let removed = Color.red
 }
@@ -147,6 +148,8 @@ struct BlockView: View {
             ToolTray(runs: runs, isExpanded: isExpanded).padding(.leading, 2).padding(.top, 1)
         case .edit(let edit):
             EditCard(edit: edit, isExpanded: isExpanded).padding(.leading, 2).padding(.top, 1)
+        case .failure(let message, let recovery):
+            FailureView(message: message, recovery: recovery).padding(.leading, 2).padding(.top, 1)
         }
     }
 }
@@ -285,11 +288,12 @@ struct SessionPanel: View {
     static let gaugeWidth = width - 4
 
     let session: ChatSession
+    let selection: ModelSelection
 
     var body: some View {
         VStack(alignment: .leading) {
             if let status = session.status {
-                Text(status.model.name).bold()
+                ModelSummary(selection: selection, fallback: status.model.name)
                 Text(status.folder).dim()
                 Text(" ")
                 gauge(status)
@@ -443,7 +447,7 @@ extension TranscriptBlock {
     var isExpandable: Bool {
         switch content {
         case .tools, .edit, .reasoning: true
-        case .user, .reply: false
+        case .user, .reply, .failure: false
         }
     }
 
@@ -454,6 +458,8 @@ extension TranscriptBlock {
             return text
         case .reasoning(let reasoning):
             return reasoning.text
+        case .failure(let message, let recovery):
+            return [message, recovery].compactMap(\.self).joined(separator: "\n")
         case .tools(let runs):
             return runs.map { "\($0.name) \($0.summary)\n\($0.output)" }.joined(separator: "\n\n")
         case .edit(let edit):
