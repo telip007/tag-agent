@@ -213,6 +213,55 @@ focusable view.
 `input: session.nextMessage`, then
 `Stipple.run(ChatView(...), options: ChatView.renderOptions)`.
 
+## Choosing models
+
+What the user asked for and the mockups:
+[model picker design](../designs/model-picker.md). The providers behind it:
+[models and providers](model-providers.md).
+
+- [`ModelSelection`](../../Sources/TagKit/ModelSelection.swift) is the
+  observable state. It holds the current `ActiveModel` and its effort, the
+  catalogue, the connected providers and the recent models. It restores
+  `Settings.lastModel`, switches and saves through `Settings.use`, stores
+  pasted API keys, and runs the browser sign-in through a closure from
+  [`Tag.swift`](../../Sources/Tag/Tag.swift), which retries once with the
+  consent screen when ChatGPT plan usage wasn't granted.
+- **Startup:** when `restoreLastModel()` fails,
+  [`OnboardingView`](../../Sources/TagKit/OnboardingView.swift) runs as its
+  own `Stipple.run` before the workspace: welcome, connect, pick, done.
+  Ctrl-C there quits with no model.
+- **The picker** (`/model`, or "Switch model" in ^p) has a search line, then
+  the list, then the effort line and the key hints.
+  - Typing searches. Every word must match a word prefix (3 points), a
+    substring (2) or letters in order (1) of the name, the id or the
+    provider and its aliases. `/` splits words.
+  - With an empty search the list shows "recent" first, then every model
+    grouped by provider in registry order. Providers whose catalogue failed
+    show as red rows.
+  - ↑↓ and PgUp/PgDn move, ←→ cycle the effort (the remembered one, else
+    "medium"), ↵ uses the model, ^a connects a provider, and Esc closes.
+- **`/model <provider>/<model>`** switches only on an exact match. Otherwise
+  it opens the picker with the text as the search. Like `/clear`, it isn't
+  sent to the model and isn't recorded in history.
+- **Connecting** ([`ProviderSetup`](../../Sources/TagKit/ProviderSetup.swift)):
+  API keys are masked to their last four characters and must contain no
+  spaces. ChatGPT shows OpenAI's required label "Continue with ChatGPT",
+  then a spinner while the browser is open; Esc cancels.
+- **Plan notices:** the session panel says "Using ChatGPT plan" for Codex
+  models. The first such model shows the one-time "You're using your ChatGPT
+  plan" / "Got it" notice. A failed model call is a `.failure` transcript
+  block: a red ✗ with the recovery (such as *Manage usage*) dim below it.
+- **Why not a `TextField` for the search:** Stipple sends a key to the
+  focused view first, and a `TextField` takes ←→ and Ctrl-A, which the
+  picker needs. While an overlay is open, the chat input is unfocused and
+  `.focusable(false)`, and
+  [`ModelFlow`](../../Sources/TagKit/ModelFlow.swift) routes every key. That
+  routing lives outside `ChatView` so it can be tested.
+- **Frame cost:** `ChatView` reads only `ModelFlow.isOpen`, so typing in the
+  picker rebuilds only the picker. Search words are prepared once per
+  catalogue, rows are rebuilt only when the search or the catalogue changes,
+  and only the visible window is drawn.
+
 ## Why the main actor
 
 Stipple views and state live on the main actor, so `ChatSession.handle` is a
@@ -380,6 +429,13 @@ How to measure it, and the traps on the way:
   and the session ends (tested), so the loop stops cleanly.
 
 ## Gotchas
+
+- **Stipple focuses a node whose `@FocusState` is requested even when it
+  isn't focusable.** Hiding the input under an overlay needs both
+  `isInputFocused = false` and `.focusable(false)`.
+- **A paste without an `.onPaste` handler arrives as one `KeyPress`** with
+  the whole text in `characters`. Typing paths read `typedText`, which
+  covers both cases.
 
 - **Reading `session.transcript` in a view body observes every block**, so
   that view rebuilds on every delta. Views read `blocks` and the one
