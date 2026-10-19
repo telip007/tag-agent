@@ -39,6 +39,12 @@ strict settings and lint plugin as the sources.
 
 ## Gotchas
 
+- **Not every warning fails the build.** `SendableMetatypes` warnings
+  ("capture of non-Sendable type 'Decoder.Type' in an isolated closure")
+  were printed but didn't fail `swift build` under `treatAllWarnings(as:
+  .error)`. Read the build output, not only its exit code. Fixed by making
+  the protocol refine `SendableMetatype`.
+
 - **With two test targets, SwiftPM's coverage JSON measures one of them.**
   `swift test --show-codecov-path` points at a `Tag.json` exported against a
   single test bundle (`ModelKitTests` once it was added), so `TagKit` files

@@ -195,3 +195,6 @@ The maintainer used OpenCode Go live. The ChatGPT sign-in failed on a Business w
 
 ## [2026-10-19] update | One streaming helper
 The Responses adapter now streams through `WireStream` with a `ResponsesDecoder`, like the other formats, instead of its own detached-task stream. `WireDecoder` gained an `error(status:body:provider:)` hook so Responses keeps its ChatGPT plan error codes. See [models and providers](concepts/model-providers.md#gotchas).
+
+## [2026-10-19] update | SendableMetatype warnings slip through
+`WireDecoder` now refines `SendableMetatype`: capturing a decoder's type in `WireStream`'s detached task warned, and those warnings didn't fail the build. Noted on [backpressure setup](concepts/backpressure-setup.md#gotchas).

@@ -3,7 +3,7 @@ import OpenRouter
 
 /// Turns one wire format's server-sent events into reply deltas and, at the
 /// end, the whole reply.
-protocol WireDecoder {
+protocol WireDecoder: SendableMetatype {
     /// Creates a decoder for a reply from `provider`, which errors name.
     init(provider: ProviderID)
 
