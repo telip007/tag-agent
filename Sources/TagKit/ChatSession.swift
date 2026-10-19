@@ -94,6 +94,8 @@ public final class ChatSession {
                 record(edit)
             }
             setActivity(nil)
+        case .failure(let message, let recovery):
+            reportFailure(message, recovery: recovery)
         }
     }
 
@@ -276,6 +278,15 @@ public final class ChatSession {
 }
 
 extension ChatSession {
+    /// Shows a failed model call in the transcript, with what to do next.
+    private func reportFailure(_ message: String, recovery: String?) {
+        finishReasoning()
+        openReply = nil
+        openTray = nil
+        append(.reply(["**\(message)**", recovery].compactMap(\.self).joined(separator: "\n\n")))
+        setActivity(nil)
+    }
+
     /// The conversation so far, oldest first, as values.
     public var transcript: [TranscriptBlock] {
         blocks.map { TranscriptBlock(id: $0.id, content: $0.content) }

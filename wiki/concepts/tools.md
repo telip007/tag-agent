@@ -23,7 +23,7 @@ by an agent ([0006](../decisions/0006-agents-build-the-harness.md)).
    drops the conversation back to the system prompt, resets the totals and
    starts this step over.
 2. Emit `.thinking`, then send the whole conversation plus the tool
-   definitions to the [`ChatModel`](../../Sources/TagKit/ChatModel.swift),
+   definitions to the [`ChatModel`](../../Sources/ModelKit/Conversation.swift),
    which streams the reply as `ReplyDelta`s: each piece of reasoning is
    emitted as `.reasoningDelta`, each piece of text as `.replyDelta`, and the
    name of each tool call the model starts writing as `.toolCallWriting`. Append the complete assistant message (text, tool calls
@@ -76,7 +76,7 @@ and fields dropped on narrow terminals
 - **Folder**: the working directory the CLI was started in, with the home
   directory shortened to `~`.
 - **Model**: the catalogue's display name. `Agent` asks the `ChatModel` for a
-  [`ModelDescription`](../../Sources/TagKit/ChatModel.swift) once at startup;
+  [`ModelDescription`](../../Sources/TagKit/ActiveModel.swift) once at startup;
   `OpenRouterChatModel` resolves it from `GET /models/{author}/{slug}` and
   falls back to the model id (with no context window) if that call fails.
 - **Context**: the `total_tokens` of the latest reply against the model's

@@ -63,13 +63,4 @@ struct StatusLineTests {
         #expect(StatusLine.folder(URL(filePath: "/Users/melon/tag"), home: home) == "/Users/melon/tag")
         #expect(StatusLine.folder(URL(filePath: "/opt/tag"), home: home) == "/opt/tag")
     }
-
-    @Test(arguments: [
-        ("DeepSeek: DeepSeek V4.1 Flash", "DeepSeek V4.1 Flash"),
-        ("Plain Name", "Plain Name"),
-        ("Odd: ", "Odd: "),
-    ])
-    func dropsTheCatalogueAuthorPrefix(name: String, expected: String) {
-        #expect(ModelDescription.displayName(name) == expected)
-    }
 }

@@ -1,4 +1,5 @@
 public import Foundation
+public import ModelKit
 public import OpenRouter
 
 /// A function the model can call: its name, what it does, the JSON Schema of
@@ -44,9 +45,9 @@ public struct ToolDefinition: Sendable {
         self.function = function
     }
 
-    /// The tool as the OpenRouter API expects it.
-    public var chatTool: ChatTool {
-        .function(name: name, description: description, parameters: parameters)
+    /// The tool as every provider's API describes it.
+    public var spec: ToolSpec {
+        ToolSpec(name: name, description: description, parameters: parameters)
     }
 }
 
