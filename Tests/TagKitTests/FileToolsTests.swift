@@ -42,18 +42,18 @@ struct FileToolsTests {
 
     @Test func readFileReturnsContents() async throws {
         try directory.write("hello", to: "a.txt")
-        #expect(try await run(ToolDefinition.readFile, #"{"path":"a.txt"}"#) == "hello")
+        #expect(try await run({ ToolDefinition.readFile(workingDirectory: $0) }, #"{"path":"a.txt"}"#) == "hello")
     }
 
     @Test func readFileAcceptsAbsolutePaths() async throws {
         try directory.write("hello", to: "a.txt")
         let path = directory.url.appending(path: "a.txt").path(percentEncoded: false)
-        #expect(try await run(ToolDefinition.readFile, #"{"path":"\#(path)"}"#) == "hello")
+        #expect(try await run({ ToolDefinition.readFile(workingDirectory: $0) }, #"{"path":"\#(path)"}"#) == "hello")
     }
 
     @Test func readFileRejectsMissingPath() async throws {
         await #expect(throws: ToolError.self) {
-            try await run(ToolDefinition.readFile, "{}")
+            try await run({ ToolDefinition.readFile(workingDirectory: $0) }, "{}")
         }
     }
 
@@ -62,27 +62,30 @@ struct FileToolsTests {
         try directory.write("", to: "dir/c.txt")
         try directory.write("", to: ".git/config")
         try directory.write("", to: ".hidden")
-        #expect(try await run(ToolDefinition.listFiles, "") == #"["b.txt","dir\/","dir\/c.txt"]"#)
-        #expect(try await run(ToolDefinition.listFiles, #"{"path":"dir"}"#) == #"["c.txt"]"#)
+        #expect(
+            try await run({ ToolDefinition.listFiles(workingDirectory: $0) }, "") == #"["b.txt","dir\/","dir\/c.txt"]"#)
+        #expect(try await run({ ToolDefinition.listFiles(workingDirectory: $0) }, #"{"path":"dir"}"#) == #"["c.txt"]"#)
     }
 
     @Test func listFilesRejectsFiles() async throws {
         try directory.write("", to: "b.txt")
         await #expect(throws: ToolError("not a directory: b.txt")) {
-            try await run(ToolDefinition.listFiles, #"{"path":"b.txt"}"#)
+            try await run({ ToolDefinition.listFiles(workingDirectory: $0) }, #"{"path":"b.txt"}"#)
         }
     }
 
     @Test func editFileReplacesTheSingleMatch() async throws {
         try directory.write("let x = 1\nlet y = 2\n", to: "main.swift")
         let input = #"{"path":"main.swift","old_str":"x = 1","new_str":"x = 3"}"#
-        #expect(try await run(ToolDefinition.editFile, input) == "OK")
+        #expect(try await run({ ToolDefinition.editFile(workingDirectory: $0) }, input) == "OK")
         #expect(try directory.read("main.swift") == "let x = 3\nlet y = 2\n")
     }
 
     @Test func editFileCreatesMissingFilesAndDirectories() async throws {
         let input = #"{"path":"new/dir/file.txt","old_str":"","new_str":"content"}"#
-        #expect(try await run(ToolDefinition.editFile, input) == "Successfully created file new/dir/file.txt")
+        #expect(
+            try await run({ ToolDefinition.editFile(workingDirectory: $0) }, input)
+                == "Successfully created file new/dir/file.txt")
         #expect(try directory.read("new/dir/file.txt") == "content")
     }
 
@@ -98,7 +101,7 @@ struct FileToolsTests {
     func editFileRejects(input: String, message: String) async throws {
         try directory.write("a a", to: "f.txt")
         let error = await #expect(throws: ToolError.self) {
-            try await run(ToolDefinition.editFile, input)
+            try await run({ ToolDefinition.editFile(workingDirectory: $0) }, input)
         }
         #expect(error?.message.contains(message) == true)
         #expect(try directory.read("f.txt") == "a a")

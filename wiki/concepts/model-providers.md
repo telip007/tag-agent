@@ -113,6 +113,26 @@ and the files with `0600`:
   models (newest first, at most 6) and whether the one-time ChatGPT plan
   notice was shown.
 
+**Several Tag processes at once.** Every write holds a
+[`FileLock`](../../Sources/ModelKit/FileLock.swift) (`flock(2)`) on a
+`.<file>.lock` beside the file, so concurrent read-modify-writes don't lose
+each other's changes. A ChatGPT refresh holds `.chatgpt-refresh.lock` across
+the token request, then re-reads the account. Refresh tokens rotate, and the
+server revokes the sign-in when one is spent twice
+(`refresh_token_reused`), so a second process waiting on the lock uses the
+first one's fresh tokens instead of refreshing again.
+
+**Keeping the agent out.** Tag runs shell commands and reads files that the
+model chooses, so a `0600` file alone doesn't keep a prompt-injected model away
+from it. [`ProtectedPaths`](../../Sources/TagKit/ProtectedPaths.swift) makes
+the file tools refuse the config directory, also through `..` and symbolic
+links, and makes `code_search` refuse it as a search path. `bash` refuses
+commands that name the directory in any spelling (absolute, `~/`,
+`$HOME/`, relative to home). It is a guard, not a sandbox: a shell command
+can still reach the file in ways a check of its text doesn't see. The
+macOS Keychain was considered and left out for now
+([0012](../decisions/0012-model-providers.md)).
+
 ## Errors
 
 [`ProviderError`](../../Sources/ModelKit/ProviderError.swift) says what went

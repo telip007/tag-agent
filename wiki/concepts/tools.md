@@ -156,6 +156,15 @@ Options for later, when Tag ships as a binary: a Homebrew formula with
 and VS Code do), or a `grep -rn` fallback. SwiftPM artifact bundles can't do
 it: their executables are only available to build plugins, not at runtime.
 
+## Tag's config directory is off limits
+
+Every tool refuses Tag's own config directory, which holds the user's
+credentials: the file tools and `code_search` by resolved path, `bash` by
+any spelling of the directory in the command
+([`ProtectedPaths`](../../Sources/TagKit/ProtectedPaths.swift)). The
+refusal tells the model to ask the user instead. Why:
+[models and providers](model-providers.md#credentials-and-settings).
+
 ## Gotchas
 
 - **`MemberImportVisibility` and JSON literals.** Writing a schema as a

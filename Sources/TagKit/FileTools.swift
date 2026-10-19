@@ -7,7 +7,7 @@ import OpenRouter
 
 extension ToolDefinition {
     /// `read_file`: returns the contents of a text file.
-    public static func readFile(workingDirectory: URL) -> Self {
+    public static func readFile(workingDirectory: URL, protecting protected: ProtectedPaths = .tagConfig) -> Self {
         Self(
             name: "read_file",
             description: """
@@ -25,12 +25,12 @@ extension ToolDefinition {
         ) { json in
             struct Input: Decodable { var path: String }
             let input = try decodeInput(json, as: Input.self)
-            return try FileTools(workingDirectory: workingDirectory).read(input.path)
+            return try FileTools(workingDirectory: workingDirectory, protected: protected).read(input.path)
         }
     }
 
     /// `list_files`: lists files and directories below a path, recursively.
-    public static func listFiles(workingDirectory: URL) -> Self {
+    public static func listFiles(workingDirectory: URL, protecting protected: ProtectedPaths = .tagConfig) -> Self {
         Self(
             name: "list_files",
             description: """
@@ -51,12 +51,12 @@ extension ToolDefinition {
         ) { json in
             struct Input: Decodable { var path: String? }
             let input = try decodeInput(json, as: Input.self)
-            return try FileTools(workingDirectory: workingDirectory).list(input.path ?? ".")
+            return try FileTools(workingDirectory: workingDirectory, protected: protected).list(input.path ?? ".")
         }
     }
 
     /// `edit_file`: replaces one exact occurrence of a string, or creates a file.
-    public static func editFile(workingDirectory: URL) -> Self {
+    public static func editFile(workingDirectory: URL, protecting protected: ProtectedPaths = .tagConfig) -> Self {
         Self(
             name: "edit_file",
             description: """
@@ -92,7 +92,7 @@ extension ToolDefinition {
                 }
             }
             let input = try decodeInput(json, as: Input.self)
-            return try FileTools(workingDirectory: workingDirectory)
+            return try FileTools(workingDirectory: workingDirectory, protected: protected)
                 .edit(input.path, replacing: input.oldStr, with: input.newStr)
         }
     }
@@ -101,22 +101,29 @@ extension ToolDefinition {
 /// The file operations behind the file tools, relative to a working directory.
 struct FileTools {
     let workingDirectory: URL
+    /// Directories the tools refuse, such as Tag's own config directory.
+    var protected = ProtectedPaths.nothing
 
     private var fileManager: FileManager { .default }
 
-    func url(for path: String) -> URL {
-        path.hasPrefix("/") ? URL(filePath: path) : workingDirectory.appending(path: path)
+    /// The file `path` names, relative to the working directory.
+    ///
+    /// - Throws: A ``ToolError`` when it is protected.
+    func url(for path: String) throws -> URL {
+        let url = path.hasPrefix("/") ? URL(filePath: path) : workingDirectory.appending(path: path)
+        try protected.check(url)
+        return url
     }
 
     func read(_ path: String) throws -> String {
-        try String(contentsOf: url(for: path), encoding: .utf8)
+        try String(contentsOf: try url(for: path), encoding: .utf8)
     }
 
     /// Lists everything below `path` as relative paths, directories with a
     /// trailing `/`. Hidden files and directories (`.git`, `.build`) are
     /// skipped so the listing stays small enough for the model's context.
     func list(_ path: String) throws -> String {
-        let url = url(for: path)
+        let url = try url(for: path)
         guard (try? url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) == true,
             let enumerator = fileManager.enumerator(atPath: url.path(percentEncoded: false))
         else {
@@ -144,7 +151,7 @@ struct FileTools {
         guard !path.isEmpty, oldString != newString else {
             throw ToolError("invalid input parameters: path must not be empty and old_str must differ from new_str")
         }
-        let url = url(for: path)
+        let url = try url(for: path)
         guard fileManager.fileExists(atPath: url.path(percentEncoded: false)) else {
             guard oldString.isEmpty else {
                 throw ToolError("file not found: \(path). To create it, pass an empty old_str.")

@@ -62,10 +62,14 @@ What the providers' official documentation says (read 2026-10-19):
    a usage limit, and the agent waits for the next message.
 7. **Credentials live in `credentials.json` with mode `0600`** in the config
    directory (`$TAG_CONFIG_DIR`, `$XDG_CONFIG_HOME/tag` or `~/.config/tag`).
-   Files are written atomically. API keys in the environment override stored
-   ones. We chose files over the Keychain for testability and for the
-   provider documentation's guidance, which says to keep tokens in
-   owner-only files.
+   Files are written atomically, under a cross-process `flock`. API keys in
+   the environment override stored ones. Codex CLI (by default) and other
+   coding agents keep their tokens the same way; Claude Code uses the macOS
+   Keychain. The Keychain would hide the tokens from other programs running
+   as the user, Tag's own shell tool among them, but it asks again after
+   every rebuild of an unsigned binary and needs a file fallback elsewhere.
+   The maintainer chose files for now, plus a guard that keeps Tag's tools
+   out of the config directory.
 
 ## Consequences
 

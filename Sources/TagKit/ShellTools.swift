@@ -7,7 +7,7 @@ import OpenRouter
 
 extension ToolDefinition {
     /// `bash`: runs a shell command in the working directory.
-    public static func bash(workingDirectory: URL) -> Self {
+    public static func bash(workingDirectory: URL, protecting protected: ProtectedPaths = .tagConfig) -> Self {
         Self(
             name: "bash",
             description: "Execute a bash command and return its output. Use this to run shell commands.",
@@ -28,6 +28,7 @@ extension ToolDefinition {
         ) { json in
             struct Input: Decodable { var command: String }
             let input = try decodeInput(json, as: Input.self)
+            try protected.check(command: input.command)
             let result = try await ShellTools.run(
                 "bash", ["-c", input.command], in: workingDirectory, mergingErrors: true,
             )
@@ -40,8 +41,11 @@ extension ToolDefinition {
     /// - Parameters:
     ///   - workingDirectory: Where relative search paths start.
     ///   - ripgrep: The ripgrep program, looked up on `PATH`.
+    ///   - protected: Directories the search refuses.
     /// - Returns: The tool.
-    public static func codeSearch(workingDirectory: URL, ripgrep: String = "rg") -> Self {
+    public static func codeSearch(
+        workingDirectory: URL, ripgrep: String = "rg", protecting protected: ProtectedPaths = .tagConfig,
+    ) -> Self {
         Self(
             name: "code_search",
             description: """
@@ -57,6 +61,9 @@ extension ToolDefinition {
             let input = try decodeInput(json, as: CodeSearchInput.self)
             guard !input.pattern.isEmpty else {
                 throw ToolError("pattern is required")
+            }
+            if let path = input.path {
+                try protected.check(path.hasPrefix("/") ? URL(filePath: path) : workingDirectory.appending(path: path))
             }
             let result = try await ShellTools.run(ripgrep, input.ripgrepArguments, in: workingDirectory)
             return try ShellTools.searchResult(result)
