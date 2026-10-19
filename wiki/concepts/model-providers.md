@@ -141,6 +141,13 @@ mapped in [`ResponsesStream`](../../Sources/ModelKit/Wire/ResponsesStream.swift)
 - **There are two streaming helpers.** `WireStream` (Chat Completions,
   Anthropic, Gemini) and `ResponsesStream` were written in parallel. Merging
   them into one is a follow-up.
+- **OpenCode Go rejects a request without `x-opencode-session`** (HTTP 400
+  `MissingSessionID`) before it even checks the key. With the header and no
+  key it answers 401 "Go requires a credential", which Tag reports as sign in
+  again. Its model list needs no key. (Probed live on 2026-10-19.)
+- **OpenAI's authorize page is behind a browser check.** Fetching it from a
+  script gets a 403 challenge, so the sign-in can only be tried in a real
+  browser, which is how Tag opens it.
 - **Not tried live yet**: a real ChatGPT sign-in, and OpenCode Go requests.
   They are tested against recorded-shape fixtures and a local loopback
   listener only. Unknowns: the field names for context and reasoning levels

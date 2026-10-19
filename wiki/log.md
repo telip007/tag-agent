@@ -177,3 +177,6 @@ Onboarding on the first start, the search-first `/model` picker, `/model <provid
 
 ## [2026-10-19] update | Stipple 0.5.1: opaque overlays
 The model picker over the workspace let the session panel show through its blank cells. Fixed in Stipple 0.5.1 (`.background(_ color:)` paints spaces, as Ink does), and Tag now requires it. `/model x/y` no longer leaves the input unfocused, and a search that spells a whole model name ranks it first. Tried live: the quick switch keeps the conversation (the new model recalled a word from before the switch).
+
+## [2026-10-19] update | Live probes of the Go and ChatGPT endpoints
+Without credentials: OpenCode Go demands `x-opencode-session` (400 otherwise) and answers 401 without a key; OpenAI's authorize page sits behind a browser check. Gotchas on [models and providers](concepts/model-providers.md#gotchas). A real ChatGPT sign-in and Go requests with a key still need the maintainer.
