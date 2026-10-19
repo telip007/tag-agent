@@ -58,7 +58,10 @@ extension OpenCodeGoProvider {
             let field = metadata == nil ? "reasoning_content" : metadata?.interleavedField
             return { ChatCompletionsChatModel(endpoint: $0, reasoningField: field) }
         case .responses:
-            return { ResponsesChatModel(endpoint: $0) }
+            // Encrypted reasoning carries a reasoning model's thoughts to the
+            // next turn; models that don't reason reject the `include`.
+            let reasons = metadata?.reasoning ?? true
+            return { ResponsesChatModel(endpoint: $0, includeEncryptedReasoning: reasons) }
         case .anthropicMessages:
             let maxTokens = metadata?.outputLimit ?? 32_000
             let thinking: AnthropicChatModel.Thinking = entry.ref.model.hasPrefix("claude-") ? .adaptive : .budget
