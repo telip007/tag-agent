@@ -29,30 +29,30 @@ enum ResponsesEvent: Sendable, Equatable {
     ///   - provider: The provider, for errors.
     init(data: String, provider: ProviderID) {
         guard let json = try? JSONDecoder().decode(JSONValue.self, from: Data(data.utf8)),
-            let type = json["type"]?.string
+            let type = json.member("type")?.string
         else {
             self = data == "[DONE]" ? .ignored : .failed(.malformedResponse(provider, detail: "An event wasn't JSON."))
             return
         }
-        let index = json["output_index"]?.int ?? 0
+        let index = json.member("output_index")?.int ?? 0
         switch type {
         case "response.output_text.delta", "response.refusal.delta":
-            self = .textDelta(index: index, text: json["delta"]?.string ?? "")
+            self = .textDelta(index: index, text: json.member("delta")?.string ?? "")
         case "response.reasoning_summary_text.delta", "response.reasoning_text.delta":
-            self = .reasoningDelta(index: index, text: json["delta"]?.string ?? "")
+            self = .reasoningDelta(index: index, text: json.member("delta")?.string ?? "")
         case "response.reasoning_summary_part.added":
-            self = .reasoningPartAdded(index: index, part: json["summary_index"]?.int ?? 0)
+            self = .reasoningPartAdded(index: index, part: json.member("summary_index")?.int ?? 0)
         case "response.output_item.added":
-            let item = json["item"]
+            let item = json.member("item")
             self =
-                item?["type"]?.string == "function_call"
-                ? .toolCallStarted(index: index, name: item?["name"]?.string ?? "") : .ignored
+                item?.member("type")?.string == "function_call"
+                ? .toolCallStarted(index: index, name: item?.member("name")?.string ?? "") : .ignored
         case "response.function_call_arguments.delta":
-            self = .argumentsDelta(index: index, text: json["delta"]?.string ?? "")
+            self = .argumentsDelta(index: index, text: json.member("delta")?.string ?? "")
         case "response.output_item.done":
-            self = json["item"].map { .itemDone(index: index, item: $0) } ?? .ignored
+            self = json.member("item").map { .itemDone(index: index, item: $0) } ?? .ignored
         case "response.completed":
-            self = .completed(Self.usage(in: json["response"]?["usage"]))
+            self = .completed(Self.usage(in: json.member("response")?.member("usage")))
         case "response.failed", "response.incomplete", "error":
             self = .failed(Self.failure(type: type, json: json, provider: provider))
         default:
@@ -61,22 +61,22 @@ enum ResponsesEvent: Sendable, Equatable {
     }
 
     private static func usage(in json: JSONValue?) -> Usage? {
-        guard let input = json?["input_tokens"]?.int, let output = json?["output_tokens"]?.int else {
+        guard let input = json?.member("input_tokens")?.int, let output = json?.member("output_tokens")?.int else {
             return nil
         }
         return Usage(inputTokens: input, outputTokens: output)
     }
 
     private static func failure(type: String, json: JSONValue, provider: ProviderID) -> ProviderError {
-        let response = json["response"]
+        let response = json.member("response")
         if type == "response.incomplete" {
-            let reason = response?["incomplete_details"]?["reason"]?.string ?? "no reason given"
+            let reason = response?.member("incomplete_details")?.member("reason")?.string ?? "no reason given"
             return .unavailable(provider, detail: "The reply stopped early (\(reason)).")
         }
-        let error = response?["error"] ?? json["error"] ?? json
+        let error = response?.member("error") ?? json.member("error") ?? json
         return ResponsesError.map(
-            provider: provider, status: nil, code: error["code"]?.string,
-            message: error["message"]?.string ?? "The response failed.", param: error["param"]?.string)
+            provider: provider, status: nil, code: error.member("code")?.string,
+            message: error.member("message")?.string ?? "The response failed.", param: error.member("param")?.string)
     }
 }
 
@@ -161,23 +161,24 @@ struct ResponsesAccumulator {
     }
 
     private mutating func finish(_ item: JSONValue, at index: Int) {
-        switch item["type"]?.string {
+        switch item.member("type")?.string {
         case "message":
-            let parts = item["content"]?.array ?? []
-            texts[index] = parts.compactMap { $0["text"]?.string ?? $0["refusal"]?.string }.joined()
+            let parts = item.member("content")?.array ?? []
+            texts[index] = parts.compactMap { $0.member("text")?.string ?? $0.member("refusal")?.string }.joined()
         case "function_call":
-            let callID = item["call_id"]?.string ?? item["id"]?.string ?? ""
-            let name = item["name"]?.string ?? calls[index]?.name ?? ""
-            let arguments = item["arguments"]?.string ?? calls[index]?.arguments ?? ""
+            let callID = item.member("call_id")?.string ?? item.member("id")?.string ?? ""
+            let name = item.member("name")?.string ?? calls[index]?.name ?? ""
+            let arguments = item.member("arguments")?.string ?? calls[index]?.arguments ?? ""
             calls[index, default: Call(name: name)].done = ToolCall(id: callID, name: name, arguments: arguments)
         case "reasoning":
-            let summary = (item["summary"]?.array ?? []).compactMap { $0["text"]?.string }.joined(separator: "\n\n")
+            let summary = (item.member("summary")?.array ?? []).compactMap { $0.member("text")?.string }.joined(
+                separator: "\n\n")
             if !summary.isEmpty {
                 reasoning[index] = summary
             }
             // Without its encrypted content a reasoning item can't be sent
             // back: nothing is stored server-side (`store: false`).
-            if item["encrypted_content"]?.string != nil {
+            if item.member("encrypted_content")?.string != nil {
                 replay[index] = ReplayItem(format: .responses, payload: item)
             }
         default:
@@ -198,13 +199,14 @@ enum ResponsesError {
     /// is `{"error":{"code","message","param"}}`, `{"detail":"…"}`, or text.
     static func from(status: Int, body: String, provider: ProviderID) -> ProviderError {
         let json = try? JSONDecoder().decode(JSONValue.self, from: Data(body.utf8))
-        let error = json?["error"]
+        let error = json?.member("error")
         let message =
-            error?["message"]?.string ?? error?.string ?? json?["detail"]?.string ?? json?["message"]?.string
+            error?.member("message")?.string ?? error?.string ?? json?.member("detail")?.string ?? json?.member(
+                "message")?.string
             ?? body.trimmingCharacters(in: .whitespacesAndNewlines)
         return map(
-            provider: provider, status: status, code: error?["code"]?.string, message: message,
-            param: error?["param"]?.string)
+            provider: provider, status: status, code: error?.member("code")?.string, message: message,
+            param: error?.member("param")?.string)
     }
 
     /// The error for a code and message, with the HTTP status when there is one.

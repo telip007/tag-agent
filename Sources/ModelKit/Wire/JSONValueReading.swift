@@ -4,7 +4,7 @@ import OpenRouter
 /// responses whose shape is only partly known.
 extension JSONValue {
     /// The member `key` of an object; `nil` for other values.
-    subscript(key: String) -> Self? {
+    func member(_ key: String) -> Self? {
         guard case .object(let object) = self else {
             return nil
         }

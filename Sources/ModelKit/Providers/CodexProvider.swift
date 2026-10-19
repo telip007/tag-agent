@@ -140,32 +140,33 @@ public final class CodexProvider: Provider {
     /// - Throws: ``ProviderError/malformedResponse(_:detail:)`` without a
     ///   `models` array.
     static func entries(from data: Data) throws -> [ModelEntry] {
-        guard let json = try? JSONDecoder().decode(JSONValue.self, from: data), let models = json["models"]?.array
+        guard let json = try? JSONDecoder().decode(JSONValue.self, from: data),
+            let models = json.member("models")?.array
         else {
             throw ProviderError.malformedResponse(.codex, detail: "The model list had no models.")
         }
         return models.compactMap { model in
-            guard model["visibility"]?.string == "list", let slug = model["slug"]?.string else {
+            guard model.member("visibility")?.string == "list", let slug = model.member("slug")?.string else {
                 return nil
             }
             return ModelEntry(
-                ref: ModelRef(provider: .codex, model: slug), name: model["display_name"]?.string ?? slug,
+                ref: ModelRef(provider: .codex, model: slug), name: model.member("display_name")?.string ?? slug,
                 contextLength: contextLength(of: model), pricing: .included,
                 reasoningEfforts: reasoningEfforts(of: model, slug: slug), format: .responses)
         }
     }
 
     private static func contextLength(of model: JSONValue) -> Int? {
-        ["context_window", "context_length", "max_context_window"].lazy.compactMap { model[$0]?.int }.first
+        ["context_window", "context_length", "max_context_window"].lazy.compactMap { model.member($0)?.int }.first
     }
 
     /// The listed efforts (strings, or objects with an `effort`), else the
     /// usual three for OpenAI's reasoning families.
     private static func reasoningEfforts(of model: JSONValue, slug: String) -> [String] {
         let listed = ["supported_reasoning_levels", "supported_reasoning_efforts", "reasoning_efforts"]
-            .lazy.compactMap { model[$0]?.array }.first
+            .lazy.compactMap { model.member($0)?.array }.first
         if let listed {
-            return listed.compactMap { $0.string ?? $0["effort"]?.string }
+            return listed.compactMap { $0.string ?? $0.member("effort")?.string }
         }
         return slug.hasPrefix("gpt-") || slug.hasPrefix("o") ? ["low", "medium", "high"] : []
     }
