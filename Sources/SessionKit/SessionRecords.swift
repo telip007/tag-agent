@@ -31,6 +31,8 @@ public struct SessionSummary: Sendable, Equatable, Codable, Identifiable {
     public var contextTokens: Int
     /// Usage of the last completed reply; nil is unknown.
     public var latestUsage: Usage?
+    /// Explicit request projection; the canonical journal remains authoritative.
+    public var contextProjection: SessionContextProjection?
     /// Date annotation state of the last consumed input.
     public var lastDate: String?
     /// Whether a first user input has already supplied the automatic title.

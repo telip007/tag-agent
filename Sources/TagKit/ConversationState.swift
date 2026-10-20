@@ -20,6 +20,8 @@ struct ConversationState {
     private(set) var cost = 0.0
     /// The conversation's id for providers that route or cache by session.
     private(set) var sessionID = UUID().uuidString
+    private var projectedPrefix: [Message]?
+    private var projectedCount = 0
     private let prompt: (ModelDescription) -> String
 
     init(active: ActiveModel, prompt: @escaping (ModelDescription) -> String) {
@@ -30,7 +32,10 @@ struct ConversationState {
         conversation = [.system(prompt(active.description))]
     }
 
-    init(active: ActiveModel, prompt: @escaping (ModelDescription) -> String, snapshot: SessionSnapshot) {
+    init(
+        active: ActiveModel, prompt: @escaping (ModelDescription) -> String, snapshot: SessionSnapshot,
+        projectionEnabled: Bool = true
+    ) {
         self.init(active: active, prompt: prompt)
         sessionID = snapshot.summary.providerSessionID
         dater = UserMessageDater(lastDate: snapshot.summary.lastDate)
@@ -38,16 +43,16 @@ struct ConversationState {
         cost = snapshot.summary.cost
         let current = SessionContext(prompt: prompt(active.description), model: active.entry.ref, effort: active.effort)
         latestUsage = current == snapshot.summary.context ? snapshot.summary.latestUsage : nil
-        for entry in snapshot.entries {
-            switch entry.event {
-            case .user(let user): conversation.append(.user(user.message))
-            case .assistant(let reply):
-                conversation.append(.assistant(reply.message))
-            case .toolFinished(let result):
-                conversation.append(.tool(callID: result.call.id, name: result.call.name, content: result.output))
-            default: break
-            }
-        }
+        conversation += snapshot.entries.compactMap { ContextRequestProjection.message($0.event) }
+        if projectionEnabled { projectedPrefix = ContextRequestProjection.prefix(snapshot, system: conversation[0]) }
+        projectedCount = conversation.count
+    }
+
+    /// A derived request view; the canonical in-memory conversation remains available.
+    var requestConversation: [Message] {
+        guard var prefix = projectedPrefix else { return conversation }
+        prefix[0] = conversation[0]
+        return prefix + conversation.dropFirst(projectedCount)
     }
 
     mutating func clearLatestUsage() {
@@ -58,6 +63,8 @@ struct ConversationState {
     /// goes, so the prompt cache prefix does too.
     mutating func reset() {
         conversation = [.system(prompt(description))]
+        projectedPrefix = nil
+        projectedCount = 0
         dater = UserMessageDater()
         contextTokens = 0
         clearLatestUsage()

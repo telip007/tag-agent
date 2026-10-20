@@ -81,7 +81,10 @@ enum SessionSearchIndex {
     static func prepare(_ database: Database) {
         database.add(
             function: DatabaseFunction("tag_literal_position", argumentCount: 2, pure: true) { values in
-                guard let text = String.fromDatabaseValue(values[0]), let query = String.fromDatabaseValue(values[1]),
+                guard let textBytes = Data.fromDatabaseValue(values[0]),
+                    let queryBytes = Data.fromDatabaseValue(values[1]),
+                    let text = String(validating: textBytes, as: UTF8.self),
+                    let query = String(validating: queryBytes, as: UTF8.self),
                     let range = text.range(of: query, options: .caseInsensitive)
                 else { return 0 }
                 return text.unicodeScalars.distance(from: text.startIndex, to: range.lowerBound) + 1

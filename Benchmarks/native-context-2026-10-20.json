@@ -1,0 +1,76 @@
+{
+  "fixtureRevision" : 1,
+  "results" : [
+    {
+      "baseline_bytes" : 1049,
+      "checks" : {
+        "capture_over_1mb" : true,
+        "complete_reply_within_budget" : true,
+        "exit_7_preserved" : true,
+        "first_50_misses_error" : true,
+        "native_recovers_tail" : true
+      },
+      "input_bytes" : 1260014,
+      "name" : "large_tail_failure",
+      "native_bytes" : 917
+    },
+    {
+      "baseline_bytes" : 141,
+      "checks" : {
+        "complete_source" : true,
+        "reply_within_budget" : true,
+        "sparse_sum_is_1275" : true,
+        "whole_sum_is_50005000" : true
+      },
+      "input_bytes" : 48894,
+      "name" : "whole_input_aggregate",
+      "native_bytes" : 323
+    },
+    {
+      "baseline_bytes" : 60000,
+      "checks" : {
+        "five_exact_artifacts" : true,
+        "five_results" : true,
+        "group_within_32768" : true
+      },
+      "input_bytes" : 60000,
+      "name" : "shared_group_budget",
+      "native_bytes" : 22775
+    },
+    {
+      "baseline_bytes" : 34120,
+      "checks" : {
+        "canonical_events_unchanged" : true,
+        "request_json_smaller" : true,
+        "user_constraint_pinned" : true
+      },
+      "input_bytes" : 34120,
+      "name" : "explicit_request_projection",
+      "native_bytes" : 23674
+    },
+    {
+      "baseline_bytes" : 9,
+      "checks" : {
+        "foreign_session_rejected" : true,
+        "nul_preserved" : true,
+        "scalar_boundary_preserved" : true
+      },
+      "input_bytes" : 9,
+      "name" : "unicode_and_scope",
+      "native_bytes" : 6
+    },
+    {
+      "baseline_bytes" : 16,
+      "checks" : {
+        "doctor_does_not_replay_or_repair" : true,
+        "incomplete_capture_not_upgraded" : true,
+        "partial_evidence_remains_exact" : true,
+        "pending_work_distinguished_from_corruption" : true
+      },
+      "input_bytes" : 16,
+      "name" : "partial_capture_and_recovery",
+      "native_bytes" : 16
+    }
+  ],
+  "scope" : "Deterministic native contracts; no LLM solve-rate, provider-token, cache-cost or billing claim."
+}

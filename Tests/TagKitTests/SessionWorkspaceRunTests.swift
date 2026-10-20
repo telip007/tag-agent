@@ -209,9 +209,9 @@ struct DurableWorkspace {
     let terminal: FakeTerminal
     let runtime: Runtime
 
-    init(controller: SessionController) {
+    init(controller: SessionController, width: Int = 120) {
         controller.selection.dismissChatGPTWelcome()
-        terminal = FakeTerminal(size: Size(width: 120, height: 32))
+        terminal = FakeTerminal(size: Size(width: width, height: 32))
         var options = ChatView.renderOptions
         options.maxFps = 1_000
         runtime = Runtime(view: ChatView(controller: controller), options: options, terminal: terminal)

@@ -4,6 +4,8 @@ Start here. Conventions: [SCHEMA.md](SCHEMA.md). Timeline: [log.md](log.md).
 
 ## Concepts
 
+- [Native context management](concepts/native-context.md): Native context retains exact evidence with bounded tools, scoped retrieval and computation, and explicit reversible context views.
+
 - [Session storage](concepts/session-storage.md): Durable local conversations, provider-authoritative context limits, keyboard session navigation and explicit bounded references.
 
 - [Backpressure setup](concepts/backpressure-setup.md): every automated check in this repo, where it runs, and the traps we hit wiring it up.
@@ -17,6 +19,8 @@ Start here. Conventions: [SCHEMA.md](SCHEMA.md). Timeline: [log.md](log.md).
 - [OpenRouter SDK](concepts/openrouter-sdk.md): how Tag Agent consumes the swift-openrouter submodule and where its own docs live.
 
 ## Decisions
+
+- [0016 Native retained evidence and reversible context](decisions/0016-native-context.md): Extend the canonical session store with exact retained evidence, bounded native tools and explicit reversible request views without a second memory backend.
 
 - [0015 Transactional local sessions](decisions/0015-persistent-sessions.md): Persist lossless versioned session events in private SQLite storage, with explicit references and autonomous memory retrieval kept separate.
 
@@ -39,6 +43,12 @@ Start here. Conventions: [SCHEMA.md](SCHEMA.md). Timeline: [log.md](log.md).
 
 ## Designs
 
+- [Native context contract evaluation](designs/native-context-evaluation.md): Deterministic native fixtures compare tail recall, whole-input computation, byte admission and reversible request projection without claiming model or billing gains.
+
+- [Native context management implementation plan](designs/native-context-plan.md): Execution ledger for native output storage, retrieval, indexing, analysis, batching, compaction and diagnostics on the persistent session foundation.
+
+- [Native context management research](designs/native-context-management.md): A research proposal for bounded tool results, exact retrieval and evidence-backed session state in Tag, with cache-aware evaluation before implementation.
+
 - [Persistent session performance](designs/persistent-sessions-benchmark.md): Release measurements of durable SQLite and JSONL, indexed discovery, bounded UI restoration and local input readiness.
 
 - [Session navigation TUI](designs/persistent-sessions-tui.md): Keyboard-first session search and conversation previews, with deliberate workspace scope and safe draft-preserving transitions.
@@ -56,6 +66,9 @@ Start here. Conventions: [SCHEMA.md](SCHEMA.md). Timeline: [log.md](log.md).
 - [Prompt caching implementation](designs/prompt-caching.md): Provider-aware cache requests, stable history boundaries and observable cache usage across all ModelKit formats.
 
 ## Sources
+
+- [Context Mode](sources/context-mode.md): Context Mode keeps tool payloads outside the prompt and retrieves exact excerpts; Tag can adopt the mechanisms without its MCP and hook layer.
+- [Research on agent context management](sources/agent-context-research.md): Eight primary papers support reversible evidence storage and simple baselines while warning that trained memory policies and benchmark gains do not transfer automatically to Tag.
 
 - [Don't waste your back pressure](sources/dont-waste-your-backpressure.md): Moss's essay on automated feedback as the lever for agent autonomy.
 - [LLM wiki pattern](sources/llm-wiki-pattern.md): Karpathy's idea file for agent-maintained knowledge bases.

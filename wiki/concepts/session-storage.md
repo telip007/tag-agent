@@ -183,6 +183,13 @@ stranding the session behind a local estimate. Tests send full restored history,
 refresh the trusted prompt, inject a provider context rejection and assert exact
 saved input/excerpts and the visible recovery choices.
 
+Explicit `/compact` creates a reversible shorter request view while retaining
+the complete canonical journal and transcript. It pins all user input, failed
+and recent complete groups, with exact scoped history retrieval for older
+records. `/compact off` restores the original view. This is an explicit user
+choice, not an automatic context-window gate or a generated summary; see
+[native context management](native-context.md).
+
 ## Gotchas
 
 - `MemberImportVisibility` requires a direct ModelKit import in a file reading

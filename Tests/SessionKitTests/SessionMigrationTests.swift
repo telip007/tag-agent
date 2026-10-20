@@ -6,6 +6,34 @@ import Testing
 @testable import SessionKit
 
 struct SessionMigrationTests {
+    @Test func outputMigrationPreservesVersionThreeSessions() async throws {
+        let fixture = SessionStoreFixture()
+        let store = try await fixture.open()
+        let session = try await store.create(workspace: "/work/project", context: fixture.context)
+        let before = try await store.load(session.id)
+        try await store.database.write { database in
+            try database.execute(
+                sql: """
+                    DROP TABLE IF EXISTS context_output_fts;
+                    DROP TABLE context_output_chunks;
+                    DELETE FROM grdb_migrations WHERE identifier = 'sessions-v5-output-search';
+                    DROP TABLE context_outputs;
+                    DELETE FROM grdb_migrations WHERE identifier = 'sessions-v4-outputs';
+                    PRAGMA user_version = 3;
+                    """)
+        }
+        let reopened = try await fixture.open()
+        let after = try await reopened.load(session.id)
+        #expect(after.entries == before.entries)
+        #expect(after.summary.providerSessionID == before.summary.providerSessionID)
+        let reference = try await reopened.saveOutput(session.id, text: "retained", source: "new output")
+        #expect(try await reopened.readOutput(session.id, id: reference.id, offset: 0, limit: 100).text == "retained")
+        let backup = fixture.directory.appending(path: "backups/pre-v4/sessions.sqlite")
+        let database = try DatabaseQueue(path: backup.path)
+        #expect(try await database.read { try Int.fetchOne($0, sql: "PRAGMA user_version") } == 3)
+        #expect(try await database.read { try !$0.tableExists("context_outputs") })
+    }
+
     @Test func failedMigrationRetriesRefreshOneBoundedBackup() async throws {
         let fixture = SessionStoreFixture()
         let store = try await fixture.open()
@@ -13,6 +41,11 @@ struct SessionMigrationTests {
         try await store.database.write { database in
             try database.execute(
                 sql: """
+                    DROP TABLE IF EXISTS context_output_fts;
+                    DROP TABLE context_output_chunks;
+                    DELETE FROM grdb_migrations WHERE identifier = 'sessions-v5-output-search';
+                    DROP TABLE context_outputs;
+                    DELETE FROM grdb_migrations WHERE identifier = 'sessions-v4-outputs';
                     DELETE FROM grdb_migrations WHERE identifier = 'sessions-v3-literal';
                     PRAGMA user_version = 2;
                     UPDATE entries SET payload = X'00';
@@ -57,6 +90,11 @@ struct SessionMigrationTests {
                     CREATE TRIGGER IF NOT EXISTS entry_search_insert AFTER INSERT ON entry_search BEGIN
                         INSERT INTO entry_search_fts(rowid, text) VALUES (new.rowid, new.text);
                     END;
+                    DROP TABLE IF EXISTS context_output_fts;
+                    DROP TABLE context_output_chunks;
+                    DELETE FROM grdb_migrations WHERE identifier = 'sessions-v5-output-search';
+                    DROP TABLE context_outputs;
+                    DELETE FROM grdb_migrations WHERE identifier = 'sessions-v4-outputs';
                     DELETE FROM grdb_migrations WHERE identifier = 'sessions-v3-literal';
                     PRAGMA user_version = 2;
                     ALTER TABLE entry_search DROP COLUMN folded;
@@ -64,7 +102,7 @@ struct SessionMigrationTests {
                     """)
         }
         let reopened = try await fixture.open()
-        #expect(try await reopened.database.read { try Int.fetchOne($0, sql: "PRAGMA user_version") } == 3)
+        #expect(try await reopened.database.read { try Int.fetchOne($0, sql: "PRAGMA user_version") } == 5)
         #expect(try await reopened.database.read { try !$0.tableExists("entry_search_fts") })
         #expect(try await reopened.entries(session.id) == before)
         #expect(try await reopened.search(session.id, query: "literal").count == 1)
@@ -91,6 +129,11 @@ struct SessionMigrationTests {
                     DROP TRIGGER IF EXISTS entry_search_insert;
                     DROP TABLE IF EXISTS entry_search_fts;
                     DROP TABLE entry_search;
+                    DROP TABLE IF EXISTS context_output_fts;
+                    DROP TABLE context_output_chunks;
+                    DELETE FROM grdb_migrations WHERE identifier = 'sessions-v5-output-search';
+                    DROP TABLE context_outputs;
+                    DELETE FROM grdb_migrations WHERE identifier = 'sessions-v4-outputs';
                     DELETE FROM grdb_migrations WHERE identifier IN ('sessions-v2-search', 'sessions-v3-literal');
                     PRAGMA user_version = 1;
                     """)

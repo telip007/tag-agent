@@ -9,6 +9,8 @@ struct SessionStateBar: View {
     var body: some View {
         if let message = error ?? controller.pauseReason ?? controller.readOnlyReason {
             Text(SessionPresentation.clean(message)).foregroundStyle(Theme.removed).lineLimit(2)
+        } else if let report = controller.contextReport {
+            Text(report).dim().lineLimit(7)
         } else if controller.needsModel {
             Text("Saved model unavailable · /model chooses how to continue").foregroundStyle(Theme.accent).lineLimit(1)
         } else if !controller.draft.references.isEmpty {
@@ -17,6 +19,8 @@ struct SessionStateBar: View {
         } else if !controller.pendingForReview.isEmpty {
             Text("\(controller.pendingForReview.count) saved inputs await review · /pending opens the next one").dim()
                 .lineLimit(1)
+        } else if controller.active?.contextProjection != nil {
+            Text("Context compacted · /compact off restores full context").dim().lineLimit(1)
         }
     }
 }

@@ -36,6 +36,7 @@ extension SessionController {
         ownership = staged.owner
         snapshot = staged.snapshot
         active = staged.snapshot.summary
+        contextReport = nil
         draft = savedDraft
         pendingForReview = pending
         readOnlyReason = staged.reason

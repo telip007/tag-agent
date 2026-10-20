@@ -94,6 +94,11 @@ enum ProbeJobs {
                     DROP TRIGGER IF EXISTS entry_search_insert;
                     DROP TABLE IF EXISTS entry_search_fts;
                     DROP TABLE entry_search;
+                    DROP TABLE IF EXISTS context_output_fts;
+                    DROP TABLE context_output_chunks;
+                    DELETE FROM grdb_migrations WHERE identifier = 'sessions-v5-output-search';
+                    DROP TABLE context_outputs;
+                    DELETE FROM grdb_migrations WHERE identifier = 'sessions-v4-outputs';
                     DELETE FROM grdb_migrations WHERE identifier IN ('sessions-v2-search', 'sessions-v3-literal');
                     PRAGMA user_version = 1;
                     """)

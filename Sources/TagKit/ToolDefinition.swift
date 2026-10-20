@@ -16,6 +16,8 @@ public struct ToolDefinition: Sendable {
     /// Rules for the system prompt about when and how to use the tool. They
     /// live with the tool, so removing a tool removes its rules.
     public let guidelines: [String]
+    var contextExecutor: ContextCommandExecutor?
+    var captureFunction: (@Sendable (String) async throws -> ToolOutcome)?
     let function: @Sendable (String) async throws -> String
 
     /// Creates a tool.
@@ -43,6 +45,13 @@ public struct ToolDefinition: Sendable {
         self.summary = summary ?? description
         self.guidelines = guidelines
         self.function = function
+    }
+
+    /// Adds a structured evidence path while retaining the ordinary String tool API.
+    func capturing(_ capture: @escaping @Sendable (String) async throws -> ToolOutcome) -> Self {
+        var tool = self
+        tool.captureFunction = capture
+        return tool
     }
 
     /// The tool as every provider's API describes it.

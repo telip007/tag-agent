@@ -9,6 +9,8 @@ enum SessionCommand: Equatable {
     case reference(String?, String)
     case unreference
     case pending
+    case context(String)
+    case compact(Bool)
     case retry
     case invalid(String)
 
@@ -27,6 +29,15 @@ enum SessionCommand: Equatable {
             self = .reference(source.first, source.count == 2 ? source[1] : "")
         case "/unreference": self = argument.isEmpty ? .unreference : .invalid("Usage: /unreference")
         case "/pending": self = argument.isEmpty ? .pending : .invalid("Usage: /pending")
+        case "/context":
+            self =
+                ["", "doctor", "off"].contains(argument) ? .context(argument) : .invalid("Usage: /context [doctor|off]")
+        case "/compact":
+            switch argument {
+            case "": self = .compact(true)
+            case "off": self = .compact(false)
+            default: self = .invalid("Usage: /compact [off]")
+            }
         case "/retry": self = argument.isEmpty ? .retry : .invalid("Usage: /retry")
         default: return nil
         }
