@@ -1,5 +1,6 @@
 import Foundation
 public import Observation
+import SessionKit
 
 /// The state the workspace shows, fed by the ``Agent``'s events, and the
 /// hand-off of submitted messages back to the agent.
@@ -29,7 +30,7 @@ public final class ChatSession {
     /// When the current ``activity`` started.
     public private(set) var activityStart: ContinuousClock.Instant?
     /// When the session started, for its running time.
-    public let start: ContinuousClock.Instant
+    public private(set) var start: ContinuousClock.Instant
     /// Messages submitted while the agent was busy, oldest first.
     public private(set) var queued: [String] = []
     /// Every message sent, oldest first, for recalling with the arrow keys.
@@ -41,7 +42,9 @@ public final class ChatSession {
     }
 
     @ObservationIgnored private let now: () -> ContinuousClock.Instant
-    private var pendingMessage: CheckedContinuation<String?, Never>?
+    private var pendingMessage: CheckedContinuation<AgentInput?, Never>?
+    @ObservationIgnored private var queuedInputs: [AgentInput] = []
+    @ObservationIgnored private var archivedBlocks: [TranscriptBlock] = []
     @ObservationIgnored private var isEnded = false
     /// The tray collecting the current run of tool calls, if one is open.
     @ObservationIgnored private var openTray: Int?
@@ -105,7 +108,8 @@ public final class ChatSession {
     /// `nil` once the session has ended or the waiting task is cancelled.
     public func nextMessage() async -> AgentInput? {
         if !queued.isEmpty {
-            return take(queued.removeFirst())
+            queued.removeFirst()
+            return take(queuedInputs.removeFirst())
         }
         guard !isEnded else {
             return nil
@@ -128,15 +132,7 @@ public final class ChatSession {
         }
         // A command runs the conversation rather than joining it, so ↑
         // won't recall it as a message.
-        if !isClearCommand(text) {
-            history.append(text)
-        }
-        guard let pendingMessage else {
-            queued.append(text)
-            return true
-        }
-        self.pendingMessage = nil
-        pendingMessage.resume(returning: text)
+        enqueue(isClearCommand(text) ? .clear : .message(text), text: text)
         return true
     }
 
@@ -150,14 +146,19 @@ public final class ChatSession {
 
     /// Takes a line the user entered: the clear command, or a message that
     /// joins the transcript.
-    private func take(_ line: String) -> AgentInput {
-        if isClearCommand(line) {
+    private func take(_ input: AgentInput) -> AgentInput {
+        switch input {
+        case .clear:
             clear()
-            return .clear
+        case .message(let text):
+            openTray = nil
+            append(.user(text))
+        case .stored(let input):
+            openTray = nil
+            append(.user(input.text))
+            if !input.references.isEmpty { append(.references(input.references)) }
         }
-        openTray = nil
-        append(.user(line))
-        return .message(line)
+        return input
     }
 
     /// Empties the transcript: the agent is told to forget the conversation,
@@ -165,6 +166,7 @@ public final class ChatSession {
     /// and the session's run time stay, they aren't the conversation's.
     private func clear() {
         blocks = []
+        archivedBlocks = []
         expanded = []
         openTray = nil
         openReply = nil
@@ -189,6 +191,7 @@ public final class ChatSession {
             return
         }
         reasoning.duration = now() - openReasoning.start
+        reasoning.isStreaming = false
         blocks[openReasoning.block].content = .reasoning(reasoning)
         self.openReasoning = nil
     }
@@ -255,7 +258,7 @@ public final class ChatSession {
     }
 
     private func append(_ content: TranscriptBlock.Content) {
-        blocks.append(LiveBlock(id: blocks.count, content: content))
+        blocks.append(LiveBlock(id: blocks.last.map { $0.id + 1 } ?? 0, content: content))
     }
 
     /// `0.4s`, `12.3s`, `2m 05s`.
@@ -273,6 +276,19 @@ public final class ChatSession {
 extension ChatSession {
     /// Shows a failed model call in the transcript, with what to do next.
     private func reportFailure(_ message: String, recovery: String?) {
+        for block in blocks {
+            guard case .tools(var runs) = block.content else { continue }
+            var changed = false
+            for index in runs.indices where runs[index].state == .running {
+                runs[index].state = .unresolved
+                if runs[index].output.isEmpty {
+                    runs[index].output =
+                        "No committed result. Effects may be unknown. Fix storage and use /retry before continuing."
+                }
+                changed = true
+            }
+            if changed { block.content = .tools(runs) }
+        }
         finishReasoning()
         openReply = nil
         openTray = nil
@@ -319,5 +335,65 @@ extension ChatSession {
         } else {
             expanded.insert(id)
         }
+    }
+}
+
+extension ChatSession {
+    /// Older completed rows are held as values and observed only when paged in.
+    public var hasEarlier: Bool {
+        !archivedBlocks.isEmpty && (blocks.first?.id ?? 0) > 0
+    }
+
+    /// Pages older rows without changing stable IDs or retargeting streaming blocks.
+    @discardableResult
+    public func loadEarlier() -> Int {
+        guard hasEarlier, let end = blocks.first?.id else { return 0 }
+        let start = max(0, end - 100)
+        let older = archivedBlocks[start..<end].map { LiveBlock(id: $0.id, content: $0.content) }
+        blocks.insert(contentsOf: older, at: 0)
+        openTray = openTray.map { $0 + older.count }
+        openReply = openReply.map { $0 + older.count }
+        openReasoning = openReasoning.map { ($0.block + older.count, $0.start) }
+        return older.count
+    }
+
+    /// Restores completed rows while leaving accepted disk inputs for explicit review.
+    func restore(_ projection: SessionProjection, pending: [PendingInput] = []) {
+        stopDispatching()
+        archivedBlocks = projection.blocks
+        blocks = projection.blocks.suffix(100).map { LiveBlock(id: $0.id, content: $0.content) }
+        history = projection.history + pending.map(\.text)
+        files = projection.files
+        expanded = []
+        status = nil
+        openTray = nil
+        openReply = nil
+        openReasoning = nil
+        setActivity(nil)
+        start = now()
+        isEnded = false
+    }
+
+    /// Hands an already-durable input identity to the foreground loop.
+    func submitStored(_ input: PendingInput) {
+        enqueue(.stored(input), text: input.text)
+    }
+
+    /// Stops dispatch without deleting accepted inputs from durable storage.
+    func stopDispatching() {
+        queued = []
+        queuedInputs = []
+        end()
+    }
+
+    private func enqueue(_ input: AgentInput, text: String) {
+        if case .clear = input {} else { history.append(text) }
+        guard let pendingMessage else {
+            queued.append(text)
+            queuedInputs.append(input)
+            return
+        }
+        self.pendingMessage = nil
+        pendingMessage.resume(returning: input)
     }
 }

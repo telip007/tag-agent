@@ -1,5 +1,6 @@
 public import Foundation
 import ModelKit
+public import SessionKit
 
 /// What the agent loop reports to the user interface.
 public enum AgentEvent: Sendable, Equatable {
@@ -33,6 +34,8 @@ public enum AgentEvent: Sendable, Equatable {
 public enum AgentInput: Sendable, Equatable {
     /// A message to add to the conversation.
     case message(String)
+    /// Already accepted durably by the UI; consume its identity exactly once.
+    case stored(PendingInput)
     /// Start the conversation over: the model forgets it, and the totals go
     /// back to zero.
     case clear
@@ -47,10 +50,14 @@ public struct Agent {
     /// Errors from talking to the model.
     public enum InferenceError: LocalizedError {
         case emptyReply
+        case duplicateToolCallIDs
 
         /// What went wrong.
         public var errorDescription: String? {
-            "The model sent an empty reply."
+            switch self {
+            case .emptyReply: "The model sent an empty reply."
+            case .duplicateToolCallIDs: "The model sent duplicate tool-call IDs. No tools were run."
+            }
         }
     }
 
@@ -60,6 +67,7 @@ public struct Agent {
     let now: () -> Date
     let input: () async -> AgentInput?
     let output: (AgentEvent) -> Void
+    let journal: AgentJournal?
 
     /// Creates an agent.
     ///
@@ -71,6 +79,7 @@ public struct Agent {
     ///   - environment: The machine and project, for the system prompt and
     ///     the status line.
     ///   - now: The clock that dates user messages.
+    ///   - journal: Durable history and awaited storage boundaries, when enabled.
     ///   - output: Receives what happens in the conversation, for display.
     ///   - input: Reads what the user does at the prompt, or `nil` to end the session.
     public init(
@@ -78,6 +87,7 @@ public struct Agent {
         tools: [ToolDefinition] = [],
         environment: SessionEnvironment,
         now: @escaping () -> Date = Date.init,
+        journal: AgentJournal? = nil,
         output: @escaping (AgentEvent) -> Void,
         input: @escaping () async -> AgentInput?,
     ) {
@@ -87,44 +97,49 @@ public struct Agent {
         self.now = now
         self.output = output
         self.input = input
+        self.journal = journal
     }
 
     /// Runs the conversation until ``input`` returns `nil`. A failed model
     /// call is reported as ``AgentEvent/failure(message:recovery:)`` and the
     /// agent waits for the next message.
     public func run() async throws {
-        var state = ConversationState(active: model(), prompt: systemPrompt)
+        var state =
+            journal.map { ConversationState(active: model(), prompt: systemPrompt, snapshot: $0.snapshot) }
+            ?? ConversationState(active: model(), prompt: systemPrompt)
+        var savedContext = journal?.snapshot.summary.context
+        try await synchronize(model(), state: &state, saved: &savedContext)
 
         // After tool calls the model gets the results straight away, without
         // waiting for the user.
         var readUserInput = true
-        while true {
+        while !Task.isCancelled {
             if readUserInput {
                 output(.status(statusLine(state)))
                 guard let userInput = await input() else {
                     break
                 }
-                switch userInput {
-                case .clear:
-                    state.reset()
-                    continue
-                case .message(let text):
-                    state.conversation.append(.user(state.dater.message(text, at: now())))
-                }
+                try await synchronize(model(), state: &state, saved: &savedContext)
+                guard try await take(userInput, state: &state) else { continue }
             }
 
             let active = model()
-            state.follow(active)
+            try await synchronize(active, state: &state, saved: &savedContext)
             output(.metrics(statusLine(state)))
+            try await journal?.append(.inferenceStarted)
+            try Task.checkCancellation()
             output(.thinking)
-            guard let reply = await reply(from: active, state: state) else {
+            guard let reply = try await reply(from: active, state: state) else {
                 readUserInput = true
                 continue
             }
+            try await journal?.append(.assistant(SessionAssistant(message: reply.message, usage: reply.usage)))
             state.record(reply)
+            if let text = reply.message.text, !text.isEmpty { output(.reply(text)) }
             output(.metrics(statusLine(state)))
             for call in reply.message.toolCalls {
-                state.conversation.append(.tool(callID: call.id, name: call.name, content: await execute(call)))
+                let result = try await execute(call)
+                state.conversation.append(.tool(callID: call.id, name: call.name, content: result))
             }
             readUserInput = reply.message.toolCalls.isEmpty
         }
@@ -147,12 +162,21 @@ public struct Agent {
     }
 
     /// The model's next reply, or `nil` after reporting why there is none.
-    private func reply(from active: ActiveModel, state: ConversationState) async -> ModelReply? {
+    private func reply(from active: ActiveModel, state: ConversationState) async throws -> ModelReply? {
         do {
             return try await runInference(active: active, state: state)
         } catch {
+            if Task.isCancelled || error is CancellationError { throw error }
             let localized = error as? any LocalizedError
-            output(.failure(message: error.localizedDescription, recovery: localized?.recoverySuggestion))
+            let recovery =
+                localized?.recoverySuggestion
+                ?? (journal == nil
+                    ? nil : "Your full history was kept. Try again, choose a larger model with /model, or start /new.")
+            try await journal?.append(
+                .failure(
+                    SessionFailure(
+                        message: error.localizedDescription, recovery: recovery)))
+            output(.failure(message: error.localizedDescription, recovery: recovery))
             return nil
         }
     }
@@ -172,17 +196,26 @@ public struct Agent {
         guard message.text?.isEmpty == false || !message.toolCalls.isEmpty else {
             throw InferenceError.emptyReply
         }
-        if let reply = message.text, !reply.isEmpty {
-            output(.reply(reply))
+        guard Set(message.toolCalls.map(\.id)).count == message.toolCalls.count else {
+            throw InferenceError.duplicateToolCallIDs
         }
         return result
     }
 
     /// Runs a tool call. Failures become the tool's result, so the model can
     /// see what went wrong and try again.
-    private func execute(_ call: ToolCall) async -> String {
+    private func execute(_ call: ToolCall) async throws -> String {
+        try Task.checkCancellation()
+        try await journal?.append(.toolStarted(call))
+        try Task.checkCancellation()
         output(.toolStarted(name: call.name, arguments: call.arguments))
+        let start = ContinuousClock.now
         let result = await result(of: call)
+        let milliseconds = Int64((ContinuousClock.now - start) / .milliseconds(1))
+        try await journal?.append(
+            .toolFinished(
+                SessionToolResult(
+                    call: call, output: result.content, failed: result.failed, durationMilliseconds: milliseconds)))
         output(.toolFinished(name: call.name, arguments: call.arguments, output: result.content, failed: result.failed))
         return result.content
     }
@@ -195,68 +228,6 @@ public struct Agent {
             return (try await tool.function(call.arguments), false)
         } catch {
             return ("error: \(error.localizedDescription)", true)
-        }
-    }
-}
-
-/// What the agent keeps about the conversation between model calls.
-struct ConversationState {
-    /// The model the conversation was last sent to.
-    private(set) var model: ModelRef
-    /// Its name and context window, for the status line.
-    private(set) var description: ModelDescription
-    /// Everything the model is told, the system prompt first.
-    var conversation: [Message]
-    /// Dates user messages when the day changed.
-    var dater = UserMessageDater()
-    /// Tokens the context held after the latest reply.
-    private(set) var contextTokens = 0
-    /// Usage from the latest reply; absent metrics never inherit an old hit.
-    private(set) var latestUsage: Usage?
-    /// What the conversation has cost so far, in US dollars.
-    private(set) var cost = 0.0
-    /// The conversation's id for providers that route or cache by session.
-    private(set) var sessionID = UUID().uuidString
-    private let prompt: (ModelDescription) -> String
-
-    init(active: ActiveModel, prompt: @escaping (ModelDescription) -> String) {
-        model = active.entry.ref
-        description = active.description
-        self.prompt = prompt
-        // Rendered once per model: changing it would invalidate the cache.
-        conversation = [.system(prompt(active.description))]
-    }
-
-    /// Starts over: the system prompt stays; everything the model was told
-    /// goes, so the prompt cache prefix does too.
-    mutating func reset() {
-        conversation = [.system(prompt(description))]
-        dater = UserMessageDater()
-        contextTokens = 0
-        latestUsage = nil
-        cost = 0
-        sessionID = UUID().uuidString
-    }
-
-    /// Switches to `active` when it is another model: the system prompt
-    /// names the new model and the rest of the conversation carries over.
-    mutating func follow(_ active: ActiveModel) {
-        guard active.entry.ref != model else {
-            return
-        }
-        model = active.entry.ref
-        description = active.description
-        latestUsage = nil
-        conversation[0] = .system(prompt(description))
-    }
-
-    /// Adds the reply and its usage.
-    mutating func record(_ reply: ModelReply) {
-        conversation.append(.assistant(reply.message))
-        latestUsage = reply.usage
-        if let usage = reply.usage {
-            contextTokens = usage.totalTokens
-            cost += usage.cost ?? 0
         }
     }
 }

@@ -155,7 +155,7 @@ struct SearchLine: View, Equatable {
     var body: some View {
         HStack {
             Text("› ").foregroundStyle(Theme.accent)
-            Text(query)
+            Text(query).lineLimit(1).truncationMode(.head)
             Text(" ").background(Theme.accent)
             if query.isEmpty {
                 Text(placeholder).dim()

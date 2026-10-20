@@ -1,4 +1,5 @@
 import Foundation
+import SessionKit
 import Stipple
 
 /// The look: the terminal's own colours with a gold accent, turquoise for
@@ -20,59 +21,9 @@ extension View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .border(.rounded, color: isActive ? Theme.accent : Theme.rule)
             .overlay(alignment: .topLeading) {
-                Text(" \(title) ").foregroundStyle(isActive ? Theme.accent : Theme.rule).padding(.leading, 2)
+                Text(" \(SessionPresentation.clean(title).replacingOccurrences(of: "\n", with: " ")) ")
+                    .lineLimit(1).foregroundStyle(isActive ? Theme.accent : Theme.rule).padding(.horizontal, 2)
             }
-    }
-}
-
-/// The conversation in a scroll view. A short conversation starts at the top;
-/// once it fills the pane, the view follows the newest block until the user
-/// scrolls up (wheel, Page Up), and pins again back at the bottom. A click on
-/// a block expands or collapses it.
-struct TranscriptPane: View, Equatable {
-    let session: ChatSession
-    let selected: Int?
-    @Binding var position: ScrollPosition
-    @State private var hover = HoverState()
-
-    /// The same session and selection: what `ChatView` changes on a resize or
-    /// a key leaves the pane, and its rows, alone. The position is always the
-    /// workspace's own scroll state, so it isn't compared.
-    static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.session === rhs.session && lhs.selected == rhs.selected
-    }
-
-    var body: some View {
-        if session.blocks.isEmpty {
-            Welcome()
-        } else {
-            conversation
-        }
-    }
-
-    private var conversation: some View {
-        ScrollView {
-            // Lazy: a resize lays out the rows in view at once and the long
-            // history above over the next frames.
-            LazyVStack(alignment: .leading) {
-                // `ForEach` gives each row its block's id, for `scrollTo(id:)`.
-                ForEach(session.blocks) { block in
-                    BlockRow(
-                        block: block,
-                        session: session,
-                        hover: hover,
-                        isExpanded: session.expanded.contains(block.id),
-                        isSelected: block.id == selected,
-                        isHovered: block.id == hover.block,
-                    )
-                }
-            }
-            .padding(.bottom, 1)
-        }
-        .defaultScrollAnchor(.bottom, for: .initialOffset)
-        .defaultScrollAnchor(.bottom, for: .sizeChanges)
-        .scrollPosition($position)
-        .scrollOnPageKeys()
     }
 }
 
@@ -150,6 +101,8 @@ struct BlockView: View {
             .padding(.top, 1)
         case .reasoning(let reasoning):
             ReasoningView(reasoning: reasoning, isExpanded: isExpanded).padding(.leading, 2).padding(.top, 1)
+        case .references(let excerpts):
+            ReferenceTranscript(excerpts: excerpts, isExpanded: isExpanded).padding(.leading, 2).padding(.top, 1)
         case .reply(let text):
             Markdown.view(text).padding(.leading, 2).padding(.top, 1)
         case .tools(let runs):
@@ -192,10 +145,14 @@ struct ToolTray: View {
     /// `▸ 3 tools · 4.2s  search · read · bash`, red when one failed.
     private var summary: Text {
         let failed = runs.contains { $0.state == .failed }
-        let total = runs.compactMap(\.duration).reduce(Duration.zero, +)
+        let durations = runs.compactMap(\.duration)
+        let timing =
+            durations.count == runs.count && !runs.isEmpty
+            ? " · \(ChatSession.seconds(durations.reduce(Duration.zero, +)))" : ""
+        let unresolved = runs.contains { $0.state == .unresolved } ? " · no saved result" : ""
         let count = runs.count == 1 ? "1 tool" : "\(runs.count) tools"
         return Text("▸ ").foregroundStyle(failed ? Theme.removed : Theme.accent)
-            + Text("\(count) · \(ChatSession.seconds(total))")
+            + Text(count + timing + unresolved)
             + Text("  " + runs.map(\.name).joined(separator: " · ")).dim()
     }
 
@@ -205,6 +162,7 @@ struct ToolTray: View {
             case .running: Text("◌ ").foregroundStyle(Theme.accent)
             case .succeeded: Text("✓ ").foregroundStyle(Theme.added)
             case .failed: Text("✗ ").foregroundStyle(Theme.removed)
+            case .unresolved: Text("? ").foregroundStyle(Theme.rule)
             }
         let duration = run.duration.flatMap { $0 >= ChatSession.noticeableDuration ? $0 : nil }
         return mark + Text(run.name) + Text(run.summary.isEmpty ? "" : "  \(run.summary)").dim()
@@ -232,7 +190,7 @@ struct ReasoningView: View {
             header
             if isExpanded {
                 Text(text).dim().padding(.leading, 2)
-            } else if reasoning.duration == nil {
+            } else if reasoning.isStreaming {
                 Text(Self.tail(of: text)).dim().lineLimit(BlockView.reasoningLines).truncationMode(.head)
                     .padding(.leading, 2)
             }
@@ -248,8 +206,11 @@ struct ReasoningView: View {
 
     /// `◌ thinking` while it reasons, then `▸ thought · 3.1s`.
     private var header: Text {
-        guard let duration = reasoning.duration else {
+        if reasoning.isStreaming {
             return Text("◌ ").foregroundStyle(Theme.accent) + Text("thinking").dim()
+        }
+        guard let duration = reasoning.duration else {
+            return Text("▸ ").foregroundStyle(Theme.rule) + Text("thought").dim()
         }
         return Text("▸ ").foregroundStyle(Theme.rule) + Text("thought · \(ChatSession.seconds(duration))").dim()
     }
@@ -462,7 +423,7 @@ extension TranscriptBlock {
     /// Whether a click changes the block: trays, edits and reasoning expand.
     var isExpandable: Bool {
         switch content {
-        case .tools, .edit, .reasoning: true
+        case .tools, .edit, .reasoning, .references: true
         case .user, .reply, .failure: false
         }
     }
@@ -474,6 +435,8 @@ extension TranscriptBlock {
             return text
         case .reasoning(let reasoning):
             return reasoning.text
+        case .references(let excerpts):
+            return SessionReferences.render(excerpts)
         case .failure(let message, let recovery):
             return [message, recovery].compactMap(\.self).joined(separator: "\n")
         case .tools(let runs):

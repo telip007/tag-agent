@@ -19,9 +19,9 @@ by an agent ([0006](../decisions/0006-agents-build-the-harness.md)).
 1. If `readUserInput` is set, emit `.status` with the
    [status line](#the-status-line) and await `input()` (`nil` ends the
    session). A `.message` is appended as a user message; `.clear` — the
-   `/clear` command, see [the session](terminal-ui.md#chatsession-the-state) —
-   drops the conversation back to the system prompt, resets the totals and
-   starts this step over.
+   legacy in-memory reset — drops the conversation back to the system prompt.
+   The durable CLI handles `/clear` as a new session instead; see
+   [session storage](session-storage.md).
 2. Emit `.thinking`, then send the whole conversation plus the tool
    definitions to the [`ChatModel`](../../Sources/ModelKit/Conversation.swift),
    which streams the reply as `ReplyDelta`s: each piece of reasoning is
@@ -49,10 +49,16 @@ come and go with the tool. Every request starts with the
 What else the loop could borrow from a minimal, high-scoring agent is listed
 in [mini-swe-agent](../sources/mini-swe-agent.md#what-tag-can-borrow).
 
-Errors never end the session. An unknown tool, invalid JSON input or a thrown
-error becomes the tool result (`error: …`), so the model can read it and try
+An unknown tool, invalid JSON input or a thrown tool error becomes the tool result (`error: …`), so the model can read it and try
 again. OpenAI-style tool messages have no `is_error` flag, unlike Anthropic's
 `tool_result`, so the `error:` prefix is the only signal.
+
+For durable sessions, awaited journal writes precede inference and tool effects.
+A save failure stops the loop and pauses the controller until explicit retry;
+unresolved calls recover without execution. A rejected type-ahead save retains the
+draft without cancelling the active turn. Complete history is sent to the provider;
+a context rejection preserves it and offers retry, `/model` and `/new`. See
+[session storage](session-storage.md) for the persistence and recovery contract.
 
 The agent formats nothing. It reports `AgentEvent`s through an injected
 `output` closure and reads input through the async `input` closure, which

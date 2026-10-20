@@ -22,8 +22,9 @@ OpenAI's Sign in with ChatGPT), an **OpenCode Go** subscription, or
 **OpenRouter** (through
 [swift-openrouter](https://github.com/telip007/swift-openrouter), a git
 submodule in `Packages/OpenRouter`). The first start walks you through
-connecting a provider and choosing a model. After that Tag starts with the
-model and reasoning effort you used last. `/model` opens a searchable picker,
+connecting a provider and choosing a model. Each launch starts a new session,
+using your last selected model and reasoning effort. Resume a saved conversation
+explicitly with `tag --resume <id>`. `/model` opens a searchable picker,
 and `/model <provider>/<model>` (for example `/model go/kimi-k3`) switches
 straight away while keeping the conversation. The system prompt gives the
 model the tools, the working directory and the project's `AGENTS.md` if
@@ -65,11 +66,13 @@ for the provider policies and limits.
 | Key | What |
 | --- | --- |
 | Enter | send; while the agent works, queue the message (type-ahead) |
-| `/clear` | start the conversation over (keeps the system prompt) |
+| Ctrl-O, `/sessions` | search, preview and select saved sessions |
+| `/new`, `/clear` | create a session, keeping the previous history |
+| `/reference` | preview and attach excerpts from another session |
 | ↑ / ↓ | recall sent messages; ↓ past the newest restores your draft |
 | Esc | browse the conversation: ↑↓ to move, Enter to expand, c to copy |
 | Page Up / Down | scroll the conversation |
-| Ctrl-P | command palette: panel, copy the last reply, browse, quit |
+| Ctrl-P | commands for models, sessions, references, browsing and quitting |
 | Tab | show or hide the session panel |
 | Ctrl-C | clear the line; on an empty line, press twice to quit |
 | Ctrl-D | quit, on an empty line |
@@ -77,6 +80,14 @@ for the provider policies and limits.
 The mouse works too: the wheel scrolls, a click expands a tool tray or a diff,
 and the hints in the footer are buttons. To select text with the mouse, hold
 Shift (Option in some macOS terminals).
+
+Plain `tag` always starts a new session; `tag --new` is an explicit equivalent.
+Use `tag --resume <id>` to open a saved session by full ID or unique prefix,
+or select one in the session navigator. Workspaces, including sibling worktrees,
+remain distinct. Opening a saved session waits for your next message. The session picker preserves drafts and offers title/content
+search, a conversation preview, Tab for all workspaces and Ctrl-R to rename.
+Explicit references are copied, bounded and cited; the agent has no automatic
+session-search tool. See [session storage](wiki/concepts/session-storage.md).
 
 Input needs an interactive terminal; piping messages on stdin is not
 supported.
@@ -94,7 +105,8 @@ The first start asks you to connect a provider: sign in with ChatGPT in the
 browser, or paste an OpenCode Go or OpenRouter API key. Keys can also come
 from `OPENCODE_API_KEY` and `OPENROUTER_API_KEY`. Credentials and settings
 are kept in `~/.config/tag/` (`$XDG_CONFIG_HOME/tag` or `$TAG_CONFIG_DIR`
-when set), readable only by you.
+when set), readable only by you. Session history and private backups live in
+the `sessions/` subdirectory, separate from provider credentials.
 
 Run the optimised build: a debug build (`swift run Tag`) draws several
 times slower, which shows when resizing a long session.

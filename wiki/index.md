@@ -4,10 +4,12 @@ Start here. Conventions: [SCHEMA.md](SCHEMA.md). Timeline: [log.md](log.md).
 
 ## Concepts
 
+- [Session storage](concepts/session-storage.md): Durable local conversations, provider-authoritative context limits, keyboard session navigation and explicit bounded references.
+
 - [Backpressure setup](concepts/backpressure-setup.md): every automated check in this repo, where it runs, and the traps we hit wiring it up.
 - [Agent workflow](concepts/agent-workflow.md): how hooks, skills, AGENTS.md and the wiki make every agent session follow the same rules.
 - [Agent loop and tools](concepts/tools.md): How the agent loop runs tool calls, the five built-in tools, and where they differ from their Go originals.
-- [Terminal UI](concepts/terminal-ui.md): How the chat UI is built on Stipple: the design intent, the welcome cat, the agent's event seam, the observable session, the view and its hidden keys, why it runs on the main actor, and how it is tested.
+- [Terminal UI](concepts/terminal-ui.md): How the full-screen workspace is built on Stipple: the design history, the welcome cat, the agent's event seam, the observable session and its blocks, the panes and keys, why it runs on the main actor, and how it is tested.
 - [System prompt](concepts/system-prompt.md): How Tag's system prompt is built (sections in Swift, tool rules on each tool, a probed environment, AGENTS.md, the date on user messages) and the best practices behind it.
 - [Prompt caching](concepts/prompt-caching.md): Provider-aware cache requests, stable conversation prefixes and reported cache reads and writes across all ModelKit adapters.
 - [Evaluation loop](concepts/evaluation-loop.md): Native prompt evaluation and completed reserved comparisons; retain baseline because compact did not confirm a replacement advantage.
@@ -15,6 +17,8 @@ Start here. Conventions: [SCHEMA.md](SCHEMA.md). Timeline: [log.md](log.md).
 - [OpenRouter SDK](concepts/openrouter-sdk.md): how Tag Agent consumes the swift-openrouter submodule and where its own docs live.
 
 ## Decisions
+
+- [0015 Transactional local sessions](decisions/0015-persistent-sessions.md): Persist lossless versioned session events in private SQLite storage, with explicit references and autonomous memory retrieval kept separate.
 
 - [0001 Agent code is written by hand](decisions/0001-hand-written-agent-code.md): superseded by 0006.
 - [0002 Maximum backpressure](decisions/0002-maximum-backpressure.md): warnings are errors, strict lint, coverage gate, hooks.
@@ -34,6 +38,14 @@ Start here. Conventions: [SCHEMA.md](SCHEMA.md). Timeline: [log.md](log.md).
 - [0014 Bounded prompt research through the native Agent](decisions/0014-bounded-prompt-research.md): Evaluate prompts through an opt-in research bridge, preserve frozen evidence and retain baseline when replacement is unjustified.
 
 ## Designs
+
+- [Persistent session performance](designs/persistent-sessions-benchmark.md): Release measurements of durable SQLite and JSONL, indexed discovery, bounded UI restoration and local input readiness.
+
+- [Session navigation TUI](designs/persistent-sessions-tui.md): Keyboard-first session search and conversation previews, with deliberate workspace scope and safe draft-preserving transitions.
+
+- [Persistent sessions implementation plan](designs/persistent-sessions-plan.md): Execution tasks and verification gates for durable sessions, continuation, switching and explicit references.
+
+- [Persistent sessions](designs/persistent-sessions.md): Proposed local session storage, reliable continuation, switching and explicit user references, with automatic memory retrieval deferred.
 
 - [Prompt optimization experiments](designs/prompt-optimization.md): Research and a staged experiment to find a strong, efficient Tag prompt using measured behavior and held-out coding tasks.
 

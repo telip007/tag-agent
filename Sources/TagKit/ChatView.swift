@@ -1,3 +1,6 @@
+import Foundation
+import ModelKit
+import SessionKit
 public import Stipple
 
 /// The full-screen workspace: the conversation on the left, the session
@@ -33,13 +36,15 @@ public struct ChatView: View {
     }
 
     let session: ChatSession
-    let agent: Agent
+    let agent: Agent?
+    let controller: SessionController?
     let selection: ModelSelection
     let copy: @MainActor (String) -> Void
 
-    @State private var input = ""
-    @State private var history = InputHistory()
+    @State private var editor: WorkspaceEditor
+    @State private var sessions: SessionFlow?
     @State private var isQuitArmed = false
+    @State private var quitSaveFailed = false
     @State private var browsing: Int?
     @State private var isPanelShown = true
     @State private var isPaletteOpen = false
@@ -67,17 +72,35 @@ public struct ChatView: View {
     ) {
         self.session = session
         self.agent = agent
+        self.controller = nil
+        _sessions = State(initialValue: nil)
+        _editor = State(initialValue: WorkspaceEditor(session: session))
         self.selection = selection
         self.copy = copy
         _models = State(initialValue: ModelFlow(selection: selection))
+    }
+
+    /// Creates the durable workspace. The controller owns switching and task lifetime.
+    public init(controller: SessionController, copy: @escaping @MainActor (String) -> Void = Clipboard.copy) {
+        self.controller = controller
+        self.session = controller.session
+        self.agent = nil
+        self.selection = controller.selection
+        self.copy = copy
+        let editor = WorkspaceEditor(session: controller.session, controller: controller)
+        _editor = State(initialValue: editor)
+        _sessions = State(initialValue: SessionFlow(controller: controller, editor: editor))
+        let models = ModelFlow(selection: controller.selection)
+        models.onChosen = { Task { try? await controller.modelChosen() } }
+        _models = State(initialValue: models)
     }
 
     /// The panes, the input line and the footer.
     public var body: some View {
         VStack(alignment: .leading) {
             HStack(alignment: .top) {
-                TranscriptPane(session: session, selected: browsing, position: $scroll)
-                    .pane(title: "tag", isActive: browsing != nil)
+                TranscriptPane(session: session, selected: selectedBlockID, position: $scroll, loadEarlier: loadEarlier)
+                    .pane(title: controller?.active?.title ?? "tag", isActive: browsing != nil)
                 if isPanelShown, terminalSize.width >= Self.panelMinimumWidth {
                     SessionPanel(session: session, selection: selection)
                         .pane(title: "session", isActive: false)
@@ -85,11 +108,18 @@ public struct ChatView: View {
                 }
             }
             .frame(maxHeight: .infinity)
+            if let controller {
+                SessionStateBar(controller: controller, error: editor.error)
+            }
             HStack {
                 Text("› ").foregroundStyle(session.isWaitingForInput ? Theme.accent : Theme.rule)
-                TextField(session.isWaitingForInput ? "ask anything" : "type ahead…", text: $input)
-                    .focused($isInputFocused)
-                    .focusable(!isOverlayOpen)
+                TextField(
+                    controller?.isReadOnly == true
+                        ? "read-only session" : session.isWaitingForInput ? "ask anything" : "type ahead…",
+                    text: $editor.text
+                )
+                .focused($isInputFocused)
+                .focusable(!isOverlayOpen)
             }
             .padding(.horizontal, 1)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -98,10 +128,14 @@ public struct ChatView: View {
         }
         .overlay {
             if isPaletteOpen {
-                CommandPalette(selection: $paletteSelection) { command in
+                CommandPalette(selection: $paletteSelection, offersSessions: controller != nil) { command in
                     isPaletteOpen = false
                     run(command)
                 }
+            } else if let sessions, sessions.isOpen {
+                SessionPicker(
+                    state: sessions, width: max(24, min(terminalSize.width - 4, 140)),
+                    height: max(16, terminalSize.height - 2))
             } else if models.isOpen {
                 ModelFlowView(flow: models, width: min(terminalSize.width - 4, 84))
             } else if selection.isChatGPTWelcomeDue {
@@ -109,29 +143,27 @@ public struct ChatView: View {
             }
         }
         .onPaste { [models] text in
-            if models.isOpen {
+            if let sessions, sessions.isOpen {
+                sessions.type(text)
+            } else if models.isOpen {
                 models.paste(text)
             }
         }
         .onChange(of: isOverlayOpen) {
             isInputFocused = !isOverlayOpen
         }
-        .onSubmit {
-            if let command = ModelCommand(input) {
-                input = ""
-                history.reset()
-                openModels { models in Task { await models.run(command) } }
-            } else if session.submit(input) {
-                input = ""
-                history.reset()
-            }
+        .onChange(of: controller?.draft.pendingInputID) { editor.pendingChanged() }
+        .onChange(of: controller?.active?.id) {
+            editor.sessionChanged()
+            leaveBrowsing()
         }
+        .onSubmit { Task { await submit() } }
         .onKeyPress { press in
             handle(press)
         }
         .task {
             do {
-                try await agent.run()
+                if let controller { await controller.run() } else if let agent { try await agent.run() }
                 exit()
             } catch {
                 exit(throwing: error)
@@ -151,9 +183,14 @@ public struct ChatView: View {
             }
         }
     }
+}
 
+extension ChatView {
     /// Keys the text field leaves alone.
     private func handle(_ press: KeyPress) -> KeyPress.Result {
+        if let sessions, sessions.isOpen {
+            return sessions.handle(press) ? .handled : .ignored
+        }
         if isPaletteOpen {
             return handlePalette(press)
         }
@@ -168,19 +205,21 @@ public struct ChatView: View {
             }
             return handleBrowsing(press, selected: selected)
         }
-        switch PromptKey(press, inputIsEmpty: input.isEmpty) {
+        switch PromptKey(press, inputIsEmpty: editor.text.isEmpty) {
         case .interrupt:
             interrupt()
         case .endOfInput:
-            exit()
+            requestQuit()
         case .older:
-            input = history.older(in: session.history, current: input) ?? input
+            editor.text = editor.history.older(in: session.history, current: editor.text) ?? editor.text
         case .newer:
-            input = history.newer(in: session.history) ?? input
+            editor.text = editor.history.newer(in: session.history) ?? editor.text
         case .browse:
             startBrowsing()
         case .palette:
             isPaletteOpen = true
+        case .sessions:
+            openSessions()
         case .togglePanel:
             isPanelShown.toggle()
         case nil:
@@ -192,17 +231,21 @@ public struct ChatView: View {
     private func handleBrowsing(_ press: KeyPress, selected: Int) -> KeyPress.Result {
         switch BrowseKey(press) {
         case .previous:
+            if selected == 0, session.hasEarlier {
+                loadEarlier()
+                return .handled
+            }
             select(max(0, selected - 1))
         case .next:
             select(min(session.transcript.count - 1, selected + 1))
         case .toggle:
-            session.toggle(selected)
+            session.toggle(session.blocks[selected].id)
         case .copy:
             copy(session.transcript[selected].plainText)
         case .leave, nil:
             leaveBrowsing()
             if let typed = press.typedText {
-                input += typed
+                editor.text += typed
             }
         }
         return .handled
@@ -219,12 +262,12 @@ public struct ChatView: View {
 
     /// Ctrl-C clears the line; on an empty line, a second press quits.
     private func interrupt() {
-        if !input.isEmpty {
-            input = ""
-            history.reset()
+        if !editor.text.isEmpty {
+            editor.text = ""
+            editor.history.reset()
         } else if isQuitArmed {
             isQuitArmed = false
-            exit()
+            requestQuit()
         } else {
             isQuitArmed = true
         }
@@ -232,45 +275,84 @@ public struct ChatView: View {
 }
 
 extension ChatView {
+    private var selectedBlockID: Int? {
+        guard let browsing, session.blocks.indices.contains(browsing) else { return nil }
+        return session.blocks[browsing].id
+    }
+
+    private func loadEarlier() {
+        let added = session.loadEarlier()
+        if let browsing { select(browsing + added) }
+    }
+
+    private func sizeSessionFlow() {
+        sessions?.rowLimit = max(1, (terminalSize.height - (terminalSize.width >= 104 ? 12 : 20)) / 3)
+        sessions?.referencePageSize = max(4, terminalSize.height - 12)
+    }
+
+    func openSessions(purpose: SessionFlow.Purpose = .browse) {
+        sizeSessionFlow()
+        Task { await sessions?.open(purpose: purpose) }
+    }
+
+    func requestQuit() {
+        Task {
+            if quitSaveFailed {
+                await controller?.shutdown()
+                exit()
+                return
+            }
+            do {
+                try await controller?.close()
+                exit()
+            } catch {
+                quitSaveFailed = true
+                editor.error =
+                    "Could not save: \(error.localizedDescription). Quit again to leave without saving the draft."
+            }
+        }
+    }
+
+    private func submit() async {
+        guard !isOverlayOpen else { return }
+        models.rowLimit = max(terminalSize.height - 14, 5)
+        sizeSessionFlow()
+        await editor.submit(models: models, sessions: sessions)
+    }
+
     /// What the footer's left side says: a pending quit, the browse keys, or
     /// the everyday keys.
     fileprivate var hint: Footer.Hint {
+        if quitSaveFailed { return .warning("save failed · ctrl-d again quits without saving") }
         if isQuitArmed {
             return .warning("press ctrl-c again to quit")
         }
         if browsing != nil {
-            return .keys([
-                Footer.Key(key: "↑↓", label: "move") {},
-                Footer.Key(key: "⏎", label: "expand") { if let browsing { session.toggle(browsing) } },
-                Footer.Key(key: "c", label: "copy") {
-                    if let browsing, browsing < session.blocks.count {
-                        copy(session.transcript[browsing].plainText)
-                    }
-                },
-                Footer.Key(key: "esc", label: "back") { leaveBrowsing() },
-            ])
+            return WorkspaceHints.browsing(
+                toggle: { if let selectedBlockID { session.toggle(selectedBlockID) } },
+                copy: {
+                    if let browsing, browsing < session.blocks.count { copy(session.transcript[browsing].plainText) }
+                }, back: leaveBrowsing)
         }
         // `↓ latest` is the footer's to add: it reads the scroll position,
         // which changes on every scroll, and this view should not.
-        return .keys([
-            Footer.Key(key: "esc", label: "browse") { startBrowsing() },
-            Footer.Key(key: "^p", label: "commands") { isPaletteOpen = true },
-            Footer.Key(key: "tab", label: "panel") { isPanelShown.toggle() },
-        ])
+        return WorkspaceHints.prompt(
+            durable: controller != nil, browse: startBrowsing, sessions: { openSessions() },
+            palette: { isPaletteOpen = true }, togglePanel: { isPanelShown.toggle() })
     }
 
-    fileprivate func startBrowsing() {
-        guard let last = session.transcript.last?.id else {
+    func startBrowsing() {
+        guard !session.blocks.isEmpty else {
             isInputFocused = true
             return
         }
-        select(last)
+        select(session.blocks.count - 1)
     }
 
     /// Selects a block and scrolls it into view.
     fileprivate func select(_ id: Int) {
         browsing = id
-        scroll.scrollTo(id: id)
+        if session.blocks.indices.contains(id) { scroll.scrollTo(id: session.blocks[id].id) }
     }
 
     fileprivate func leaveBrowsing() {
@@ -279,94 +361,8 @@ extension ChatView {
         scroll.scrollTo(edge: .bottom)
     }
 }
-
-/// What a key press means at the prompt, beyond editing the line.
-enum PromptKey: Equatable {
-    /// Ctrl-C.
-    case interrupt
-    /// Ctrl-D on an empty line, as end-of-file in a shell.
-    case endOfInput
-    /// ↑: an older message from the history.
-    case older
-    /// ↓: a newer message, or back to the line being typed.
-    case newer
-    /// Esc on an empty line: browse past blocks.
-    case browse
-    /// Ctrl-P: the command palette.
-    case palette
-    /// Tab: show or hide the session panel.
-    case togglePanel
-
-    init?(_ press: KeyPress, inputIsEmpty: Bool) {
-        guard press.phase != .up else {
-            return nil
-        }
-        switch (press.key, press.modifiers.subtracting([.capsLock, .numLock])) {
-        case ("c", .control):
-            self = .interrupt
-        case ("d", .control) where inputIsEmpty:
-            self = .endOfInput
-        case ("p", .control):
-            self = .palette
-        case (.upArrow, []):
-            self = .older
-        case (.downArrow, []):
-            self = .newer
-        case (.escape, []) where inputIsEmpty:
-            self = .browse
-        case (.tab, []):
-            self = .togglePanel
-        default:
-            return nil
-        }
-    }
-}
-
-/// What a key press means while browsing past blocks.
-enum BrowseKey: Equatable {
-    case previous
-    case next
-    case toggle
-    case copy
-    /// Back to the input line; a typed character goes into it.
-    case leave
-
-    init?(_ press: KeyPress) {
-        guard press.phase != .up else {
-            return nil
-        }
-        switch (press.key, press.modifiers.subtracting([.capsLock, .numLock])) {
-        case (.upArrow, []), ("k", []):
-            self = .previous
-        case (.downArrow, []), ("j", []):
-            self = .next
-        case (.return, []), (.space, []):
-            self = .toggle
-        case ("c", []), ("y", []):
-            self = .copy
-        case (.escape, _), (.character, _):
-            self = .leave
-        default:
-            return nil
-        }
-    }
-}
-
-extension KeyPress {
-    /// The text a press types, if it types any: a plain character without
-    /// Control, Option or Command.
-    var typedText: String? {
-        guard case .character(let character) = key,
-            modifiers.isDisjoint(with: [.control, .option, .command])
-        else {
-            return nil
-        }
-        return characters.isEmpty ? String(character) : characters
-    }
-}
-
 extension ChatView {
-    fileprivate func run(_ command: PaletteCommand) {
+    func run(_ command: PaletteCommand) {
         isInputFocused = true
         switch command {
         case .switchModel:
@@ -383,30 +379,39 @@ extension ChatView {
         case .browse:
             startBrowsing()
         case .quit:
-            exit()
+            requestQuit()
+        case .sessions:
+            openSessions()
+        case .newSession:
+            Task {
+                await sessions?.create()
+                editor.error = sessions?.error
+            }
+        case .referenceSession:
+            openSessions(purpose: .reference)
         }
     }
 
     /// Whether the model picker, connecting a provider or the ChatGPT plan
     /// notice covers the workspace, so keys are theirs and not the input's.
-    fileprivate var isOverlayOpen: Bool {
-        models.isOpen || selection.isChatGPTWelcomeDue
+    var isOverlayOpen: Bool {
+        isPaletteOpen || sessions?.isOpen == true || models.isOpen || selection.isChatGPTWelcomeDue
     }
 
     /// Opens the picker or connecting a provider, sized for the terminal.
     /// Focus follows ``isOverlayOpen``: a `/model x/y` that switches at once
     /// opens nothing, and the input must keep its focus.
-    fileprivate func openModels(_ open: (ModelFlow) -> Void) {
+    func openModels(_ open: (ModelFlow) -> Void) {
         models.rowLimit = max(terminalSize.height - 14, 5)
         open(models)
     }
 
     /// Keys for the model overlays, or `nil` when none is open.
-    fileprivate func handleModelKeys(_ press: KeyPress) -> KeyPress.Result? {
+    func handleModelKeys(_ press: KeyPress) -> KeyPress.Result? {
         models.handleWorkspaceKey(press).map { _ in .handled }
     }
 
-    fileprivate func dismissWelcome() {
+    func dismissWelcome() {
         selection.dismissChatGPTWelcome()
         isInputFocused = true
     }

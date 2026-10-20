@@ -26,6 +26,7 @@ let package = Package(
     name: "Tag",
     platforms: [.macOS(.v15)],
     dependencies: [
+        .package(url: "https://github.com/groue/GRDB.swift.git", exact: "7.11.1"),
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.2.0"),
         // Git submodule; see wiki/concepts/openrouter-sdk.md.
         .package(path: "Packages/OpenRouter"),
@@ -35,12 +36,18 @@ let package = Package(
         .package(url: "https://github.com/telip007/stipple.git", from: "0.5.2"),
     ],
     targets: [
+        // Deterministic child-process crash probes and release storage measurements.
+        .executableTarget(
+            name: "SessionProbe",
+            dependencies: ["TagKit", "ModelKit", "SessionKit", .product(name: "GRDB", package: "GRDB.swift")],
+            path: "Tests/SessionProbe", swiftSettings: strictSettings, plugins: lintPlugins),
         // Thin command-line entry point: argument parsing and terminal I/O.
         .executableTarget(
             name: "Tag",
             dependencies: [
                 "TagKit",
                 "ModelKit",
+                "SessionKit",
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .product(name: "Stipple", package: "stipple"),
             ],
@@ -59,9 +66,22 @@ let package = Package(
             plugins: lintPlugins,
         ),
         .target(
+            name: "SessionKit",
+            dependencies: ["ModelKit", .product(name: "GRDB", package: "GRDB.swift")],
+            swiftSettings: strictSettings,
+            plugins: lintPlugins,
+        ),
+        .testTarget(
+            name: "SessionKitTests",
+            dependencies: ["SessionKit", "ModelKit", .product(name: "GRDB", package: "GRDB.swift")],
+            swiftSettings: strictSettings,
+            plugins: lintPlugins,
+        ),
+        .target(
             name: "TagKit",
             dependencies: [
                 "ModelKit",
+                "SessionKit",
                 .product(name: "OpenRouter", package: "OpenRouter"),
                 .product(name: "Subprocess", package: "swift-subprocess"),
                 .product(name: "Stipple", package: "stipple"),
@@ -81,8 +101,11 @@ let package = Package(
         .testTarget(
             name: "TagKitTests",
             dependencies: [
+                "Tag",
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 "TagKit",
                 "ModelKit",
+                "SessionKit",
                 .product(name: "OpenRouter", package: "OpenRouter"),
                 .product(name: "Stipple", package: "stipple"),
             ],

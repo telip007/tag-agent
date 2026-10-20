@@ -6,6 +6,11 @@ updated: 2026-10-20
 
 # Terminal UI
 
+The CLI uses durable [session storage](session-storage.md), continuation,
+switching and explicit cross-session references. The approved
+[design](../designs/persistent-sessions.md) explains the boundaries; the
+[implementation plan](../designs/persistent-sessions-plan.md) tracks acceptance.
+
 The chat UI is a [Stipple](https://github.com/telip007/stipple) view
 ("SwiftUI for the terminal", a Swift port of Ink). Before that, the agent
 wrote raw ANSI escapes with `print` and read lines with `readLine`. Why
@@ -58,7 +63,7 @@ What stayed from the earlier rounds: the gold accent (`Theme.accent`),
 turquoise for code (`Theme.tile`), light Markdown in replies, type-ahead,
 input history, the double Ctrl-C quit and tool summaries.
 
-## Three pieces
+## Agent and presentation
 
 ```text
 Agent ──AgentEvent──▶ ChatSession ──observed by──▶ ChatView
@@ -71,8 +76,10 @@ Agent ──AgentEvent──▶ ChatSession ──observed by──▶ ChatView
 [`Agent`](../../Sources/TagKit/Agent.swift) reports through
 `output: (AgentEvent) -> Void` and reads input with
 `input: () async -> AgentInput?` (`nil` ends the session). `AgentInput` is
-`.message(String)`, or `.clear`, which asks the agent to drop the
-conversation and its totals and to wait for the next message instead. The
+`.message(String)`, `.stored(PendingInput)` for durably accepted input, or `.clear`.
+The latter retains the legacy in-memory API
+for dropping conversation totals; the durable CLI maps `/clear` to a new session
+instead, preserving the previous history. The
 events:
 
 - `.status(StatusLine)` before each prompt ([status line](tools.md#the-status-line)),
@@ -118,9 +125,10 @@ Input: `submit(_:)` ignores blank text, records the message in `history`, and
 either resumes the waiting `nextMessage()` or appends to `queued` while the
 agent is busy (type-ahead). `nextMessage()` takes queued messages first, then
 suspends on a `CheckedContinuation` until `submit`, `end()` or cancellation;
-what it hands the agent is an `AgentInput`: a message, or a clear.
+what it hands the agent is an `AgentInput`: a message, a stored input, or a clear.
 
-`/clear` is the one command, alone on the line apart from whitespace. It
+In the legacy `ChatSession.submit` API, `/clear` is recognized alone on the
+line apart from whitespace. It
 isn't recorded in `history`, and `take(_:)` empties `transcript` and
 `expanded` — block ids start over, so a kept id would expand the wrong block —
 and hands out `.clear`. The agent then keeps the system prompt but forgets
@@ -134,15 +142,46 @@ session deterministically. Helpers:
 arguments) and [`InputHistory`](../../Sources/TagKit/InputHistory.swift)
 (shell-style ↑/↓).
 
+### Durable lifecycle and navigation
+
+[`WorkspaceEditor`](../../Sources/TagKit/WorkspaceEditor.swift) owns the editable
+text and command submission. It consumes command text before switching, buffers
+new typing until the destination is ready, and preserves edits made while a save
+or rename awaits acknowledgment. Source-session drafts never receive destination
+keystrokes. This state is separate from the view's layout and modal focus.
+
+
+[`SessionController`](../../Sources/TagKit/SessionController.swift) owns one
+foreground agent task. It saves accepted inputs before acknowledging them,
+keeps restored queues for explicit review, and waits for task exit before
+releasing ownership. A journal save failure pauses dispatch with visible retry
+guidance; rejected type-ahead acceptance preserves the draft and active turn.
+Interrupted tool runs are labeled as having no saved result, without a live
+spinner or an invented duration; recovery never repeats their effects.
+
+[`SessionHydration`](../../Sources/TagKit/SessionHydration.swift) restores the
+transcript with stable block IDs, initially creating 100 observed rows. Older
+rows page in separately from the complete model history. References remain
+expandable through [`ReferenceTranscript`](../../Sources/TagKit/ReferenceTranscript.swift).
+
+[`SessionFlow`](../../Sources/TagKit/SessionFlow.swift) handles the Ctrl-O
+navigator and explicit reference previews. Search and preview generations reject
+stale reads. The list pages 50 records; wide terminals show a split preview and
+narrow terminals stack it below. The overlay traps its keys so navigation cannot
+edit or submit the underlying draft. [`SessionStateBar`](../../Sources/TagKit/SessionStateBar.swift)
+shows read-only, attached-reference, pending-input, unavailable-model and save-pause states.
+
 ### ChatView: the workspace
 
 [`ChatView`](../../Sources/TagKit/ChatView.swift) holds the layout and the key
-handling; the parts are in
+handling; reusable prompt/browse hints live in
+[`WorkspaceHints`](../../Sources/TagKit/WorkspaceHints.swift). The transcript
+has its own file; shared presentation parts are in
 [`WorkspaceParts.swift`](../../Sources/TagKit/WorkspaceParts.swift):
 
 - `pane(title:isActive:)`: a rounded border with the title set into its top
   edge (an `overlay` at `.topLeading`); gold while active.
-- `TranscriptPane`: the blocks in a Stipple `ScrollView` anchored to the
+- [`TranscriptPane`](../../Sources/TagKit/TranscriptPane.swift): the blocks in a Stipple `ScrollView` anchored to the
   bottom for `.initialOffset` and `.sizeChanges` but not `.alignment`: a short
   conversation starts at the top of the pane (the maintainer's choice, rather
   than a messaging app's bottom-up layout), and once it overflows the view
@@ -211,13 +250,15 @@ handling; the parts are in
 | ↑↓ or j/k, Enter, c | while browsing: move, expand or collapse, copy; Esc or typing goes back |
 | Page Up / Down | scroll the conversation; the wheel works too |
 | Ctrl-P | command palette |
+| Ctrl-O | search and preview saved sessions |
 | Tab | show or hide the session panel |
 | Ctrl-C | clear the line; on an empty line, press again within 2 s to quit |
 | Ctrl-D | quit, on an empty line |
 
-Typing `/clear` on its own line starts the conversation over: the transcript
-empties and the agent forgets the context, instead of the line becoming a
-message the model sees.
+In the durable CLI, `/clear` or `/new` creates a session when the current turn
+is ready, saving the previous draft and retaining its history. Session commands
+never become messages sent to the model. The legacy view initializer retains
+its in-memory clear behavior for embedders.
 
 `ChatView.renderOptions` turns on the alternate screen and turns off Stipple's
 `exitOnCtrlC`, so Ctrl-C reaches the view's `onKeyPress`. The keys the
@@ -225,10 +266,11 @@ message the model sees.
 types. Tab also moves Stipple's focus, harmlessly: the input is the only
 focusable view.
 
-[Tag.swift](../../Sources/Tag/Tag.swift) wires everything up: a
-`ChatSession`, an `Agent` with `output: session.handle` and
-`input: session.nextMessage`, then
-`Stipple.run(ChatView(...), options: ChatView.renderOptions)`.
+[Tag.swift](../../Sources/Tag/Tag.swift) opens `SQLiteSessionStore`, creates a
+`SessionController` and opens the requested session before running
+`Stipple.run(ChatView(controller:), options: ChatView.renderOptions)`.
+The controller owns the `ChatSession`, journals the agent's boundaries and
+routes its events to the selected transcript.
 
 ## Choosing models
 
@@ -243,10 +285,11 @@ What the user asked for and the mockups:
   pasted API keys, and runs the browser sign-in through a closure from
   [`Tag.swift`](../../Sources/Tag/Tag.swift), which retries once with the
   consent screen when ChatGPT plan usage wasn't granted.
-- **Startup:** when `restoreLastModel()` fails,
+- **Startup:** when `restoreLastModel()` fails and no saved session is being opened,
   [`OnboardingView`](../../Sources/TagKit/OnboardingView.swift) runs as its
   own `Stipple.run` before the workspace: welcome, connect, pick, done.
-  Ctrl-C there quits with no model.
+  Ctrl-C there quits with no model. Existing sessions restore their saved model
+  and effort; an unavailable model requires an explicit `/model` choice.
 - **The picker** (`/model`, or "Switch model" in ^p) has a search line, then
   the list, then the effort line and the key hints.
   - Typing searches. Every word must match a word prefix (3 points), a
@@ -447,10 +490,11 @@ How to measure it, and the traps on the way:
 - **No piped input.** Input comes from Stipple's raw-mode keyboard handling,
   so `echo "hi" | swift run Tag`, which `readLine` allowed, no longer works. A
   non-interactive mode would need its own input path.
-- **Quitting** is `exit()` from a key or from the agent's loop ending;
-  `Stipple.run` returns and the process ends. Should the view's task be
-  cancelled while the agent waits for input, `nextMessage()` returns `nil`
-  and the session ends (tested), so the loop stops cleanly.
+- **Quitting** saves the draft, awaits the foreground task, saves the model
+  choice and releases session ownership. A save failure keeps the UI open;
+  quitting again explicitly leaves without saving the draft. View cancellation
+  also awaits controller shutdown. The legacy initializer still exits when
+  its agent loop ends.
 
 ## Gotchas
 

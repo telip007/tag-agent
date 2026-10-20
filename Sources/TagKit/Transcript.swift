@@ -1,4 +1,5 @@
 import Foundation
+public import SessionKit
 
 /// One block of the conversation, as the workspace shows it. Blocks can still
 /// change while the agent works (a tool tray grows) and can be expanded.
@@ -7,6 +8,8 @@ public struct TranscriptBlock: Identifiable, Sendable, Equatable {
     public enum Content: Sendable, Equatable {
         /// A message the user sent.
         case user(String)
+        /// Immutable historical excerpts explicitly attached to that user input.
+        case references([SessionReference])
         /// What the model reasoned before writing.
         case reasoning(Reasoning)
         /// Text the model wrote.
@@ -31,6 +34,15 @@ public struct Reasoning: Sendable, Equatable {
     public var text: String
     /// How long the model reasoned, once it stopped; `nil` while it still does.
     public var duration: Duration?
+    /// Whether text is still arriving; restored reasoning can have unknown duration.
+    public var isStreaming: Bool
+
+    /// Creates live or completed reasoning without inventing an elapsed time.
+    public init(text: String, duration: Duration? = nil, isStreaming: Bool? = nil) {
+        self.text = text
+        self.duration = duration
+        self.isStreaming = isStreaming ?? (duration == nil)
+    }
 }
 
 /// One tool call in a tray.
@@ -40,6 +52,8 @@ public struct ToolRun: Sendable, Equatable {
         case running
         case succeeded
         case failed
+        /// A historical snapshot has no committed result; it is not running here.
+        case unresolved
     }
 
     /// The tool's name.

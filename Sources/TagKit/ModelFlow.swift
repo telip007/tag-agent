@@ -101,6 +101,8 @@ final class ModelFlow {
         case .switchTo(let text):
             if await selection.quickSwitch(text) == nil {
                 openPicker(query: text)
+            } else {
+                onChosen()
             }
         }
     }

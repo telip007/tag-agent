@@ -6,6 +6,10 @@ updated: 2026-10-20
 
 # Prompt caching
 
+The [persistent session implementation](session-storage.md) preserves session
+IDs, dated model history and opaque provider replay across restarts. Provider
+cache hits still depend on the remote provider and are not guaranteed by storage.
+
 Tag enables provider-side prompt caching while sending the full conversation
 on every request. It does not cache generated answers locally. Policy:
 [0013](../decisions/0013-prompt-caching.md); design and validation plan:
