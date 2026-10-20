@@ -227,6 +227,82 @@ Integrated main's shared Responses stream and fixed a review finding: metrics no
 ## [2026-10-20] update | Prompt caching documentation audit
 Documented cache metrics in the README, added ModelKit to the contributor module map, and corrected the loop page's outdated claim that explicit caching is not implemented. Clarified that cache metrics describe the latest completed reply and persist during failed or in-flight requests. Existing validation results remain historical; final integration checks are recorded separately.
 
+## [2026-10-20] update | Persistent session design
+Proposed transactional storage, reliable continuation, session switching and
+explicit user references; deferred proactive memory retrieval. Researched GRDB,
+SQLite engine compatibility and crash recovery before implementation.
+
+## [2026-10-20] update | Implement transactional session foundation
+Added explicit lossless message/event codecs, private GRDB-backed storage,
+atomic pending inputs, metadata paging, drafts, ownership locks and backups.
+Agent lifecycle, session UI, references and performance verification remain in progress.
+
+## [2026-10-20] update | Recover agent state and refine navigation quality
+Added consistent snapshots, idempotent tool-interruption recovery, awaited agent
+storage boundaries and paged transcript hydration. Added the requested session
+navigator quality brief; controller, user references and final verification remain open.
+
+## [2026-10-20] update | Session navigation and explicit references
+Added schema-2 readable search with pre-migration backup, controller ownership and
+startup modes, draft/pending-input handling, responsive session previews and
+confirmed quoted references. Focused integration tests and actual terminal renders
+passed; full crash, context-budget, benchmark and final PR gates remain open.
+
+## [2026-10-20] update | Session edge cases and context choices
+Added explicit conservative context limits with editable rejected inputs, durable
+model choices without inference, expandable historical attachments, keyboard
+reference scrolling, deep-result snippets and stale-search activation guards.
+Focused regressions passed after observed failures; integrated verification follows.
+
+## [2026-10-20] update | Process recovery and durable-session documentation
+Added real child-process crash, migration contention and live-journal rollback checks, lifecycle cancellation/read races, managed-path protections and switch-failure pause behavior. Updated existing CLI, provider, loop and UI documentation for durable continuation; performance and final candidate gates remain open.
+
+## [2026-10-20] update | Session picker intent and editable save acknowledgments
+Keyboard and mouse actions capture stable targets; rename preserves its target and supports word/line editing. Added session actions to the command palette and native Stipple runtime regressions, including preserving new typing while storage acknowledgment is blocked.
+
+## [2026-10-20] update | Canonical reference validation and command editor
+Search projections must match readable canonical events before quoting; citation timestamps come from the canonical entry. Long query tails remain editable and untrusted pane titles stay on the border. WorkspaceEditor separates async command submission from layout, preserving typed input and session-local draft ownership.
+
+## [2026-10-20] update | Release session storage measurements
+Recorded reproducible SQLite/JSONL durability measurements, 10,000-session discovery, 100,000-entry lookup, full-history and bounded UI costs, native input readiness, memory, OS I/O and contention. Warm budgets pass; first-write contention, write amplification and the whole-test-process footprint are disclosed.
+
+## [2026-10-20] update | Persistent session review repairs
+
+Preserved editor ownership across picker/palette transitions and partial switch
+failures. Replaced incomplete word-token filtering with Unicode-aware literal
+substring search. Verified failing regressions before repairs, expanded opaque
+replay and journal-failure contracts, and corrected reference-preview Escape.
+The final full-check, refreshed benchmark and PR/remote-CI gates remain pending.
+
+## [2026-10-20] update | Provider-authoritative continuation and literal schema
+
+The user chose full-history provider context checks. Removed the local byte
+refusal, retained exact history/replay and added rejected-request recovery tests.
+Schema 3 removes unused FTS and rebuilds byte-preserving readable projections
+after backup; literal discovery now applies workspace/recency/page filtering
+first. Regressions cover binary tool output, malformed duplicate tool IDs,
+cancellation, second quit after save failure and cancelling pending-input edits.
+
+
+## [2026-10-20] update | Bound failed-migration backups and Unicode lookup work
+Migration retries refresh one consistent backup per source schema. Rejected queued-input saves keep the active turn running. Canonically decomposed case-folded candidates avoid repeated Unicode scans over large nonmatching tool output while original-text verification remains authoritative.
+
+
+## [2026-10-20] update | Record final session benchmark and local review evidence
+The repaired candidate passes 412 tests at 92.2% coverage. Refreshed release measurements cover literal word, absent and Unicode discovery, full durability and folded-projection costs; schema3 no longer maintains unused FTS. Backup power-loss qualification remains explicit debt.
+
+## [2026-10-20] update | Audit persistent session documentation
+Added SessionKit to the module map and reconciled durable input, lifecycle, prompt refresh and test-target descriptions with the implementation.
+Qualified historical FTS/context proposals and recorded final local verification without claiming PR publication or remote CI.
+
+
+## [2026-10-20] update | Investigate Swift 6.3 CI task allocator abort
+The first PR run compiled but its test runner aborted. The concurrent process fixture uses a throwing task group with the same barrier/assertions; CI gains noninteractive backtraces. Exact remote verification remains required; no check is disabled or weakened.
+
+## [2026-10-20] update | Re-audit final session documentation
+Clarified that saved sessions bypass first-run onboarding and require an explicit model choice when their saved model is unavailable; synchronized the terminal-UI index summary.
+Rechecked refreshed benchmark values and input fingerprint. The CI allocator compatibility hypothesis remains unconfirmed pending exact remote verification.
+
 ## [2026-10-20] update | Prompt research and next-action benchmark
 Added a source-backed staged experiment, six candidate policies and a native-tool decision screen with synthetic development/holdout fixtures. Production prompt unchanged; full coding trajectories remain required.
 
@@ -376,3 +452,62 @@ Required check passed with 318 Swift tests and 91.5% coverage at the unchanged 8
 
 ## [2026-10-20] decision | Bounded native prompt research
 Recorded the opt-in research bridge, frozen evidence, failure preservation and justified baseline retention in decision 0014. A complete run-qualified index now binds all 58 raw failures across 812 main trajectories; independent review confirmed coverage and unchanged scores.
+
+## [2026-10-20] update | Start a fresh session on every plain launch
+The user clarified that plain tag must never implicitly resume the last workspace session. Explicit --resume or navigator selection continues saved work; --new remains an equivalent fresh start. Updated the startup contract and CLI/store regression coverage.
+
+## [2026-10-20] update | Release session ownership explicitly and isolate the probe callback
+Reproduced close retaining a kernel lock when a Swift ownership reference outlived the controller; explicit synchronized release now occurs after the real task exits, including switches. The next CI backtrace located the allocator abort in a public default callback conversion; callback construction now stays inside the library initializer, pending exact-toolchain validation.
+
+## [2026-10-20] update | Integrate native prompt research without changing session startup
+Preserved the advanced main branch and both wiki histories. Session persistence now uses decision0015 because native prompt research occupied0014; links follow the renamed decision. The native evaluation bridge is opt-in and does not qualify session-reference semantic behavior.
+
+## [2026-10-20] update | Refresh integrated session measurements
+
+Rebuilt the release benchmark after startup, ownership and main integration.
+All published tables and raw samples use the current source fingerprint;
+4 KiB append warm p95 stays below 3.5 ms at both history sizes, while
+full-history restoration, discovery misses and first-access contention remain
+separately reported costs. No provider calls or physical power-loss tests ran.
+
+## [2026-10-20] update | Clarify session review coverage
+
+Distinguish the latest native review from outside reviews of earlier candidates.
+The additional outside review was unavailable; the current PR documents that
+limit alongside local checks and separate remote CI evidence.
+
+## [2026-10-20] update | Synchronize quit recovery test with its warning
+
+Swift 6.3.3 CI completed all 425 test declarations without the earlier allocator
+abort or ownership failure. Its remaining quit assertion observed an internal
+save error before the UI offered confirmation. A controlled task barrier
+reproduced that ordering; the native test now waits for the rendered warning and
+covers immediate and delayed task termination without changing application code
+or increasing its timeout bounds. Benchmark results retain their measured input
+fingerprint; the executed storage/UI workload and implementation are unchanged.
+
+## [2026-10-20] update | Capture quit failure boundary diagnostics
+
+The subsequent exact CI run failed before the save-error condition, so the
+warning-order reproduction does not fully explain its failure. Record controller
+and rendered UI state when that condition fails, redacting the generated
+workspace path. Keep the existing assertions, timeout bounds and application
+behavior while collecting evidence for the runner-specific boundary.
+
+## [2026-10-20] update | Make quit save failure deterministic
+
+CI diagnostics showed the quit key had reached a pending save, beyond the test's
+three-second assumption. Use a generated-fixture SQLite trigger to reject draft
+writes immediately, preserving the real store and UI recovery path. Keep both
+task-completion cases, existing UI deadlines and separate process-lock tests;
+also assert the previously saved draft survives. Both focused cases pass locally.
+Remove full-frame diagnostics because line-wrapped paths defeat simple string
+replacement. Application code is unchanged.
+
+## [2026-10-20] update | Verify contended draft failure independently
+
+Add a real child-process lock regression that requires a draft write to fail
+before releasing the lock and verifies the previous draft remains unchanged.
+This complements deterministic UI error recovery with bounded contention failure
+coverage. The focused check passes; the PR's subsequent full checks report the
+current test total separately from the earlier integrated checkpoint.

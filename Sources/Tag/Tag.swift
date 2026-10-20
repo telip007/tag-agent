@@ -1,19 +1,44 @@
 import ArgumentParser
 import Foundation
 import ModelKit
+import SessionKit
 import Stipple
 import TagKit
 
 @main
 struct Tag: AsyncParsableCommand {
+    static let configuration = CommandConfiguration(abstract: "A coding agent with durable local sessions.")
+
+    @Flag(name: .customLong("new"), help: "Start a new session (the default), keeping previous conversations.")
+    var newSession = false
+
+    @Option(help: "Continue a saved session by full ID or unique prefix.")
+    var resume: String?
+
+    func validate() throws {
+        if newSession && resume != nil { throw ValidationError("Use either --new or --resume <id>.") }
+    }
+
+    var startup: SessionController.Startup {
+        resume.map(SessionController.Startup.resume) ?? .new
+    }
+
     mutating func run() async throws {
-        try await Self.chat()
+        try await Self.chat(startup: startup)
     }
 
     /// Runs the chat UI until the user quits or the agent fails.
     @MainActor
-    private static func chat() async throws {
+    private static func chat(startup: SessionController.Startup) async throws {
         let workingDirectory = URL(filePath: FileManager.default.currentDirectoryPath, directoryHint: .isDirectory)
+            .standardizedFileURL.resolvingSymlinksInPath()
+        let store = try await SQLiteSessionStore.open(directory: ConfigDirectory.url().appending(path: "sessions"))
+        let existing: SessionSummary?
+        switch startup {
+        case .new: existing = nil
+        case .continueLast: existing = try await store.lastSession(workspace: workingDirectory.path)
+        case .resume(let prefix): existing = try await store.resolve(prefix)
+        }
         let credentials = CredentialStore()
         let codex = CodexProvider(store: credentials)
         let registry = ProviderRegistry(providers: [
@@ -27,23 +52,18 @@ struct Tag: AsyncParsableCommand {
             }
             try await signIn(codex)
         }
-        if await !selection.restoreLastModel() {
+        let restored = await selection.restoreLastModel()
+        if !restored, existing == nil {
             try await Stipple.run(OnboardingView(selection: selection), options: OnboardingView.renderOptions)
         }
-        // Quitting the onboarding leaves no model.
-        guard let first = selection.current else {
-            return
-        }
-        let session = ChatSession()
-        let agent = await Agent(
-            model: { selection.current ?? first },
-            tools: ToolDefinition.builtIn(workingDirectory: workingDirectory),
+        if existing == nil, selection.current == nil { return }
+        let controller = await SessionController(
+            store: store, selection: selection,
             environment: SessionEnvironment.probe(workingDirectory: workingDirectory),
-            output: session.handle,
-            input: session.nextMessage,
-        )
-        try await Stipple.run(
-            ChatView(session: session, agent: agent, selection: selection), options: ChatView.renderOptions)
+            tools: ToolDefinition.builtIn(workingDirectory: workingDirectory))
+        try await controller.open(startup)
+        try await Stipple.run(ChatView(controller: controller), options: ChatView.renderOptions)
+        try await controller.close()
     }
 
     /// Signs in to ChatGPT. When plan usage wasn't granted, asks once more

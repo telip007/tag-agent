@@ -1,7 +1,7 @@
 ---
 title: System prompt
 summary: How Tag's system prompt is built (sections in Swift, tool rules on each tool, a probed environment, AGENTS.md, the date on user messages) and the best practices behind it.
-updated: 2026-10-18
+updated: 2026-10-20
 ---
 
 # System prompt
@@ -15,12 +15,15 @@ Status: **built** on 2026-10-18, decided in
   prompt from sections: an identity line, `<tools>` (each tool's `summary`),
   `<rules>` (general rules, then each tool's `guidelines`), `<environment>`
   and `<project_instructions path="AGENTS.md">` when that file exists.
-- `SessionEnvironment.probe` runs once at startup in `Tag.swift`: folder,
+- `SessionEnvironment.probe` runs at startup in `Tag.swift` and again when
+  `SessionController` activates a writable session: folder,
   OS and version, architecture, `bash`'s `$BASH_VERSION` (the shell the
   `bash` tool really runs), `git rev-parse --is-inside-work-tree`, and
   `AGENTS.md`. A failed probe falls back (`bash`, "no") instead of failing.
-- `Agent.run` renders the prompt once, after fetching the model's display
-  name, and keeps it as the first message for the whole session.
+- `ConversationState` renders the prompt for the selected model and keeps it
+  as the first message. A model switch re-renders it. Durable continuation
+  uses the current environment and records changed context before inference,
+  preserving historical user/assistant/tool messages; see [session storage](session-storage.md).
 - `UserMessageDater` prefixes the first user message, and any message sent
   after the local date changed, with
   `<environment_update>date: yyyy-MM-dd</environment_update>`.
@@ -77,8 +80,9 @@ the submit command. In Tag a reply without tool calls is how a turn ends.
 
 The prompt must not contain values typed in by hand. Two kinds of data:
 
-**Fixed for the session.** Probe once at startup, render into the system
-prompt, never change it during the session (that keeps the cache valid):
+**Stable between activations.** Probe the environment on startup and writable
+session activation. Keep that prompt stable between model changes; reopening
+uses current instructions and records any changed context:
 
 - working directory (Tag already has `workingDirectory`)
 - OS, version, architecture (`ProcessInfo`, `uname`)

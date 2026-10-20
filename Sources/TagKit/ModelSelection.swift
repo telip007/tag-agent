@@ -82,6 +82,19 @@ public final class ModelSelection {
         }
     }
 
+    /// Restores exactly a saved session choice; failure clears any unrelated model.
+    public func restoreSessionModel(_ ref: ModelRef, effort: String?) async -> Bool {
+        current = nil
+        guard let provider = registry.provider(ref.provider), await provider.isConnected(),
+            let entry = try? await registry.entry(for: ref),
+            effort == nil || entry.reasoningEfforts.contains(effort ?? "")
+        else { return false }
+        do {
+            try await select(entry, effort: effort)
+            return true
+        } catch { return false }
+    }
+
     /// Makes `entry` the current model and remembers it for the next session.
     ///
     /// - Throws: The provider's error when it can't make a chat model.

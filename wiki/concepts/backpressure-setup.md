@@ -1,7 +1,7 @@
 ---
 title: Backpressure setup
 summary: Every automated check in this repo, where it runs, and the traps we hit wiring it up.
-updated: 2026-10-19
+updated: 2026-10-20
 ---
 
 # Backpressure setup
@@ -31,11 +31,13 @@ pre-push: full check). They're activated by `make bootstrap`, and
 automatically by the Claude Code SessionStart hook (see
 [Agent workflow](agent-workflow.md)).
 
-Tests live in `Tests/TagKitTests` (Swift Testing) and import the `TagKit`
-library target, not the executable (see
-[0005](../decisions/0005-tag-and-tagkit-targets.md)). The Makefile only runs
-tests and the coverage gate when `Tests/` exists. The test target gets the same
-strict settings and lint plugin as the sources.
+Swift Testing suites live in `Tests/TagKitTests`, `Tests/ModelKitTests` and
+`Tests/SessionKitTests`, primarily importing the library targets. The startup
+contract test also imports the executable to exercise its actual argument parser
+(see [0005](../decisions/0005-tag-and-tagkit-targets.md) and
+[0015](../decisions/0015-persistent-sessions.md)). The Makefile runs tests and
+the coverage gate when `Tests/` exists. All test targets keep the sources'
+strict settings and lint plugin; `Tests/SessionProbe` supplies child-process probes.
 
 ## Gotchas
 
@@ -114,3 +116,66 @@ strict settings and lint plugin as the sources.
 - Timing-based compiler flags (`-warn-long-expression-type-checking`) were
   rejected. They're nondeterministic across machines, which makes for bad
   backpressure.
+
+
+### CI task-allocator diagnostics
+
+The first persistent-session PR run compiled on Swift 6.3.3 but the parallel
+Swift Testing runner aborted with `freed pointer was not the last allocation`.
+The new three-process fixture now uses a throwing task group instead of three
+sibling `async let` bindings, retaining its shared start barrier and concurrent
+writers/reader assertions. This is a compatibility hypothesis awaiting exact
+remote confirmation, not a reason to serialize or disable tests. CI requests
+noninteractive sanitized Swift backtraces for any recurrence; macOS capture also
+depends on the test executable's signing entitlements. All checks remain unchanged.
+See [Swift stack-nesting reports](https://github.com/swiftlang/swift/issues/75501).
+
+
+A subsequent run still aborted; its sanitized stack identified the default
+async environment-probe callback conversion in `SessionController.finishSwitch`.
+The callback is now created inside the library initializer, with `nil` as the
+public default argument. This avoids exporting the generated async callback
+thunk through a public default argument. [Swift issue 92017](https://github.com/swiftlang/swift/issues/92017)
+reports a related cross-module default-callback frame mismatch on Swift 6.2.4;
+it supports this hypothesis without proving the precise Swift 6.3.3 mechanism.
+The task-group change alone was insufficient. Exact CI must validate the callback
+repair. A separately reproduced ownership-lifetime failure now has deterministic,
+idempotent kernel release after the active task finishes, rather than depending
+on ARC destruction timing. No check or test parallelism was weakened.
+
+The next [Swift 6.3.3 run](https://github.com/telip007/tag-agent/actions/runs/39441608663)
+executed all 425 test declarations without either earlier failure. Its remaining
+failure was a quit-recovery test that sent the second key after an internal
+`pauseReason` update, before the UI necessarily offered its explicit quit warning.
+That update precedes awaiting the actual agent task's termination. A controlled
+task barrier reproduced the ordering locally: paused, still transitioning, and
+no quit warning. The test now waits for the rendered warning before confirming
+quit, covering both immediate and deliberately delayed task termination. It
+retains the same blocked database, timeout bounds and final closure assertion;
+application behavior is unchanged.
+
+A later [run](https://github.com/telip007/tag-agent/actions/runs/39444619125)
+failed earlier: neither quit-test variant observed `pauseReason` within its
+three-second wait. The warning-order reproduction alone therefore does not
+explain that runner failure. On failure the test now reports transition/closure,
+input/welcome/loading state and its rendered frame, replacing the generated
+workspace path with a placeholder. This gathers the next boundary's evidence
+without changing application behavior or extending a deadline.
+
+That [diagnostic run](https://github.com/telip007/tag-agent/actions/runs/39447382613)
+showed `transition=true`, `closed=false` and no welcome/loading overlay: the quit
+key reached the controller, but its blocked save was still pending after three
+seconds. Quit recovery now uses a real SQLite trigger that rejects draft writes,
+following the existing input/pointer fault fixtures. This makes the write error
+deterministic without treating database lock/queue timing as a UI deadline.
+Both task-completion variants still require the visible warning and closure,
+and verify that the previously saved draft survives. The process-contention and
+blocked-write tests continue to exercise real lock waits. Failure diagnostics
+retain state flags only; wrapped terminal paths are not reliably redacted by
+replacing an unwrapped path string.
+
+A separate real-lock regression verifies that a contended draft write fails
+before its lock holder is released and leaves the committed draft intact. This
+keeps blocked-write failure coverage independent of native UI scheduling; the
+eight-second outer guard bounds that fixture while the UI retains its existing
+three-second phase waits.

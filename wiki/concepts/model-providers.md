@@ -117,6 +117,12 @@ and the files with `0600`:
   models (newest first, at most 6) and whether the one-time ChatGPT plan
   notice was shown.
 
+The global last-model preference seeds new sessions. Continuing a saved session
+restores its exact model and effort; if unavailable, the user must choose with
+`/model` rather than silently falling back. Session choices save at the next
+ready boundary and on clean exit even without a model request. See
+[session storage](session-storage.md).
+
 **Several Tag processes at once.** Every write holds a
 [`FileLock`](../../Sources/ModelKit/FileLock.swift) (`flock(2)`) on a
 `.<file>.lock` beside the file, so concurrent read-modify-writes don't lose

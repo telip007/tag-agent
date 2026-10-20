@@ -14,7 +14,7 @@ public enum Message: Sendable, Equatable {
 }
 
 /// A message the model wrote: text, reasoning and tool calls.
-public struct AssistantMessage: Sendable, Equatable {
+public struct AssistantMessage: Sendable, Equatable, Codable {
     /// The reply's text, if any.
     public var text: String?
     /// The model's readable reasoning, if any.
@@ -107,7 +107,7 @@ public struct ToolSpec: Sendable, Equatable {
 }
 
 /// Token counts and cost of one reply.
-public struct Usage: Sendable, Equatable {
+public struct Usage: Sendable, Equatable, Codable {
     /// Tokens sent, cached ones included.
     public var inputTokens: Int
     /// Tokens written, reasoning included.

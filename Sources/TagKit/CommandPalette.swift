@@ -9,6 +9,9 @@ enum PaletteCommand: String, CaseIterable, Identifiable {
     case copyLastReply = "Copy the last reply"
     case browse = "Browse the conversation"
     case quit = "Quit"
+    case sessions = "Select a saved session"
+    case newSession = "Start a new session"
+    case referenceSession = "Reference another session"
 
     var id: Self { self }
 
@@ -20,6 +23,9 @@ enum PaletteCommand: String, CaseIterable, Identifiable {
         case .copyLastReply: ""
         case .browse: "esc"
         case .quit: "^d"
+        case .sessions: "^o"
+        case .newSession: "/new"
+        case .referenceSession: "/reference"
         }
     }
 }
@@ -27,13 +33,22 @@ enum PaletteCommand: String, CaseIterable, Identifiable {
 /// A small box over the workspace listing the commands.
 struct CommandPalette: View {
     @Binding var selection: PaletteCommand?
+    var offersSessions = true
     let run: @MainActor (PaletteCommand) -> Void
+
+    private var commands: [PaletteCommand] {
+        offersSessions
+            ? PaletteCommand.allCases
+            : PaletteCommand.allCases.filter {
+                ![.sessions, .newSession, .referenceSession].contains($0)
+            }
+    }
 
     var body: some View {
         VStack(alignment: .leading) {
             Text("commands").foregroundStyle(Theme.accent)
             Text(" ")
-            SelectionList(PaletteCommand.allCases, id: \.self, selection: $selection, onSubmit: run) { command in
+            SelectionList(commands, id: \.self, selection: $selection, onSubmit: run) { command in
                 HStack {
                     Text(command.rawValue)
                     Spacer(minLength: 2)
