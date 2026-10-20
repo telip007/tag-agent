@@ -68,13 +68,28 @@ struct ChatCompletionsChatModelTests {
         let messages = try #require(body["messages"]?.arrayValue)
         #expect(messages[0]["reasoning_content"] == "Because.")
         #expect(messages[0]["content"] == .null)
-        #expect(messages[1]["reasoning_content"] == nil)
+        #expect(messages[1]["reasoning_content"]?.stringValue?.isEmpty == true)
         #expect(messages[1]["content"] == "Hi")
         let silent = ChatCompletionsChatModel.body(
             [.assistant(own)], tools: [], options: Fixtures.options(), model: "m", reasoningField: nil)
         #expect(silent["messages"]?.arrayValue?.first?["reasoning_content"] == nil)
         #expect(silent["tools"] == nil)
         #expect(silent["reasoning_effort"] == nil)
+    }
+
+    @Test func configuredInterleavingIncludesAnEmptyFieldWhenReasoningIsAbsent() throws {
+        let message = AssistantMessage(
+            toolCalls: [ToolCall(id: "call", name: "read_file", arguments: #"{"path":"a.py"}"#)])
+        let options = Fixtures.options()
+        let configured = ChatCompletionsChatModel.body(
+            [.assistant(message), .assistant(AssistantMessage(text: "Done"))], tools: [], options: options,
+            model: "m", reasoningField: "reasoning_content")
+        let turns = try #require(configured["messages"]?.arrayValue)
+        #expect(turns.count == 2)
+        #expect(turns.allSatisfy { $0["reasoning_content"]?.stringValue?.isEmpty == true })
+        let disabled = ChatCompletionsChatModel.body(
+            [.assistant(message)], tools: [], options: options, model: "m", reasoningField: nil)
+        #expect(disabled["messages"]?.arrayValue?.first?["reasoning_content"] == nil)
     }
 
     @Test func mapsHTTPErrors() async throws {

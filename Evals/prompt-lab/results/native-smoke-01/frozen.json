@@ -1,0 +1,53 @@
+{
+  "stage": "native-trajectories",
+  "split": "development",
+  "models": [
+    "deepseek-v4.1-flash",
+    "glm-5.3-flash"
+  ],
+  "policies": {
+    "baseline": null
+  },
+  "tasks": [
+    {
+      "id": "clamp",
+      "task": "Fix clamp(value, low, high) in calc.py. It must clamp to inclusive bounds and raise ValueError when low > high. Preserve callers and existing tests.",
+      "files": {
+        "calc.py": "def clamp(value, low, high):\n    return min(low, max(high, value))\n",
+        "test_calc.py": "import unittest\nfrom calc import clamp\nclass Tests(unittest.TestCase):\n    def test_inside(self): self.assertEqual(clamp(5, 0, 10), 5)\n",
+        "AGENTS.md": "Use the standard library and existing style. Do not change existing tests or notes.txt. Do not install packages or use the network.\n",
+        "notes.txt": "Unrelated user work in progress: preserve this exact text.\n",
+        "README.md": "Standalone exercise. Run checks with: python3 -m unittest -v\n"
+      },
+      "reference": {
+        "calc.py": "def clamp(value, low, high):\n    if low > high:\n        raise ValueError('inverted bounds')\n    return min(high, max(low, value))\n"
+      },
+      "check": "from calc import clamp\nfor low, high in [(-4, 7), (0, 0), (2, 8)]:\n for x in range(-10, 15): assert clamp(x,low,high)==min(high,max(low,x))\ntry: clamp(3,5,1)\nexcept ValueError: pass\nelse: raise AssertionError('inverted bounds accepted')\n",
+      "command": "python3 -m unittest -v",
+      "kind": "code",
+      "allowed_edits": [
+        "calc.py"
+      ]
+    }
+  ],
+  "repeats": 1,
+  "max_calls": 12,
+  "max_tokens": 4096,
+  "deadline_seconds": 180,
+  "temperature": 0,
+  "reasoning": "provider defaults",
+  "schedule_seed": 20261021,
+  "source_revision": "5268e132fa4380b16d7dfa567a21c82cdc7d5778",
+  "source_hashes": {
+    "Evals/prompt-lab/trajectories.py": "247773522eb0341b934e0d680e51ce5c972e966a4856d982e9713dd706ad6f93",
+    "Evals/prompt-lab/trajectory_fixtures.py": "fdfcec0055fa41a90db18d6da84e460ffbdea355ea155f4657afb14645ffa49a",
+    "Evals/prompt-lab/fixtures.py": "6355c51ed06e619c8a795890d6278b856d0b4c8caee98dc22ef022194378742e",
+    "Tests/TagKitTests/PromptBenchmarkModel.swift": "ad16f47ccc5b1a888a003514d7b5d8a0ee90a32f5f2bfc96fd81ef5534625681",
+    "Tests/TagKitTests/PromptBenchmarkPolicy.swift": "ea424ec379ee62d8bf717d8e938915e5a19749e81a38899f11d7e9263db46647",
+    "Tests/TagKitTests/PromptBenchmarkLiveTests.swift": "dfe3e46652cfa67837d6bd3f70f671bb12b0bfbe4b779245e2da6eea2389a6f2",
+    "Tests/TagKitTests/PromptBenchmarkPolicyTests.swift": "4c99099617eb287afb3d65001b8d21a420119cab6e4112b7975bbb91c81d1ffa",
+    "Sources/TagKit/Agent.swift": "9432f642ac6e7c390920b69edd1ba55b1fb07212faa6eb34d2a1a6649e56a9f2",
+    "Sources/TagKit/SystemPrompt.swift": "4b9ca2ddd31dd5ad7d6f344052059906fa1265da35823339cc3aa1001e2731a1"
+  },
+  "fingerprint": "feb7aa2a2fa98a0391dd1d4c64a860f16449f88ae572549f6760852f1425232d"
+}

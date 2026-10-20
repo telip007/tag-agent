@@ -1,0 +1,3112 @@
+{
+  "freeze_fingerprint": "f17741ca5404e3dfeaa3bc228cec6f998ab834fb24902aec2cc1fd13e18738cf",
+  "expected": 162,
+  "observed": 162,
+  "data_complete": true,
+  "ready_for_final_interpretation": true,
+  "missing_suites": [],
+  "unaudited_failures": [],
+  "runs": [
+    {
+      "directory": "results/native-confirmation-01",
+      "fingerprint": "a75fe42de7cef5ff4d50f54369377ba24a88966a7d334fb580ea1b6e488e8624",
+      "expected": 108,
+      "observed": 108,
+      "native_bundle_sha256": "de514a9701f60acdf3edc0e4a7f7c52fa25896a6ff0006db3a9b3d8ddbb6a243",
+      "scaffold": "standard",
+      "policy_scaffolds": {
+        "baseline": "standard",
+        "recommendation": "standard"
+      },
+      "results_sha256": "6b1931c789a9cc3650963259ac73950ae11b6190c9382bee6702f28fab8fdcce",
+      "suite": "confirmation",
+      "summary": {
+        "excluded_whole_tasks": [],
+        "observed": 108,
+        "table": [
+          {
+            "model": "deepseek-v4.1-flash",
+            "candidate": "baseline",
+            "all_tasks": {
+              "observed": 18,
+              "passed": 16,
+              "raw_passed": 16,
+              "functional_passes": 17,
+              "scope_failures": 0,
+              "statuses": {
+                "model_error": 1,
+                "ok": 16,
+                "timeout": 1
+              }
+            },
+            "selection_tasks": {
+              "observed": 18,
+              "passed": 16,
+              "raw_passed": 16,
+              "functional_passes": 17,
+              "scope_failures": 0,
+              "statuses": {
+                "model_error": 1,
+                "ok": 16,
+                "timeout": 1
+              }
+            },
+            "selection_resources": {
+              "usage_complete": false,
+              "recorded_tokens": 307143,
+              "tokens_per_reviewed_success": null,
+              "rate_value_per_reviewed_success_range": null,
+              "recorded_input_tokens": 270962,
+              "recorded_output_tokens": 36181,
+              "recorded_cache_read_tokens": 187136,
+              "recorded_uncached_input_tokens": 83826,
+              "recorded_allowance_rate_value_usd_range": [
+                0.03484391,
+                0.06968782
+              ]
+            },
+            "resource_pairs": 16,
+            "resource_pair_keys": [
+              [
+                "swift-numeric-version",
+                0
+              ],
+              [
+                "dependency-order",
+                0
+              ],
+              [
+                "lazy-chunks",
+                2
+              ],
+              [
+                "shell-text-records",
+                1
+              ],
+              [
+                "dependency-order",
+                1
+              ],
+              [
+                "shell-text-records",
+                2
+              ],
+              [
+                "atomic-json",
+                1
+              ],
+              [
+                "dependency-order",
+                2
+              ],
+              [
+                "swift-numeric-version",
+                2
+              ],
+              [
+                "swift-numeric-version",
+                1
+              ],
+              [
+                "atomic-json",
+                2
+              ],
+              [
+                "shell-text-records",
+                0
+              ],
+              [
+                "lazy-chunks",
+                0
+              ],
+              [
+                "keyed-window",
+                2
+              ],
+              [
+                "keyed-window",
+                0
+              ],
+              [
+                "keyed-window",
+                1
+              ]
+            ],
+            "paired_geomean_token_ratio": 1.0,
+            "paired_geomean_call_ratio": 1.0,
+            "rate_pairs": 16,
+            "paired_geomean_rate_ratio": 1.0,
+            "recorded_attempted_calls": 98,
+            "wall_seconds": {
+              "min": 10.68,
+              "median": 27.728,
+              "max": 180.174,
+              "interpretation": "All attempted trajectories; observational provider/network timing."
+            }
+          },
+          {
+            "model": "deepseek-v4.1-flash",
+            "candidate": "recommendation",
+            "all_tasks": {
+              "observed": 18,
+              "passed": 18,
+              "raw_passed": 18,
+              "functional_passes": 18,
+              "scope_failures": 0,
+              "statuses": {
+                "ok": 18
+              }
+            },
+            "selection_tasks": {
+              "observed": 18,
+              "passed": 18,
+              "raw_passed": 18,
+              "functional_passes": 18,
+              "scope_failures": 0,
+              "statuses": {
+                "ok": 18
+              }
+            },
+            "selection_resources": {
+              "usage_complete": true,
+              "recorded_tokens": 514517,
+              "tokens_per_reviewed_success": 28584.278,
+              "rate_value_per_reviewed_success_range": [
+                0.00275789,
+                0.00551579
+              ],
+              "recorded_input_tokens": 461682,
+              "recorded_output_tokens": 52835,
+              "recorded_cache_read_tokens": 349056,
+              "recorded_uncached_input_tokens": 112626,
+              "recorded_allowance_rate_value_usd_range": [
+                0.04964207,
+                0.09928414
+              ]
+            },
+            "resource_pairs": 16,
+            "resource_pair_keys": [
+              [
+                "shell-text-records",
+                1
+              ],
+              [
+                "swift-numeric-version",
+                1
+              ],
+              [
+                "swift-numeric-version",
+                0
+              ],
+              [
+                "dependency-order",
+                2
+              ],
+              [
+                "lazy-chunks",
+                2
+              ],
+              [
+                "keyed-window",
+                2
+              ],
+              [
+                "lazy-chunks",
+                0
+              ],
+              [
+                "shell-text-records",
+                2
+              ],
+              [
+                "dependency-order",
+                0
+              ],
+              [
+                "swift-numeric-version",
+                2
+              ],
+              [
+                "keyed-window",
+                1
+              ],
+              [
+                "dependency-order",
+                1
+              ],
+              [
+                "shell-text-records",
+                0
+              ],
+              [
+                "keyed-window",
+                0
+              ],
+              [
+                "atomic-json",
+                1
+              ],
+              [
+                "atomic-json",
+                2
+              ]
+            ],
+            "paired_geomean_token_ratio": 1.387056,
+            "paired_geomean_call_ratio": 1.19749,
+            "rate_pairs": 16,
+            "paired_geomean_rate_ratio": 1.248044,
+            "recorded_attempted_calls": 130,
+            "wall_seconds": {
+              "min": 11.366,
+              "median": 24.957,
+              "max": 55.456,
+              "interpretation": "All attempted trajectories; observational provider/network timing."
+            }
+          },
+          {
+            "model": "gemini-4-argon-contributor",
+            "candidate": "baseline",
+            "all_tasks": {
+              "observed": 18,
+              "passed": 17,
+              "raw_passed": 17,
+              "functional_passes": 18,
+              "scope_failures": 0,
+              "statuses": {
+                "model_error": 1,
+                "ok": 17
+              }
+            },
+            "selection_tasks": {
+              "observed": 18,
+              "passed": 17,
+              "raw_passed": 17,
+              "functional_passes": 18,
+              "scope_failures": 0,
+              "statuses": {
+                "model_error": 1,
+                "ok": 17
+              }
+            },
+            "selection_resources": {
+              "usage_complete": false,
+              "recorded_tokens": 276691,
+              "tokens_per_reviewed_success": null,
+              "rate_value_per_reviewed_success_range": null,
+              "recorded_input_tokens": 241393,
+              "recorded_output_tokens": 35298,
+              "recorded_cache_read_tokens": null,
+              "recorded_uncached_input_tokens": null,
+              "recorded_allowance_rate_value_usd_range": null
+            },
+            "resource_pairs": 17,
+            "resource_pair_keys": [
+              [
+                "keyed-window",
+                1
+              ],
+              [
+                "dependency-order",
+                2
+              ],
+              [
+                "lazy-chunks",
+                0
+              ],
+              [
+                "shell-text-records",
+                2
+              ],
+              [
+                "shell-text-records",
+                1
+              ],
+              [
+                "atomic-json",
+                2
+              ],
+              [
+                "keyed-window",
+                0
+              ],
+              [
+                "dependency-order",
+                1
+              ],
+              [
+                "swift-numeric-version",
+                2
+              ],
+              [
+                "swift-numeric-version",
+                1
+              ],
+              [
+                "lazy-chunks",
+                2
+              ],
+              [
+                "dependency-order",
+                0
+              ],
+              [
+                "lazy-chunks",
+                1
+              ],
+              [
+                "shell-text-records",
+                0
+              ],
+              [
+                "atomic-json",
+                1
+              ],
+              [
+                "atomic-json",
+                0
+              ],
+              [
+                "keyed-window",
+                2
+              ]
+            ],
+            "paired_geomean_token_ratio": 1.0,
+            "paired_geomean_call_ratio": 1.0,
+            "rate_pairs": 0,
+            "paired_geomean_rate_ratio": null,
+            "recorded_attempted_calls": 103,
+            "wall_seconds": {
+              "min": 35.096,
+              "median": 72.96350000000001,
+              "max": 165.932,
+              "interpretation": "All attempted trajectories; observational provider/network timing."
+            }
+          },
+          {
+            "model": "gemini-4-argon-contributor",
+            "candidate": "recommendation",
+            "all_tasks": {
+              "observed": 18,
+              "passed": 18,
+              "raw_passed": 18,
+              "functional_passes": 18,
+              "scope_failures": 0,
+              "statuses": {
+                "ok": 18
+              }
+            },
+            "selection_tasks": {
+              "observed": 18,
+              "passed": 18,
+              "raw_passed": 18,
+              "functional_passes": 18,
+              "scope_failures": 0,
+              "statuses": {
+                "ok": 18
+              }
+            },
+            "selection_resources": {
+              "usage_complete": true,
+              "recorded_tokens": 360654,
+              "tokens_per_reviewed_success": 20036.333,
+              "rate_value_per_reviewed_success_range": null,
+              "recorded_input_tokens": 319028,
+              "recorded_output_tokens": 41626,
+              "recorded_cache_read_tokens": null,
+              "recorded_uncached_input_tokens": null,
+              "recorded_allowance_rate_value_usd_range": null
+            },
+            "resource_pairs": 17,
+            "resource_pair_keys": [
+              [
+                "shell-text-records",
+                2
+              ],
+              [
+                "dependency-order",
+                0
+              ],
+              [
+                "swift-numeric-version",
+                1
+              ],
+              [
+                "shell-text-records",
+                0
+              ],
+              [
+                "lazy-chunks",
+                1
+              ],
+              [
+                "atomic-json",
+                0
+              ],
+              [
+                "shell-text-records",
+                1
+              ],
+              [
+                "keyed-window",
+                2
+              ],
+              [
+                "atomic-json",
+                2
+              ],
+              [
+                "keyed-window",
+                0
+              ],
+              [
+                "dependency-order",
+                1
+              ],
+              [
+                "lazy-chunks",
+                2
+              ],
+              [
+                "dependency-order",
+                2
+              ],
+              [
+                "atomic-json",
+                1
+              ],
+              [
+                "swift-numeric-version",
+                2
+              ],
+              [
+                "keyed-window",
+                1
+              ],
+              [
+                "lazy-chunks",
+                0
+              ]
+            ],
+            "paired_geomean_token_ratio": 1.015811,
+            "paired_geomean_call_ratio": 1.023389,
+            "rate_pairs": 0,
+            "paired_geomean_rate_ratio": null,
+            "recorded_attempted_calls": 110,
+            "wall_seconds": {
+              "min": 31.719,
+              "median": 59.7565,
+              "max": 178.867,
+              "interpretation": "All attempted trajectories; observational provider/network timing."
+            }
+          },
+          {
+            "model": "glm-5.3-flash",
+            "candidate": "baseline",
+            "all_tasks": {
+              "observed": 18,
+              "passed": 16,
+              "raw_passed": 16,
+              "functional_passes": 16,
+              "scope_failures": 0,
+              "statuses": {
+                "ok": 18
+              }
+            },
+            "selection_tasks": {
+              "observed": 18,
+              "passed": 16,
+              "raw_passed": 16,
+              "functional_passes": 16,
+              "scope_failures": 0,
+              "statuses": {
+                "ok": 18
+              }
+            },
+            "selection_resources": {
+              "usage_complete": true,
+              "recorded_tokens": 358015,
+              "tokens_per_reviewed_success": 22375.938,
+              "rate_value_per_reviewed_success_range": [
+                0.00276618,
+                0.00276618
+              ],
+              "recorded_input_tokens": 319044,
+              "recorded_output_tokens": 38971,
+              "recorded_cache_read_tokens": 192360,
+              "recorded_uncached_input_tokens": 126684,
+              "recorded_allowance_rate_value_usd_range": [
+                0.0442589,
+                0.0442589
+              ]
+            },
+            "resource_pairs": 16,
+            "resource_pair_keys": [
+              [
+                "lazy-chunks",
+                2
+              ],
+              [
+                "shell-text-records",
+                2
+              ],
+              [
+                "atomic-json",
+                2
+              ],
+              [
+                "swift-numeric-version",
+                2
+              ],
+              [
+                "lazy-chunks",
+                1
+              ],
+              [
+                "lazy-chunks",
+                0
+              ],
+              [
+                "dependency-order",
+                2
+              ],
+              [
+                "keyed-window",
+                0
+              ],
+              [
+                "atomic-json",
+                1
+              ],
+              [
+                "atomic-json",
+                0
+              ],
+              [
+                "dependency-order",
+                0
+              ],
+              [
+                "shell-text-records",
+                1
+              ],
+              [
+                "dependency-order",
+                1
+              ],
+              [
+                "shell-text-records",
+                0
+              ],
+              [
+                "swift-numeric-version",
+                0
+              ],
+              [
+                "swift-numeric-version",
+                1
+              ]
+            ],
+            "paired_geomean_token_ratio": 1.0,
+            "paired_geomean_call_ratio": 1.0,
+            "rate_pairs": 16,
+            "paired_geomean_rate_ratio": 1.0,
+            "recorded_attempted_calls": 123,
+            "wall_seconds": {
+              "min": 11.165,
+              "median": 26.594,
+              "max": 40.018,
+              "interpretation": "All attempted trajectories; observational provider/network timing."
+            }
+          },
+          {
+            "model": "glm-5.3-flash",
+            "candidate": "recommendation",
+            "all_tasks": {
+              "observed": 18,
+              "passed": 15,
+              "raw_passed": 15,
+              "functional_passes": 15,
+              "scope_failures": 0,
+              "statuses": {
+                "ok": 18
+              }
+            },
+            "selection_tasks": {
+              "observed": 18,
+              "passed": 15,
+              "raw_passed": 15,
+              "functional_passes": 15,
+              "scope_failures": 0,
+              "statuses": {
+                "ok": 18
+              }
+            },
+            "selection_resources": {
+              "usage_complete": true,
+              "recorded_tokens": 384534,
+              "tokens_per_reviewed_success": 25635.6,
+              "rate_value_per_reviewed_success_range": [
+                0.00313736,
+                0.00313736
+              ],
+              "recorded_input_tokens": 340886,
+              "recorded_output_tokens": 43648,
+              "recorded_cache_read_tokens": 215804,
+              "recorded_uncached_input_tokens": 125082,
+              "recorded_allowance_rate_value_usd_range": [
+                0.04706042,
+                0.04706042
+              ]
+            },
+            "resource_pairs": 15,
+            "resource_pair_keys": [
+              [
+                "lazy-chunks",
+                0
+              ],
+              [
+                "swift-numeric-version",
+                1
+              ],
+              [
+                "lazy-chunks",
+                2
+              ],
+              [
+                "shell-text-records",
+                2
+              ],
+              [
+                "dependency-order",
+                1
+              ],
+              [
+                "swift-numeric-version",
+                2
+              ],
+              [
+                "swift-numeric-version",
+                0
+              ],
+              [
+                "shell-text-records",
+                1
+              ],
+              [
+                "dependency-order",
+                0
+              ],
+              [
+                "atomic-json",
+                0
+              ],
+              [
+                "atomic-json",
+                1
+              ],
+              [
+                "atomic-json",
+                2
+              ],
+              [
+                "dependency-order",
+                2
+              ],
+              [
+                "lazy-chunks",
+                1
+              ],
+              [
+                "shell-text-records",
+                0
+              ]
+            ],
+            "paired_geomean_token_ratio": 0.987143,
+            "paired_geomean_call_ratio": 1.021823,
+            "rate_pairs": 15,
+            "paired_geomean_rate_ratio": 0.935724,
+            "recorded_attempted_calls": 128,
+            "wall_seconds": {
+              "min": 11.447,
+              "median": 27.7125,
+              "max": 62.683,
+              "interpretation": "All attempted trajectories; observational provider/network timing."
+            }
+          }
+        ],
+        "balanced_paired_summaries": [
+          {
+            "candidate": "recommendation",
+            "models": [
+              "deepseek-v4.1-flash",
+              "gemini-4-argon-contributor",
+              "glm-5.3-flash"
+            ],
+            "quality_pairs_by_model": {
+              "deepseek-v4.1-flash": 18,
+              "gemini-4-argon-contributor": 18,
+              "glm-5.3-flash": 18
+            },
+            "metrics": {
+              "quality_delta_pp": {
+                "common_tasks": [
+                  "atomic-json",
+                  "dependency-order",
+                  "keyed-window",
+                  "lazy-chunks",
+                  "shell-text-records",
+                  "swift-numeric-version"
+                ],
+                "point": 3.7,
+                "exploratory_95pct_task_bootstrap": [
+                  -3.7,
+                  9.26
+                ]
+              },
+              "token_ratio": {
+                "common_tasks": [
+                  "atomic-json",
+                  "dependency-order",
+                  "lazy-chunks",
+                  "shell-text-records",
+                  "swift-numeric-version"
+                ],
+                "point": 1.061818,
+                "exploratory_95pct_task_bootstrap": [
+                  0.968122,
+                  1.191368
+                ]
+              },
+              "call_ratio": {
+                "common_tasks": [
+                  "atomic-json",
+                  "dependency-order",
+                  "lazy-chunks",
+                  "shell-text-records",
+                  "swift-numeric-version"
+                ],
+                "point": 1.050522,
+                "exploratory_95pct_task_bootstrap": [
+                  1.01682,
+                  1.077025
+                ]
+              },
+              "rate_ratio": {
+                "common_tasks": [],
+                "point": null,
+                "exploratory_95pct_task_bootstrap": null
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "directory": "results/native-transfer-01",
+      "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+      "expected": 54,
+      "observed": 54,
+      "native_bundle_sha256": "de514a9701f60acdf3edc0e4a7f7c52fa25896a6ff0006db3a9b3d8ddbb6a243",
+      "scaffold": "standard",
+      "policy_scaffolds": {
+        "baseline": "standard",
+        "recommendation": "standard"
+      },
+      "results_sha256": "17791ea3e33697af5a3ff8c9ce8f4ce34394d1564b2c8a337d1fa289a2fe2c5a",
+      "suite": "transfer",
+      "summary": {
+        "excluded_whole_tasks": [],
+        "observed": 54,
+        "table": [
+          {
+            "model": "deepseek-v4.1-flash",
+            "candidate": "baseline",
+            "all_tasks": {
+              "observed": 9,
+              "passed": 6,
+              "raw_passed": 6,
+              "functional_passes": 6,
+              "scope_failures": 0,
+              "statuses": {
+                "ok": 9
+              }
+            },
+            "selection_tasks": {
+              "observed": 9,
+              "passed": 6,
+              "raw_passed": 6,
+              "functional_passes": 6,
+              "scope_failures": 0,
+              "statuses": {
+                "ok": 9
+              }
+            },
+            "selection_resources": {
+              "usage_complete": true,
+              "recorded_tokens": 491983,
+              "tokens_per_reviewed_success": 81997.167,
+              "rate_value_per_reviewed_success_range": [
+                0.00731404,
+                0.01462808
+              ],
+              "recorded_input_tokens": 439247,
+              "recorded_output_tokens": 52736,
+              "recorded_cache_read_tokens": 364928,
+              "recorded_uncached_input_tokens": 74319,
+              "recorded_allowance_rate_value_usd_range": [
+                0.04388423,
+                0.08776847
+              ]
+            },
+            "resource_pairs": 6,
+            "resource_pair_keys": [
+              [
+                "framed-client",
+                1
+              ],
+              [
+                "tree-report-cli",
+                2
+              ],
+              [
+                "tree-report-cli",
+                0
+              ],
+              [
+                "framed-client",
+                2
+              ],
+              [
+                "tree-report-cli",
+                1
+              ],
+              [
+                "framed-client",
+                0
+              ]
+            ],
+            "paired_geomean_token_ratio": 1.0,
+            "paired_geomean_call_ratio": 1.0,
+            "rate_pairs": 6,
+            "paired_geomean_rate_ratio": 1.0,
+            "recorded_attempted_calls": 84,
+            "wall_seconds": {
+              "min": 23.381,
+              "median": 53.81,
+              "max": 94.372,
+              "interpretation": "All attempted trajectories; observational provider/network timing."
+            }
+          },
+          {
+            "model": "deepseek-v4.1-flash",
+            "candidate": "recommendation",
+            "all_tasks": {
+              "observed": 9,
+              "passed": 6,
+              "raw_passed": 6,
+              "functional_passes": 6,
+              "scope_failures": 0,
+              "statuses": {
+                "generation_limit": 1,
+                "ok": 8
+              }
+            },
+            "selection_tasks": {
+              "observed": 9,
+              "passed": 6,
+              "raw_passed": 6,
+              "functional_passes": 6,
+              "scope_failures": 0,
+              "statuses": {
+                "generation_limit": 1,
+                "ok": 8
+              }
+            },
+            "selection_resources": {
+              "usage_complete": true,
+              "recorded_tokens": 368056,
+              "tokens_per_reviewed_success": 61342.667,
+              "rate_value_per_reviewed_success_range": [
+                0.00706196,
+                0.01412391
+              ],
+              "recorded_input_tokens": 319729,
+              "recorded_output_tokens": 48327,
+              "recorded_cache_read_tokens": 235264,
+              "recorded_uncached_input_tokens": 84465,
+              "recorded_allowance_rate_value_usd_range": [
+                0.04237174,
+                0.08474348
+              ]
+            },
+            "resource_pairs": 6,
+            "resource_pair_keys": [
+              [
+                "tree-report-cli",
+                2
+              ],
+              [
+                "framed-client",
+                0
+              ],
+              [
+                "tree-report-cli",
+                1
+              ],
+              [
+                "framed-client",
+                1
+              ],
+              [
+                "tree-report-cli",
+                0
+              ],
+              [
+                "framed-client",
+                2
+              ]
+            ],
+            "paired_geomean_token_ratio": 0.883014,
+            "paired_geomean_call_ratio": 0.891174,
+            "rate_pairs": 6,
+            "paired_geomean_rate_ratio": 1.055377,
+            "recorded_attempted_calls": 68,
+            "wall_seconds": {
+              "min": 22.302,
+              "median": 37.835,
+              "max": 65.771,
+              "interpretation": "All attempted trajectories; observational provider/network timing."
+            }
+          },
+          {
+            "model": "gemini-4-argon-contributor",
+            "candidate": "baseline",
+            "all_tasks": {
+              "observed": 9,
+              "passed": 5,
+              "raw_passed": 5,
+              "functional_passes": 6,
+              "scope_failures": 0,
+              "statuses": {
+                "generation_limit": 1,
+                "model_error": 1,
+                "ok": 6,
+                "timeout": 1
+              }
+            },
+            "selection_tasks": {
+              "observed": 9,
+              "passed": 5,
+              "raw_passed": 5,
+              "functional_passes": 6,
+              "scope_failures": 0,
+              "statuses": {
+                "generation_limit": 1,
+                "model_error": 1,
+                "ok": 6,
+                "timeout": 1
+              }
+            },
+            "selection_resources": {
+              "usage_complete": false,
+              "recorded_tokens": 213167,
+              "tokens_per_reviewed_success": null,
+              "rate_value_per_reviewed_success_range": null,
+              "recorded_input_tokens": 175286,
+              "recorded_output_tokens": 37881,
+              "recorded_cache_read_tokens": null,
+              "recorded_uncached_input_tokens": null,
+              "recorded_allowance_rate_value_usd_range": null
+            },
+            "resource_pairs": 5,
+            "resource_pair_keys": [
+              [
+                "framed-client",
+                0
+              ],
+              [
+                "tree-report-cli",
+                2
+              ],
+              [
+                "tree-report-cli",
+                0
+              ],
+              [
+                "framed-client",
+                1
+              ],
+              [
+                "framed-client",
+                2
+              ]
+            ],
+            "paired_geomean_token_ratio": 1.0,
+            "paired_geomean_call_ratio": 1.0,
+            "rate_pairs": 0,
+            "paired_geomean_rate_ratio": null,
+            "recorded_attempted_calls": 48,
+            "wall_seconds": {
+              "min": 72.78,
+              "median": 150.33,
+              "max": 180.256,
+              "interpretation": "All attempted trajectories; observational provider/network timing."
+            }
+          },
+          {
+            "model": "gemini-4-argon-contributor",
+            "candidate": "recommendation",
+            "all_tasks": {
+              "observed": 9,
+              "passed": 4,
+              "raw_passed": 4,
+              "functional_passes": 4,
+              "scope_failures": 0,
+              "statuses": {
+                "generation_limit": 3,
+                "ok": 4,
+                "timeout": 2
+              }
+            },
+            "selection_tasks": {
+              "observed": 9,
+              "passed": 4,
+              "raw_passed": 4,
+              "functional_passes": 4,
+              "scope_failures": 0,
+              "statuses": {
+                "generation_limit": 3,
+                "ok": 4,
+                "timeout": 2
+              }
+            },
+            "selection_resources": {
+              "usage_complete": false,
+              "recorded_tokens": 128920,
+              "tokens_per_reviewed_success": null,
+              "rate_value_per_reviewed_success_range": null,
+              "recorded_input_tokens": 96955,
+              "recorded_output_tokens": 31965,
+              "recorded_cache_read_tokens": null,
+              "recorded_uncached_input_tokens": null,
+              "recorded_allowance_rate_value_usd_range": null
+            },
+            "resource_pairs": 4,
+            "resource_pair_keys": [
+              [
+                "tree-report-cli",
+                2
+              ],
+              [
+                "framed-client",
+                1
+              ],
+              [
+                "framed-client",
+                2
+              ],
+              [
+                "framed-client",
+                0
+              ]
+            ],
+            "paired_geomean_token_ratio": 0.947899,
+            "paired_geomean_call_ratio": 1.046635,
+            "rate_pairs": 0,
+            "paired_geomean_rate_ratio": null,
+            "recorded_attempted_calls": 36,
+            "wall_seconds": {
+              "min": 80.882,
+              "median": 116.678,
+              "max": 180.197,
+              "interpretation": "All attempted trajectories; observational provider/network timing."
+            }
+          },
+          {
+            "model": "glm-5.3-flash",
+            "candidate": "baseline",
+            "all_tasks": {
+              "observed": 9,
+              "passed": 4,
+              "raw_passed": 4,
+              "functional_passes": 4,
+              "scope_failures": 0,
+              "statuses": {
+                "generation_limit": 5,
+                "ok": 4
+              }
+            },
+            "selection_tasks": {
+              "observed": 9,
+              "passed": 4,
+              "raw_passed": 4,
+              "functional_passes": 4,
+              "scope_failures": 0,
+              "statuses": {
+                "generation_limit": 5,
+                "ok": 4
+              }
+            },
+            "selection_resources": {
+              "usage_complete": true,
+              "recorded_tokens": 202099,
+              "tokens_per_reviewed_success": 50524.75,
+              "rate_value_per_reviewed_success_range": [
+                0.00787862,
+                0.00787862
+              ],
+              "recorded_input_tokens": 163903,
+              "recorded_output_tokens": 38196,
+              "recorded_cache_read_tokens": 101408,
+              "recorded_uncached_input_tokens": 62495,
+              "recorded_allowance_rate_value_usd_range": [
+                0.03151449,
+                0.03151449
+              ]
+            },
+            "resource_pairs": 4,
+            "resource_pair_keys": [
+              [
+                "framed-client",
+                1
+              ],
+              [
+                "framed-client",
+                2
+              ],
+              [
+                "framed-client",
+                0
+              ],
+              [
+                "tree-report-cli",
+                0
+              ]
+            ],
+            "paired_geomean_token_ratio": 1.0,
+            "paired_geomean_call_ratio": 1.0,
+            "rate_pairs": 4,
+            "paired_geomean_rate_ratio": 1.0,
+            "recorded_attempted_calls": 56,
+            "wall_seconds": {
+              "min": 34.107,
+              "median": 37.004,
+              "max": 103.133,
+              "interpretation": "All attempted trajectories; observational provider/network timing."
+            }
+          },
+          {
+            "model": "glm-5.3-flash",
+            "candidate": "recommendation",
+            "all_tasks": {
+              "observed": 9,
+              "passed": 3,
+              "raw_passed": 3,
+              "functional_passes": 4,
+              "scope_failures": 0,
+              "statuses": {
+                "generation_limit": 2,
+                "model_error": 1,
+                "ok": 4,
+                "request_limit": 2
+              }
+            },
+            "selection_tasks": {
+              "observed": 9,
+              "passed": 3,
+              "raw_passed": 3,
+              "functional_passes": 4,
+              "scope_failures": 0,
+              "statuses": {
+                "generation_limit": 2,
+                "model_error": 1,
+                "ok": 4,
+                "request_limit": 2
+              }
+            },
+            "selection_resources": {
+              "usage_complete": false,
+              "recorded_tokens": 316164,
+              "tokens_per_reviewed_success": null,
+              "rate_value_per_reviewed_success_range": null,
+              "recorded_input_tokens": 273900,
+              "recorded_output_tokens": 42264,
+              "recorded_cache_read_tokens": 136776,
+              "recorded_uncached_input_tokens": 137124,
+              "recorded_allowance_rate_value_usd_range": [
+                0.04580388,
+                0.04580388
+              ]
+            },
+            "resource_pairs": 2,
+            "resource_pair_keys": [
+              [
+                "framed-client",
+                1
+              ],
+              [
+                "framed-client",
+                2
+              ]
+            ],
+            "paired_geomean_token_ratio": 0.593787,
+            "paired_geomean_call_ratio": 0.83666,
+            "rate_pairs": 2,
+            "paired_geomean_rate_ratio": 0.804833,
+            "recorded_attempted_calls": 79,
+            "wall_seconds": {
+              "min": 30.934,
+              "median": 59.109,
+              "max": 141.031,
+              "interpretation": "All attempted trajectories; observational provider/network timing."
+            }
+          }
+        ],
+        "balanced_paired_summaries": [
+          {
+            "candidate": "recommendation",
+            "models": [
+              "deepseek-v4.1-flash",
+              "gemini-4-argon-contributor",
+              "glm-5.3-flash"
+            ],
+            "quality_pairs_by_model": {
+              "deepseek-v4.1-flash": 9,
+              "gemini-4-argon-contributor": 9,
+              "glm-5.3-flash": 9
+            },
+            "metrics": {
+              "quality_delta_pp": {
+                "common_tasks": [
+                  "framed-client",
+                  "inventory-import",
+                  "tree-report-cli"
+                ],
+                "point": -7.41,
+                "exploratory_95pct_task_bootstrap": [
+                  -11.11,
+                  0
+                ]
+              },
+              "token_ratio": {
+                "common_tasks": [
+                  "framed-client"
+                ],
+                "point": 0.737896,
+                "exploratory_95pct_task_bootstrap": [
+                  0.737896,
+                  0.737896
+                ]
+              },
+              "call_ratio": {
+                "common_tasks": [
+                  "framed-client"
+                ],
+                "point": 0.896885,
+                "exploratory_95pct_task_bootstrap": [
+                  0.896885,
+                  0.896885
+                ]
+              },
+              "rate_ratio": {
+                "common_tasks": [],
+                "point": null,
+                "exploratory_95pct_task_bootstrap": null
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "primary_all_tasks": {
+    "excluded_whole_tasks": [],
+    "observed": 162,
+    "table": [
+      {
+        "model": "deepseek-v4.1-flash",
+        "candidate": "baseline",
+        "all_tasks": {
+          "observed": 27,
+          "passed": 22,
+          "raw_passed": 22,
+          "functional_passes": 23,
+          "scope_failures": 0,
+          "statuses": {
+            "model_error": 1,
+            "ok": 25,
+            "timeout": 1
+          }
+        },
+        "selection_tasks": {
+          "observed": 27,
+          "passed": 22,
+          "raw_passed": 22,
+          "functional_passes": 23,
+          "scope_failures": 0,
+          "statuses": {
+            "model_error": 1,
+            "ok": 25,
+            "timeout": 1
+          }
+        },
+        "selection_resources": {
+          "usage_complete": false,
+          "recorded_tokens": 799126,
+          "tokens_per_reviewed_success": null,
+          "rate_value_per_reviewed_success_range": null,
+          "recorded_input_tokens": 710209,
+          "recorded_output_tokens": 88917,
+          "recorded_cache_read_tokens": 552064,
+          "recorded_uncached_input_tokens": 158145,
+          "recorded_allowance_rate_value_usd_range": [
+            0.07872814,
+            0.15745628
+          ]
+        },
+        "resource_pairs": 22,
+        "resource_pair_keys": [
+          [
+            "swift-numeric-version",
+            0
+          ],
+          [
+            "dependency-order",
+            0
+          ],
+          [
+            "lazy-chunks",
+            2
+          ],
+          [
+            "shell-text-records",
+            1
+          ],
+          [
+            "dependency-order",
+            1
+          ],
+          [
+            "shell-text-records",
+            2
+          ],
+          [
+            "atomic-json",
+            1
+          ],
+          [
+            "dependency-order",
+            2
+          ],
+          [
+            "swift-numeric-version",
+            2
+          ],
+          [
+            "swift-numeric-version",
+            1
+          ],
+          [
+            "atomic-json",
+            2
+          ],
+          [
+            "shell-text-records",
+            0
+          ],
+          [
+            "lazy-chunks",
+            0
+          ],
+          [
+            "keyed-window",
+            2
+          ],
+          [
+            "keyed-window",
+            0
+          ],
+          [
+            "keyed-window",
+            1
+          ],
+          [
+            "framed-client",
+            1
+          ],
+          [
+            "tree-report-cli",
+            2
+          ],
+          [
+            "tree-report-cli",
+            0
+          ],
+          [
+            "framed-client",
+            2
+          ],
+          [
+            "tree-report-cli",
+            1
+          ],
+          [
+            "framed-client",
+            0
+          ]
+        ],
+        "paired_geomean_token_ratio": 1.0,
+        "paired_geomean_call_ratio": 1.0,
+        "rate_pairs": 22,
+        "paired_geomean_rate_ratio": 1.0,
+        "recorded_attempted_calls": 182,
+        "wall_seconds": {
+          "min": 10.68,
+          "median": 31.598,
+          "max": 180.174,
+          "interpretation": "All attempted trajectories; observational provider/network timing."
+        }
+      },
+      {
+        "model": "deepseek-v4.1-flash",
+        "candidate": "recommendation",
+        "all_tasks": {
+          "observed": 27,
+          "passed": 24,
+          "raw_passed": 24,
+          "functional_passes": 24,
+          "scope_failures": 0,
+          "statuses": {
+            "generation_limit": 1,
+            "ok": 26
+          }
+        },
+        "selection_tasks": {
+          "observed": 27,
+          "passed": 24,
+          "raw_passed": 24,
+          "functional_passes": 24,
+          "scope_failures": 0,
+          "statuses": {
+            "generation_limit": 1,
+            "ok": 26
+          }
+        },
+        "selection_resources": {
+          "usage_complete": true,
+          "recorded_tokens": 882573,
+          "tokens_per_reviewed_success": 36773.875,
+          "rate_value_per_reviewed_success_range": [
+            0.00383391,
+            0.00766782
+          ],
+          "recorded_input_tokens": 781411,
+          "recorded_output_tokens": 101162,
+          "recorded_cache_read_tokens": 584320,
+          "recorded_uncached_input_tokens": 197091,
+          "recorded_allowance_rate_value_usd_range": [
+            0.09201381,
+            0.18402762
+          ]
+        },
+        "resource_pairs": 22,
+        "resource_pair_keys": [
+          [
+            "shell-text-records",
+            1
+          ],
+          [
+            "swift-numeric-version",
+            1
+          ],
+          [
+            "swift-numeric-version",
+            0
+          ],
+          [
+            "dependency-order",
+            2
+          ],
+          [
+            "lazy-chunks",
+            2
+          ],
+          [
+            "keyed-window",
+            2
+          ],
+          [
+            "lazy-chunks",
+            0
+          ],
+          [
+            "shell-text-records",
+            2
+          ],
+          [
+            "dependency-order",
+            0
+          ],
+          [
+            "swift-numeric-version",
+            2
+          ],
+          [
+            "keyed-window",
+            1
+          ],
+          [
+            "dependency-order",
+            1
+          ],
+          [
+            "shell-text-records",
+            0
+          ],
+          [
+            "keyed-window",
+            0
+          ],
+          [
+            "atomic-json",
+            1
+          ],
+          [
+            "atomic-json",
+            2
+          ],
+          [
+            "tree-report-cli",
+            2
+          ],
+          [
+            "framed-client",
+            0
+          ],
+          [
+            "tree-report-cli",
+            1
+          ],
+          [
+            "framed-client",
+            1
+          ],
+          [
+            "tree-report-cli",
+            0
+          ],
+          [
+            "framed-client",
+            2
+          ]
+        ],
+        "paired_geomean_token_ratio": 1.226324,
+        "paired_geomean_call_ratio": 1.104787,
+        "rate_pairs": 22,
+        "paired_geomean_rate_ratio": 1.192255,
+        "recorded_attempted_calls": 198,
+        "wall_seconds": {
+          "min": 11.366,
+          "median": 28.032,
+          "max": 65.771,
+          "interpretation": "All attempted trajectories; observational provider/network timing."
+        }
+      },
+      {
+        "model": "gemini-4-argon-contributor",
+        "candidate": "baseline",
+        "all_tasks": {
+          "observed": 27,
+          "passed": 22,
+          "raw_passed": 22,
+          "functional_passes": 24,
+          "scope_failures": 0,
+          "statuses": {
+            "generation_limit": 1,
+            "model_error": 2,
+            "ok": 23,
+            "timeout": 1
+          }
+        },
+        "selection_tasks": {
+          "observed": 27,
+          "passed": 22,
+          "raw_passed": 22,
+          "functional_passes": 24,
+          "scope_failures": 0,
+          "statuses": {
+            "generation_limit": 1,
+            "model_error": 2,
+            "ok": 23,
+            "timeout": 1
+          }
+        },
+        "selection_resources": {
+          "usage_complete": false,
+          "recorded_tokens": 489858,
+          "tokens_per_reviewed_success": null,
+          "rate_value_per_reviewed_success_range": null,
+          "recorded_input_tokens": 416679,
+          "recorded_output_tokens": 73179,
+          "recorded_cache_read_tokens": null,
+          "recorded_uncached_input_tokens": null,
+          "recorded_allowance_rate_value_usd_range": null
+        },
+        "resource_pairs": 22,
+        "resource_pair_keys": [
+          [
+            "keyed-window",
+            1
+          ],
+          [
+            "dependency-order",
+            2
+          ],
+          [
+            "lazy-chunks",
+            0
+          ],
+          [
+            "shell-text-records",
+            2
+          ],
+          [
+            "shell-text-records",
+            1
+          ],
+          [
+            "atomic-json",
+            2
+          ],
+          [
+            "keyed-window",
+            0
+          ],
+          [
+            "dependency-order",
+            1
+          ],
+          [
+            "swift-numeric-version",
+            2
+          ],
+          [
+            "swift-numeric-version",
+            1
+          ],
+          [
+            "lazy-chunks",
+            2
+          ],
+          [
+            "dependency-order",
+            0
+          ],
+          [
+            "lazy-chunks",
+            1
+          ],
+          [
+            "shell-text-records",
+            0
+          ],
+          [
+            "atomic-json",
+            1
+          ],
+          [
+            "atomic-json",
+            0
+          ],
+          [
+            "keyed-window",
+            2
+          ],
+          [
+            "framed-client",
+            0
+          ],
+          [
+            "tree-report-cli",
+            2
+          ],
+          [
+            "tree-report-cli",
+            0
+          ],
+          [
+            "framed-client",
+            1
+          ],
+          [
+            "framed-client",
+            2
+          ]
+        ],
+        "paired_geomean_token_ratio": 1.0,
+        "paired_geomean_call_ratio": 1.0,
+        "rate_pairs": 0,
+        "paired_geomean_rate_ratio": null,
+        "recorded_attempted_calls": 151,
+        "wall_seconds": {
+          "min": 35.096,
+          "median": 86.548,
+          "max": 180.256,
+          "interpretation": "All attempted trajectories; observational provider/network timing."
+        }
+      },
+      {
+        "model": "gemini-4-argon-contributor",
+        "candidate": "recommendation",
+        "all_tasks": {
+          "observed": 27,
+          "passed": 22,
+          "raw_passed": 22,
+          "functional_passes": 22,
+          "scope_failures": 0,
+          "statuses": {
+            "generation_limit": 3,
+            "ok": 22,
+            "timeout": 2
+          }
+        },
+        "selection_tasks": {
+          "observed": 27,
+          "passed": 22,
+          "raw_passed": 22,
+          "functional_passes": 22,
+          "scope_failures": 0,
+          "statuses": {
+            "generation_limit": 3,
+            "ok": 22,
+            "timeout": 2
+          }
+        },
+        "selection_resources": {
+          "usage_complete": false,
+          "recorded_tokens": 489574,
+          "tokens_per_reviewed_success": null,
+          "rate_value_per_reviewed_success_range": null,
+          "recorded_input_tokens": 415983,
+          "recorded_output_tokens": 73591,
+          "recorded_cache_read_tokens": null,
+          "recorded_uncached_input_tokens": null,
+          "recorded_allowance_rate_value_usd_range": null
+        },
+        "resource_pairs": 21,
+        "resource_pair_keys": [
+          [
+            "shell-text-records",
+            2
+          ],
+          [
+            "dependency-order",
+            0
+          ],
+          [
+            "swift-numeric-version",
+            1
+          ],
+          [
+            "shell-text-records",
+            0
+          ],
+          [
+            "lazy-chunks",
+            1
+          ],
+          [
+            "atomic-json",
+            0
+          ],
+          [
+            "shell-text-records",
+            1
+          ],
+          [
+            "keyed-window",
+            2
+          ],
+          [
+            "atomic-json",
+            2
+          ],
+          [
+            "keyed-window",
+            0
+          ],
+          [
+            "dependency-order",
+            1
+          ],
+          [
+            "lazy-chunks",
+            2
+          ],
+          [
+            "dependency-order",
+            2
+          ],
+          [
+            "atomic-json",
+            1
+          ],
+          [
+            "swift-numeric-version",
+            2
+          ],
+          [
+            "keyed-window",
+            1
+          ],
+          [
+            "lazy-chunks",
+            0
+          ],
+          [
+            "tree-report-cli",
+            2
+          ],
+          [
+            "framed-client",
+            1
+          ],
+          [
+            "framed-client",
+            2
+          ],
+          [
+            "framed-client",
+            0
+          ]
+        ],
+        "paired_geomean_token_ratio": 1.00251,
+        "paired_geomean_call_ratio": 1.027777,
+        "rate_pairs": 0,
+        "paired_geomean_rate_ratio": null,
+        "recorded_attempted_calls": 146,
+        "wall_seconds": {
+          "min": 31.719,
+          "median": 77.848,
+          "max": 180.197,
+          "interpretation": "All attempted trajectories; observational provider/network timing."
+        }
+      },
+      {
+        "model": "glm-5.3-flash",
+        "candidate": "baseline",
+        "all_tasks": {
+          "observed": 27,
+          "passed": 20,
+          "raw_passed": 20,
+          "functional_passes": 20,
+          "scope_failures": 0,
+          "statuses": {
+            "generation_limit": 5,
+            "ok": 22
+          }
+        },
+        "selection_tasks": {
+          "observed": 27,
+          "passed": 20,
+          "raw_passed": 20,
+          "functional_passes": 20,
+          "scope_failures": 0,
+          "statuses": {
+            "generation_limit": 5,
+            "ok": 22
+          }
+        },
+        "selection_resources": {
+          "usage_complete": true,
+          "recorded_tokens": 560114,
+          "tokens_per_reviewed_success": 28005.7,
+          "rate_value_per_reviewed_success_range": [
+            0.00378867,
+            0.00378867
+          ],
+          "recorded_input_tokens": 482947,
+          "recorded_output_tokens": 77167,
+          "recorded_cache_read_tokens": 293768,
+          "recorded_uncached_input_tokens": 189179,
+          "recorded_allowance_rate_value_usd_range": [
+            0.07577339,
+            0.07577339
+          ]
+        },
+        "resource_pairs": 20,
+        "resource_pair_keys": [
+          [
+            "lazy-chunks",
+            2
+          ],
+          [
+            "shell-text-records",
+            2
+          ],
+          [
+            "atomic-json",
+            2
+          ],
+          [
+            "swift-numeric-version",
+            2
+          ],
+          [
+            "lazy-chunks",
+            1
+          ],
+          [
+            "lazy-chunks",
+            0
+          ],
+          [
+            "dependency-order",
+            2
+          ],
+          [
+            "keyed-window",
+            0
+          ],
+          [
+            "atomic-json",
+            1
+          ],
+          [
+            "atomic-json",
+            0
+          ],
+          [
+            "dependency-order",
+            0
+          ],
+          [
+            "shell-text-records",
+            1
+          ],
+          [
+            "dependency-order",
+            1
+          ],
+          [
+            "shell-text-records",
+            0
+          ],
+          [
+            "swift-numeric-version",
+            0
+          ],
+          [
+            "swift-numeric-version",
+            1
+          ],
+          [
+            "framed-client",
+            1
+          ],
+          [
+            "framed-client",
+            2
+          ],
+          [
+            "framed-client",
+            0
+          ],
+          [
+            "tree-report-cli",
+            0
+          ]
+        ],
+        "paired_geomean_token_ratio": 1.0,
+        "paired_geomean_call_ratio": 1.0,
+        "rate_pairs": 20,
+        "paired_geomean_rate_ratio": 1.0,
+        "recorded_attempted_calls": 179,
+        "wall_seconds": {
+          "min": 11.165,
+          "median": 34.107,
+          "max": 103.133,
+          "interpretation": "All attempted trajectories; observational provider/network timing."
+        }
+      },
+      {
+        "model": "glm-5.3-flash",
+        "candidate": "recommendation",
+        "all_tasks": {
+          "observed": 27,
+          "passed": 18,
+          "raw_passed": 18,
+          "functional_passes": 19,
+          "scope_failures": 0,
+          "statuses": {
+            "generation_limit": 2,
+            "model_error": 1,
+            "ok": 22,
+            "request_limit": 2
+          }
+        },
+        "selection_tasks": {
+          "observed": 27,
+          "passed": 18,
+          "raw_passed": 18,
+          "functional_passes": 19,
+          "scope_failures": 0,
+          "statuses": {
+            "generation_limit": 2,
+            "model_error": 1,
+            "ok": 22,
+            "request_limit": 2
+          }
+        },
+        "selection_resources": {
+          "usage_complete": false,
+          "recorded_tokens": 700698,
+          "tokens_per_reviewed_success": null,
+          "rate_value_per_reviewed_success_range": null,
+          "recorded_input_tokens": 614786,
+          "recorded_output_tokens": 85912,
+          "recorded_cache_read_tokens": 352580,
+          "recorded_uncached_input_tokens": 262206,
+          "recorded_allowance_rate_value_usd_range": [
+            0.0928643,
+            0.0928643
+          ]
+        },
+        "resource_pairs": 17,
+        "resource_pair_keys": [
+          [
+            "lazy-chunks",
+            0
+          ],
+          [
+            "swift-numeric-version",
+            1
+          ],
+          [
+            "lazy-chunks",
+            2
+          ],
+          [
+            "shell-text-records",
+            2
+          ],
+          [
+            "dependency-order",
+            1
+          ],
+          [
+            "swift-numeric-version",
+            2
+          ],
+          [
+            "swift-numeric-version",
+            0
+          ],
+          [
+            "shell-text-records",
+            1
+          ],
+          [
+            "dependency-order",
+            0
+          ],
+          [
+            "atomic-json",
+            0
+          ],
+          [
+            "atomic-json",
+            1
+          ],
+          [
+            "atomic-json",
+            2
+          ],
+          [
+            "dependency-order",
+            2
+          ],
+          [
+            "lazy-chunks",
+            1
+          ],
+          [
+            "shell-text-records",
+            0
+          ],
+          [
+            "framed-client",
+            1
+          ],
+          [
+            "framed-client",
+            2
+          ]
+        ],
+        "paired_geomean_token_ratio": 0.929843,
+        "paired_geomean_call_ratio": 0.998069,
+        "rate_pairs": 17,
+        "paired_geomean_rate_ratio": 0.919282,
+        "recorded_attempted_calls": 207,
+        "wall_seconds": {
+          "min": 11.447,
+          "median": 33.81,
+          "max": 141.031,
+          "interpretation": "All attempted trajectories; observational provider/network timing."
+        }
+      }
+    ],
+    "balanced_paired_summaries": [
+      {
+        "candidate": "recommendation",
+        "models": [
+          "deepseek-v4.1-flash",
+          "gemini-4-argon-contributor",
+          "glm-5.3-flash"
+        ],
+        "quality_pairs_by_model": {
+          "deepseek-v4.1-flash": 27,
+          "gemini-4-argon-contributor": 27,
+          "glm-5.3-flash": 27
+        },
+        "metrics": {
+          "quality_delta_pp": {
+            "common_tasks": [
+              "atomic-json",
+              "dependency-order",
+              "framed-client",
+              "inventory-import",
+              "keyed-window",
+              "lazy-chunks",
+              "shell-text-records",
+              "swift-numeric-version",
+              "tree-report-cli"
+            ],
+            "point": 0.0,
+            "exploratory_95pct_task_bootstrap": [
+              -6.17,
+              6.17
+            ]
+          },
+          "token_ratio": {
+            "common_tasks": [
+              "atomic-json",
+              "dependency-order",
+              "framed-client",
+              "lazy-chunks",
+              "shell-text-records",
+              "swift-numeric-version"
+            ],
+            "point": 0.999327,
+            "exploratory_95pct_task_bootstrap": [
+              0.860771,
+              1.154257
+            ]
+          },
+          "call_ratio": {
+            "common_tasks": [
+              "atomic-json",
+              "dependency-order",
+              "framed-client",
+              "lazy-chunks",
+              "shell-text-records",
+              "swift-numeric-version"
+            ],
+            "point": 1.0232,
+            "exploratory_95pct_task_bootstrap": [
+              0.96448,
+              1.07031
+            ]
+          },
+          "rate_ratio": {
+            "common_tasks": [],
+            "point": null,
+            "exploratory_95pct_task_bootstrap": null
+          }
+        }
+      }
+    ]
+  },
+  "additional_whole_task_sensitivity": {
+    "origin": "Post-freeze diagnostic after the first result, not a predeclared exclusion.",
+    "caveat": {
+      "recorded_at_utc": "2026-10-20T10:43:26.615341+00:00",
+      "phase": "After recommendation freeze and first keyed-window baseline outcome; not a predeclared exclusion.",
+      "task_id": "keyed-window",
+      "task_sha256": "68e008cc3d96ee8ffddbbb74c1230ca6d7aef569d23da7bfd137ad4af789ebed",
+      "trigger_trajectory": "glm-5.3-flash--baseline--keyed-window--1",
+      "trigger_detail_sha256": "615aa5b814aa61b963c01aaff103c42a45e034985783b70ee90f6be9d119ab72",
+      "specification_caveat": "Normal completion, six inference calls, no protected changes. Saved Limiter rejects 0, -1 and 1.5 but accepts True. External oracle rejects True. The task says positive integer limit without explicit bool exclusion; another reserved task explicitly excludes bool.",
+      "primary_analysis": "All nine reserved tasks retained with original external grades.",
+      "additional_sensitivity": "Exclude the whole keyed-window task uniformly across all policies, models and repetitions; show alongside primary results.",
+      "forbidden_actions": "No isolated assertion deletion, pass override, fixture edit, prompt tuning, failure replacement or retry.",
+      "recommendation_unchanged": true,
+      "later_observations": [
+        {
+          "recorded_at_utc": "2026-10-20T11:02:18.463855+00:00",
+          "trajectory": "glm-5.3-flash--recommendation--keyed-window--0",
+          "detail_sha256": "4d3163fa1269c1c4b42f759dc55e696317eab13acca32a1109f9f058376f486e",
+          "finding": "Unambiguous open-interval-boundary failure independent of bool validation."
+        }
+      ],
+      "sensitivity_limitation": "Uniform removal of keyed-window also removes a genuine recommendation boundary failure. It is a secondary robustness view, not corrected primary quality; retain the original all-task score and failure-type audit."
+    },
+    "excluded_whole_tasks": [
+      "keyed-window"
+    ],
+    "observed": 144,
+    "table": [
+      {
+        "model": "deepseek-v4.1-flash",
+        "candidate": "baseline",
+        "all_tasks": {
+          "observed": 24,
+          "passed": 19,
+          "raw_passed": 19,
+          "functional_passes": 20,
+          "scope_failures": 0,
+          "statuses": {
+            "model_error": 1,
+            "ok": 22,
+            "timeout": 1
+          }
+        },
+        "selection_tasks": {
+          "observed": 24,
+          "passed": 19,
+          "raw_passed": 19,
+          "functional_passes": 20,
+          "scope_failures": 0,
+          "statuses": {
+            "model_error": 1,
+            "ok": 22,
+            "timeout": 1
+          }
+        },
+        "selection_resources": {
+          "usage_complete": false,
+          "recorded_tokens": 749334,
+          "tokens_per_reviewed_success": null,
+          "rate_value_per_reviewed_success_range": null,
+          "recorded_input_tokens": 666555,
+          "recorded_output_tokens": 82779,
+          "recorded_cache_read_tokens": 522112,
+          "recorded_uncached_input_tokens": 144443,
+          "recorded_allowance_rate_value_usd_range": [
+            0.07290019,
+            0.14580037
+          ]
+        },
+        "resource_pairs": 19,
+        "resource_pair_keys": [
+          [
+            "swift-numeric-version",
+            0
+          ],
+          [
+            "dependency-order",
+            0
+          ],
+          [
+            "lazy-chunks",
+            2
+          ],
+          [
+            "shell-text-records",
+            1
+          ],
+          [
+            "dependency-order",
+            1
+          ],
+          [
+            "shell-text-records",
+            2
+          ],
+          [
+            "atomic-json",
+            1
+          ],
+          [
+            "dependency-order",
+            2
+          ],
+          [
+            "swift-numeric-version",
+            2
+          ],
+          [
+            "swift-numeric-version",
+            1
+          ],
+          [
+            "atomic-json",
+            2
+          ],
+          [
+            "shell-text-records",
+            0
+          ],
+          [
+            "lazy-chunks",
+            0
+          ],
+          [
+            "framed-client",
+            1
+          ],
+          [
+            "tree-report-cli",
+            2
+          ],
+          [
+            "tree-report-cli",
+            0
+          ],
+          [
+            "framed-client",
+            2
+          ],
+          [
+            "tree-report-cli",
+            1
+          ],
+          [
+            "framed-client",
+            0
+          ]
+        ],
+        "paired_geomean_token_ratio": 1.0,
+        "paired_geomean_call_ratio": 1.0,
+        "rate_pairs": 19,
+        "paired_geomean_rate_ratio": 1.0,
+        "recorded_attempted_calls": 164,
+        "wall_seconds": {
+          "min": 10.68,
+          "median": 32.248999999999995,
+          "max": 180.174,
+          "interpretation": "All attempted trajectories; observational provider/network timing."
+        }
+      },
+      {
+        "model": "deepseek-v4.1-flash",
+        "candidate": "recommendation",
+        "all_tasks": {
+          "observed": 24,
+          "passed": 21,
+          "raw_passed": 21,
+          "functional_passes": 21,
+          "scope_failures": 0,
+          "statuses": {
+            "generation_limit": 1,
+            "ok": 23
+          }
+        },
+        "selection_tasks": {
+          "observed": 24,
+          "passed": 21,
+          "raw_passed": 21,
+          "functional_passes": 21,
+          "scope_failures": 0,
+          "statuses": {
+            "generation_limit": 1,
+            "ok": 23
+          }
+        },
+        "selection_resources": {
+          "usage_complete": true,
+          "recorded_tokens": 731941,
+          "tokens_per_reviewed_success": 34854.333,
+          "rate_value_per_reviewed_success_range": [
+            0.00369412,
+            0.00738823
+          ],
+          "recorded_input_tokens": 648569,
+          "recorded_output_tokens": 83372,
+          "recorded_cache_read_tokens": 474368,
+          "recorded_uncached_input_tokens": 174201,
+          "recorded_allowance_rate_value_usd_range": [
+            0.07757645,
+            0.15515291
+          ]
+        },
+        "resource_pairs": 19,
+        "resource_pair_keys": [
+          [
+            "shell-text-records",
+            1
+          ],
+          [
+            "swift-numeric-version",
+            1
+          ],
+          [
+            "swift-numeric-version",
+            0
+          ],
+          [
+            "dependency-order",
+            2
+          ],
+          [
+            "lazy-chunks",
+            2
+          ],
+          [
+            "lazy-chunks",
+            0
+          ],
+          [
+            "shell-text-records",
+            2
+          ],
+          [
+            "dependency-order",
+            0
+          ],
+          [
+            "swift-numeric-version",
+            2
+          ],
+          [
+            "dependency-order",
+            1
+          ],
+          [
+            "shell-text-records",
+            0
+          ],
+          [
+            "atomic-json",
+            1
+          ],
+          [
+            "atomic-json",
+            2
+          ],
+          [
+            "tree-report-cli",
+            2
+          ],
+          [
+            "framed-client",
+            0
+          ],
+          [
+            "tree-report-cli",
+            1
+          ],
+          [
+            "framed-client",
+            1
+          ],
+          [
+            "tree-report-cli",
+            0
+          ],
+          [
+            "framed-client",
+            2
+          ]
+        ],
+        "paired_geomean_token_ratio": 1.075049,
+        "paired_geomean_call_ratio": 1.038116,
+        "rate_pairs": 19,
+        "paired_geomean_rate_ratio": 1.068734,
+        "recorded_attempted_calls": 168,
+        "wall_seconds": {
+          "min": 11.366,
+          "median": 26.744,
+          "max": 65.771,
+          "interpretation": "All attempted trajectories; observational provider/network timing."
+        }
+      },
+      {
+        "model": "gemini-4-argon-contributor",
+        "candidate": "baseline",
+        "all_tasks": {
+          "observed": 24,
+          "passed": 19,
+          "raw_passed": 19,
+          "functional_passes": 21,
+          "scope_failures": 0,
+          "statuses": {
+            "generation_limit": 1,
+            "model_error": 2,
+            "ok": 20,
+            "timeout": 1
+          }
+        },
+        "selection_tasks": {
+          "observed": 24,
+          "passed": 19,
+          "raw_passed": 19,
+          "functional_passes": 21,
+          "scope_failures": 0,
+          "statuses": {
+            "generation_limit": 1,
+            "model_error": 2,
+            "ok": 20,
+            "timeout": 1
+          }
+        },
+        "selection_resources": {
+          "usage_complete": false,
+          "recorded_tokens": 451301,
+          "tokens_per_reviewed_success": null,
+          "rate_value_per_reviewed_success_range": null,
+          "recorded_input_tokens": 383916,
+          "recorded_output_tokens": 67385,
+          "recorded_cache_read_tokens": null,
+          "recorded_uncached_input_tokens": null,
+          "recorded_allowance_rate_value_usd_range": null
+        },
+        "resource_pairs": 19,
+        "resource_pair_keys": [
+          [
+            "dependency-order",
+            2
+          ],
+          [
+            "lazy-chunks",
+            0
+          ],
+          [
+            "shell-text-records",
+            2
+          ],
+          [
+            "shell-text-records",
+            1
+          ],
+          [
+            "atomic-json",
+            2
+          ],
+          [
+            "dependency-order",
+            1
+          ],
+          [
+            "swift-numeric-version",
+            2
+          ],
+          [
+            "swift-numeric-version",
+            1
+          ],
+          [
+            "lazy-chunks",
+            2
+          ],
+          [
+            "dependency-order",
+            0
+          ],
+          [
+            "lazy-chunks",
+            1
+          ],
+          [
+            "shell-text-records",
+            0
+          ],
+          [
+            "atomic-json",
+            1
+          ],
+          [
+            "atomic-json",
+            0
+          ],
+          [
+            "framed-client",
+            0
+          ],
+          [
+            "tree-report-cli",
+            2
+          ],
+          [
+            "tree-report-cli",
+            0
+          ],
+          [
+            "framed-client",
+            1
+          ],
+          [
+            "framed-client",
+            2
+          ]
+        ],
+        "paired_geomean_token_ratio": 1.0,
+        "paired_geomean_call_ratio": 1.0,
+        "rate_pairs": 0,
+        "paired_geomean_rate_ratio": null,
+        "recorded_attempted_calls": 136,
+        "wall_seconds": {
+          "min": 35.096,
+          "median": 88.172,
+          "max": 180.256,
+          "interpretation": "All attempted trajectories; observational provider/network timing."
+        }
+      },
+      {
+        "model": "gemini-4-argon-contributor",
+        "candidate": "recommendation",
+        "all_tasks": {
+          "observed": 24,
+          "passed": 19,
+          "raw_passed": 19,
+          "functional_passes": 19,
+          "scope_failures": 0,
+          "statuses": {
+            "generation_limit": 3,
+            "ok": 19,
+            "timeout": 2
+          }
+        },
+        "selection_tasks": {
+          "observed": 24,
+          "passed": 19,
+          "raw_passed": 19,
+          "functional_passes": 19,
+          "scope_failures": 0,
+          "statuses": {
+            "generation_limit": 3,
+            "ok": 19,
+            "timeout": 2
+          }
+        },
+        "selection_resources": {
+          "usage_complete": false,
+          "recorded_tokens": 453013,
+          "tokens_per_reviewed_success": null,
+          "rate_value_per_reviewed_success_range": null,
+          "recorded_input_tokens": 384974,
+          "recorded_output_tokens": 68039,
+          "recorded_cache_read_tokens": null,
+          "recorded_uncached_input_tokens": null,
+          "recorded_allowance_rate_value_usd_range": null
+        },
+        "resource_pairs": 18,
+        "resource_pair_keys": [
+          [
+            "shell-text-records",
+            2
+          ],
+          [
+            "dependency-order",
+            0
+          ],
+          [
+            "swift-numeric-version",
+            1
+          ],
+          [
+            "shell-text-records",
+            0
+          ],
+          [
+            "lazy-chunks",
+            1
+          ],
+          [
+            "atomic-json",
+            0
+          ],
+          [
+            "shell-text-records",
+            1
+          ],
+          [
+            "atomic-json",
+            2
+          ],
+          [
+            "dependency-order",
+            1
+          ],
+          [
+            "lazy-chunks",
+            2
+          ],
+          [
+            "dependency-order",
+            2
+          ],
+          [
+            "atomic-json",
+            1
+          ],
+          [
+            "swift-numeric-version",
+            2
+          ],
+          [
+            "lazy-chunks",
+            0
+          ],
+          [
+            "tree-report-cli",
+            2
+          ],
+          [
+            "framed-client",
+            1
+          ],
+          [
+            "framed-client",
+            2
+          ],
+          [
+            "framed-client",
+            0
+          ]
+        ],
+        "paired_geomean_token_ratio": 1.012346,
+        "paired_geomean_call_ratio": 1.032481,
+        "rate_pairs": 0,
+        "paired_geomean_rate_ratio": null,
+        "recorded_attempted_calls": 131,
+        "wall_seconds": {
+          "min": 31.719,
+          "median": 83.1975,
+          "max": 180.197,
+          "interpretation": "All attempted trajectories; observational provider/network timing."
+        }
+      },
+      {
+        "model": "glm-5.3-flash",
+        "candidate": "baseline",
+        "all_tasks": {
+          "observed": 24,
+          "passed": 19,
+          "raw_passed": 19,
+          "functional_passes": 19,
+          "scope_failures": 0,
+          "statuses": {
+            "generation_limit": 5,
+            "ok": 19
+          }
+        },
+        "selection_tasks": {
+          "observed": 24,
+          "passed": 19,
+          "raw_passed": 19,
+          "functional_passes": 19,
+          "scope_failures": 0,
+          "statuses": {
+            "generation_limit": 5,
+            "ok": 19
+          }
+        },
+        "selection_resources": {
+          "usage_complete": true,
+          "recorded_tokens": 511492,
+          "tokens_per_reviewed_success": 26920.632,
+          "rate_value_per_reviewed_success_range": [
+            0.00365843,
+            0.00365843
+          ],
+          "recorded_input_tokens": 439889,
+          "recorded_output_tokens": 71603,
+          "recorded_cache_read_tokens": 268956,
+          "recorded_uncached_input_tokens": 170933,
+          "recorded_allowance_rate_value_usd_range": [
+            0.06951013,
+            0.06951013
+          ]
+        },
+        "resource_pairs": 19,
+        "resource_pair_keys": [
+          [
+            "lazy-chunks",
+            2
+          ],
+          [
+            "shell-text-records",
+            2
+          ],
+          [
+            "atomic-json",
+            2
+          ],
+          [
+            "swift-numeric-version",
+            2
+          ],
+          [
+            "lazy-chunks",
+            1
+          ],
+          [
+            "lazy-chunks",
+            0
+          ],
+          [
+            "dependency-order",
+            2
+          ],
+          [
+            "atomic-json",
+            1
+          ],
+          [
+            "atomic-json",
+            0
+          ],
+          [
+            "dependency-order",
+            0
+          ],
+          [
+            "shell-text-records",
+            1
+          ],
+          [
+            "dependency-order",
+            1
+          ],
+          [
+            "shell-text-records",
+            0
+          ],
+          [
+            "swift-numeric-version",
+            0
+          ],
+          [
+            "swift-numeric-version",
+            1
+          ],
+          [
+            "framed-client",
+            1
+          ],
+          [
+            "framed-client",
+            2
+          ],
+          [
+            "framed-client",
+            0
+          ],
+          [
+            "tree-report-cli",
+            0
+          ]
+        ],
+        "paired_geomean_token_ratio": 1.0,
+        "paired_geomean_call_ratio": 1.0,
+        "rate_pairs": 19,
+        "paired_geomean_rate_ratio": 1.0,
+        "recorded_attempted_calls": 159,
+        "wall_seconds": {
+          "min": 11.165,
+          "median": 34.518,
+          "max": 103.133,
+          "interpretation": "All attempted trajectories; observational provider/network timing."
+        }
+      },
+      {
+        "model": "glm-5.3-flash",
+        "candidate": "recommendation",
+        "all_tasks": {
+          "observed": 24,
+          "passed": 18,
+          "raw_passed": 18,
+          "functional_passes": 19,
+          "scope_failures": 0,
+          "statuses": {
+            "generation_limit": 2,
+            "model_error": 1,
+            "ok": 19,
+            "request_limit": 2
+          }
+        },
+        "selection_tasks": {
+          "observed": 24,
+          "passed": 18,
+          "raw_passed": 18,
+          "functional_passes": 19,
+          "scope_failures": 0,
+          "statuses": {
+            "generation_limit": 2,
+            "model_error": 1,
+            "ok": 19,
+            "request_limit": 2
+          }
+        },
+        "selection_resources": {
+          "usage_complete": false,
+          "recorded_tokens": 626190,
+          "tokens_per_reviewed_success": null,
+          "rate_value_per_reviewed_success_range": null,
+          "recorded_input_tokens": 550924,
+          "recorded_output_tokens": 75266,
+          "recorded_cache_read_tokens": 304820,
+          "recorded_uncached_input_tokens": 246104,
+          "recorded_allowance_rate_value_usd_range": [
+            0.0836932,
+            0.0836932
+          ]
+        },
+        "resource_pairs": 17,
+        "resource_pair_keys": [
+          [
+            "lazy-chunks",
+            0
+          ],
+          [
+            "swift-numeric-version",
+            1
+          ],
+          [
+            "lazy-chunks",
+            2
+          ],
+          [
+            "shell-text-records",
+            2
+          ],
+          [
+            "dependency-order",
+            1
+          ],
+          [
+            "swift-numeric-version",
+            2
+          ],
+          [
+            "swift-numeric-version",
+            0
+          ],
+          [
+            "shell-text-records",
+            1
+          ],
+          [
+            "dependency-order",
+            0
+          ],
+          [
+            "atomic-json",
+            0
+          ],
+          [
+            "atomic-json",
+            1
+          ],
+          [
+            "atomic-json",
+            2
+          ],
+          [
+            "dependency-order",
+            2
+          ],
+          [
+            "lazy-chunks",
+            1
+          ],
+          [
+            "shell-text-records",
+            0
+          ],
+          [
+            "framed-client",
+            1
+          ],
+          [
+            "framed-client",
+            2
+          ]
+        ],
+        "paired_geomean_token_ratio": 0.929843,
+        "paired_geomean_call_ratio": 0.998069,
+        "rate_pairs": 17,
+        "paired_geomean_rate_ratio": 0.919282,
+        "recorded_attempted_calls": 183,
+        "wall_seconds": {
+          "min": 11.447,
+          "median": 34.042,
+          "max": 141.031,
+          "interpretation": "All attempted trajectories; observational provider/network timing."
+        }
+      }
+    ],
+    "balanced_paired_summaries": [
+      {
+        "candidate": "recommendation",
+        "models": [
+          "deepseek-v4.1-flash",
+          "gemini-4-argon-contributor",
+          "glm-5.3-flash"
+        ],
+        "quality_pairs_by_model": {
+          "deepseek-v4.1-flash": 24,
+          "gemini-4-argon-contributor": 24,
+          "glm-5.3-flash": 24
+        },
+        "metrics": {
+          "quality_delta_pp": {
+            "common_tasks": [
+              "atomic-json",
+              "dependency-order",
+              "framed-client",
+              "inventory-import",
+              "lazy-chunks",
+              "shell-text-records",
+              "swift-numeric-version",
+              "tree-report-cli"
+            ],
+            "point": 1.39,
+            "exploratory_95pct_task_bootstrap": [
+              -4.17,
+              6.94
+            ]
+          },
+          "token_ratio": {
+            "common_tasks": [
+              "atomic-json",
+              "dependency-order",
+              "framed-client",
+              "lazy-chunks",
+              "shell-text-records",
+              "swift-numeric-version"
+            ],
+            "point": 0.999327,
+            "exploratory_95pct_task_bootstrap": [
+              0.860771,
+              1.154257
+            ]
+          },
+          "call_ratio": {
+            "common_tasks": [
+              "atomic-json",
+              "dependency-order",
+              "framed-client",
+              "lazy-chunks",
+              "shell-text-records",
+              "swift-numeric-version"
+            ],
+            "point": 1.0232,
+            "exploratory_95pct_task_bootstrap": [
+              0.96448,
+              1.07031
+            ]
+          },
+          "rate_ratio": {
+            "common_tasks": [],
+            "point": null,
+            "exploratory_95pct_task_bootstrap": null
+          }
+        }
+      }
+    ]
+  },
+  "reporter_sha256": "c2d529987c9c0c0b33c1cf04e013d6deb4b05265bac6424ddb89bcbb9a6c1e98",
+  "limits": "Primary keeps all original reserved grades. The additional whole-task sensitivity cannot replace it. Finite authored tasks and mutable aliases limit generalization; exploratory task-cluster intervals do not prove equivalence. Context conditions are separate and are not additional independent tasks. No winner or completion inferred from this report."
+}

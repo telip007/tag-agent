@@ -1,0 +1,165 @@
+{
+  "state": "reserved; no subject requests made",
+  "tasks": [
+    {
+      "id": "keyed-window",
+      "task": "Fix Limiter(window, limit) in limiter.py. Require positive window and positive integer limit, otherwise ValueError. allow(key, now) returns True only when fewer than limit accepted events for that key occurred in the open/closed interval (now-window, now]. Rejected events do not count. Keys are independent; supplied times never decrease for a given key.",
+      "files": {
+        "limiter.py": "class Limiter:\n    def __init__(self, window, limit):\n        self.window, self.limit = window, limit\n        self.events = []\n    def allow(self, key, now):\n        self.events = [t for t in self.events if now - t <= self.window]\n        self.events.append(now)\n        return len(self.events) <= self.limit\n",
+        "test_limiter.py": "import unittest\nfrom limiter import Limiter\nclass Tests(unittest.TestCase):\n    def test_keys(self):\n        r=Limiter(10,1); self.assertTrue(r.allow('a',0)); self.assertTrue(r.allow('b',0))\n",
+        "AGENTS.md": "Use the standard library and existing style. Do not change existing tests or notes.txt. Do not install packages or use the network.\n",
+        "notes.txt": "Unrelated user work in progress: preserve this exact text.\n",
+        "README.md": "Standalone exercise. Run checks with: python3 -m unittest -v\n"
+      },
+      "reference": {
+        "limiter.py": "from collections import deque\n\nclass Limiter:\n    def __init__(self, window, limit):\n        if window <= 0 or isinstance(limit, bool) or not isinstance(limit, int) or limit <= 0:\n            raise ValueError('invalid limits')\n        self.window, self.limit = window, limit\n        self.events = {}\n    def allow(self, key, now):\n        events = self.events.setdefault(key, deque())\n        while events and events[0] <= now - self.window: events.popleft()\n        if len(events) >= self.limit: return False\n        events.append(now)\n        return True\n"
+      },
+      "check": "from limiter import Limiter\nr=Limiter(10,1); assert r.allow('a',0); assert not r.allow('a',1); assert not r.allow('a',9); assert r.allow('a',10); assert r.allow('b',10); assert not r.allow('a',10)\nr=Limiter(5,2); assert r.allow('x',0); assert r.allow('x',1); assert not r.allow('x',2); assert r.allow('x',5); assert not r.allow('x',5); assert r.allow('x',6)\nfor window,limit in [(0,1),(-1,1),(1,0),(1,-1),(1,1.5),(1,True)]:\n try: Limiter(window,limit)\n except ValueError: pass\n else: raise AssertionError('invalid limits')\n",
+      "command": "python3 -m unittest -v",
+      "kind": "code",
+      "allowed_edits": [
+        "limiter.py"
+      ]
+    },
+    {
+      "id": "dependency-order",
+      "task": "Implement order_tasks(graph) in graph.py. graph maps task names to lists of dependency names, all of which must be keys. Return every task once with dependencies first; at each step choose the lexicographically smallest currently available task. Duplicate dependencies count once. Raise KeyError for unknown dependencies and ValueError for cycles. Preserve the input graph.",
+      "files": {
+        "graph.py": "def order_tasks(graph):\n    return list(graph)\n",
+        "test_graph.py": "import unittest\nfrom graph import order_tasks\nclass Tests(unittest.TestCase):\n    def test_dependencies(self): self.assertEqual(order_tasks({'b':['a'],'a':[]}),['a','b'])\n",
+        "AGENTS.md": "Use the standard library and existing style. Do not change existing tests or notes.txt. Do not install packages or use the network.\n",
+        "notes.txt": "Unrelated user work in progress: preserve this exact text.\n",
+        "README.md": "Standalone exercise. Run checks with: python3 -m unittest -v\n"
+      },
+      "reference": {
+        "graph.py": "import heapq\n\ndef order_tasks(graph):\n    remaining = {name: set(deps) for name, deps in graph.items()}\n    for deps in remaining.values():\n        for dependency in deps:\n            if dependency not in graph: raise KeyError(dependency)\n    ready = [name for name, deps in remaining.items() if not deps]\n    heapq.heapify(ready)\n    output = []\n    while ready:\n        name = heapq.heappop(ready)\n        output.append(name)\n        del remaining[name]\n        for other, deps in remaining.items():\n            if name in deps:\n                deps.remove(name)\n                if not deps: heapq.heappush(ready, other)\n    if remaining: raise ValueError('cycle')\n    return output\n"
+      },
+      "check": "from graph import order_tasks\nimport copy\nassert order_tasks({})==[]\ng={'z':[],'b':['a','a'],'a':[],'c':['b']}; before=copy.deepcopy(g); assert order_tasks(g)==['a','b','c','z']; assert g==before\nassert order_tasks({'a':['b'],'b':[],'c':[]})==['b','a','c']\nfor g in [{'a':['a']},{'a':['b'],'b':['a']},{'z':[],'a':['b'],'b':['a']}]:\n try: order_tasks(g)\n except ValueError: pass\n else: raise AssertionError('cycle')\ntry: order_tasks({'a':['missing']})\nexcept KeyError: pass\nelse: raise AssertionError('unknown dependency')\n",
+      "command": "python3 -m unittest -v",
+      "kind": "code",
+      "allowed_edits": [
+        "graph.py"
+      ]
+    },
+    {
+      "id": "lazy-chunks",
+      "task": "Fix chunks(iterable, size) in chunks.py to yield nonempty lists of up to size items from a single-pass iterable. Keep the last partial chunk, consume only enough input for each yielded chunk, and support infinite iterables. Invalid sizes (anything other than a positive integer, including bool) raise ValueError when iteration starts.",
+      "files": {
+        "chunks.py": "def chunks(iterable, size):\n    values = list(iterable)\n    for index in range(0, len(values) - size + 1, size):\n        yield values[index:index + size]\n",
+        "test_chunks.py": "import unittest\nfrom chunks import chunks\nclass Tests(unittest.TestCase):\n    def test_partial(self): self.assertEqual(list(chunks([1,2,3],2)),[[1,2],[3]])\n",
+        "AGENTS.md": "Use the standard library and existing style. Do not change existing tests or notes.txt. Do not install packages or use the network.\n",
+        "notes.txt": "Unrelated user work in progress: preserve this exact text.\n",
+        "README.md": "Standalone exercise. Run checks with: python3 -m unittest -v\n"
+      },
+      "reference": {
+        "chunks.py": "from itertools import islice\n\ndef chunks(iterable, size):\n    if isinstance(size, bool) or not isinstance(size, int) or size <= 0:\n        raise ValueError('invalid size')\n    iterator = iter(iterable)\n    while True:\n        batch = list(islice(iterator, size))\n        if not batch: return\n        yield batch\n"
+      },
+      "check": "from chunks import chunks\nfrom itertools import count,islice\nassert list(chunks([],2))==[]\nassert list(chunks(iter([1,2,3,4,5]),2))==[[1,2],[3,4],[5]]\ndef endless():\n for value in count():\n  assert value < 8, 'eager consumption of unbounded input'\n  yield value\nassert list(islice(chunks(endless(),3),2))==[[0,1,2],[3,4,5]]\nreads=[]\ndef source():\n for n in range(8):\n  reads.append(n); yield n\ng=chunks(source(),3); assert reads==[]; assert next(g)==[0,1,2]; assert reads==[0,1,2]\nfor size in [0,-1,True,1.5,'2']:\n try: list(chunks([1],size))\n except ValueError: pass\n else: raise AssertionError('invalid size')\n",
+      "command": "python3 -m unittest -v",
+      "kind": "code",
+      "allowed_edits": [
+        "chunks.py"
+      ]
+    },
+    {
+      "id": "atomic-json",
+      "task": "Implement write_json(path, value) in storage.py. Serialize JSON to a temporary file in the target directory, flush and fsync that file, then atomically replace the target with os.replace. Create missing parent directories. If serialization or replacement fails, propagate the exception, preserve any existing target, and remove the temporary file. Do not claim power-loss durability for the directory entry.",
+      "files": {
+        "storage.py": "import json\nfrom pathlib import Path\n\ndef write_json(path, value):\n    Path(path).write_text(json.dumps(value))\n",
+        "test_storage.py": "import tempfile,unittest\nfrom pathlib import Path\nfrom storage import write_json\nclass Tests(unittest.TestCase):\n    def test_parent(self):\n        with tempfile.TemporaryDirectory() as d:\n            p=Path(d)/'new'/'state.json'; write_json(p,{'x':1}); self.assertTrue(p.exists())\n",
+        "AGENTS.md": "Use the standard library and existing style. Do not change existing tests or notes.txt. Do not install packages or use the network.\n",
+        "notes.txt": "Unrelated user work in progress: preserve this exact text.\n",
+        "README.md": "Standalone exercise. Run checks with: python3 -m unittest -v\n"
+      },
+      "reference": {
+        "storage.py": "import json\nimport os\nfrom pathlib import Path\nimport tempfile\n\ndef write_json(path, value):\n    path = Path(path)\n    path.parent.mkdir(parents=True, exist_ok=True)\n    temporary = None\n    try:\n        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=path.parent, delete=False) as stream:\n            temporary = stream.name\n            json.dump(value, stream)\n            stream.flush()\n            os.fsync(stream.fileno())\n        os.replace(temporary, path)\n    finally:\n        if temporary is not None:\n            try: os.unlink(temporary)\n            except FileNotFoundError: pass\n"
+      },
+      "check": "import json,tempfile\nfrom pathlib import Path\nfrom unittest.mock import patch\nfrom storage import write_json\nwith tempfile.TemporaryDirectory() as d:\n p=Path(d)/'new'/'data.json'; write_json(p,{'a':[1,2]}); assert json.loads(p.read_text())=={'a':[1,2]}\n before=p.read_bytes(); names=set(p.parent.iterdir())\n with patch('os.replace',side_effect=OSError('simulated')):\n  try: write_json(p,{'a':3})\n  except OSError: pass\n  else: raise AssertionError('replacement error swallowed')\n assert p.read_bytes()==before and set(p.parent.iterdir())==names\n try: write_json(p,{'x':object()})\n except TypeError: pass\n else: raise AssertionError('serialization error swallowed')\n assert p.read_bytes()==before and set(p.parent.iterdir())==names\n with patch('os.fsync', wraps=__import__('os').fsync) as sync:\n  write_json(p,{'next':2}); assert sync.call_count>=1\n",
+      "command": "python3 -m unittest -v",
+      "kind": "code",
+      "allowed_edits": [
+        "storage.py"
+      ]
+    },
+    {
+      "id": "swift-numeric-version",
+      "task": "Fix compareVersions(_:_:) in Version.swift. Return -1, 0 or 1 comparing exactly three dot-separated ASCII decimal components numerically. Components may have arbitrary length; avoid integer overflow. A component is either 0 or a nonzero digit followed by digits. Invalid input returns nil, including leading zeros, whitespace, missing components, signs and suffixes.",
+      "files": {
+        "Version.swift": "import Foundation\n\nfunc compareVersions(_ left: String, _ right: String) -> Int? {\n    guard let first = Int(left.replacingOccurrences(of: \".\", with: \"\")), let second = Int(right.replacingOccurrences(of: \".\", with: \"\")) else { return nil }\n    return first == second ? 0 : first < second ? -1 : 1\n}\n",
+        "main.swift": "import Foundation\nassert(compareVersions(\"1.10.0\",\"1.2.0\") == 1)\nprint(\"OK\")\n",
+        "AGENTS.md": "Use the standard library and existing style. Do not change existing tests or notes.txt. Do not install packages or use the network.\n",
+        "notes.txt": "Unrelated user work in progress: preserve this exact text.\n",
+        "README.md": "Standalone exercise. Run checks with: swiftc Version.swift main.swift -o .fixture-check && ./.fixture-check\n"
+      },
+      "reference": {
+        "Version.swift": "func compareVersions(_ left: String, _ right: String) -> Int? {\n    func parts(_ input: String) -> [String]? {\n        let items = input.split(separator: \".\", omittingEmptySubsequences: false).map(String.init)\n        guard items.count == 3, items.allSatisfy({ item in\n            !item.isEmpty && item.allSatisfy { $0 >= \"0\" && $0 <= \"9\" } && (item == \"0\" || !item.hasPrefix(\"0\"))\n        }) else { return nil }\n        return items\n    }\n    guard let lhs = parts(left), let rhs = parts(right) else { return nil }\n    for (a, b) in zip(lhs, rhs) where a != b {\n        if a.count != b.count { return a.count < b.count ? -1 : 1 }\n        return a < b ? -1 : 1\n    }\n    return 0\n}\n"
+      },
+      "check": "assert(compareVersions(\"1.10.0\",\"1.2.0\") == 1)\nassert(compareVersions(\"0.0.0\",\"0.0.0\") == 0)\nassert(compareVersions(\"999999999999999999999.0.0\",\"2.0.0\") == 1)\nassert(compareVersions(\"1.0.9\",\"1.0.10\") == -1)\nfor value in [\"1.2\",\"1.2.3.4\",\"01.2.3\",\"1..3\",\" 1.2.3\",\"1.2.3-x\",\"+1.2.3\",\"a.2.3\"] {\n    assert(compareVersions(value,\"1.2.3\") == nil)\n}\n",
+      "command": "swiftc Version.swift main.swift -o .fixture-check && ./.fixture-check",
+      "kind": "swift",
+      "allowed_edits": [
+        "Version.swift"
+      ]
+    },
+    {
+      "id": "shell-text-records",
+      "task": "Fix count_records.sh FILE to print only the number of logical text records. Each LF terminates a record; a final nonempty unterminated record also counts. Empty files have zero records. Preserve empty records, support CRLF input, and handle paths with spaces, newlines or a leading dash. Input is text without NUL bytes.",
+      "files": {
+        "count_records.sh": "#!/bin/sh\nwc -l \"$1\"\n",
+        "tests.sh": "#!/bin/sh\nset -eu\nf=$(mktemp ./visible.XXXXXX); trap 'rm -f \"$f\"' EXIT\nprintf abc > \"$f\"\n[ \"$(sh count_records.sh \"$f\")\" = 1 ]\n",
+        "AGENTS.md": "Use the standard library and existing style. Do not change existing tests or notes.txt. Do not install packages or use the network.\n",
+        "notes.txt": "Unrelated user work in progress: preserve this exact text.\n",
+        "README.md": "Standalone exercise. Run checks with: sh tests.sh\n"
+      },
+      "reference": {
+        "count_records.sh": "#!/bin/sh\nawk 'END {print NR+0}' < \"$1\"\n"
+      },
+      "check": "import subprocess,tempfile\nfrom pathlib import Path\nfor content,expected in [('',0),('a',1),('a\\n',1),('\\n',1),('a\\n\\n',2),('a\\r\\nb',2)]:\n with tempfile.TemporaryDirectory() as d:\n  p=Path(d)/'a space\\nname.txt'; p.write_text(content); assert subprocess.check_output(['sh','count_records.sh',str(p)],text=True).strip()==str(expected)\np=Path('-input'); p.write_text('x');\ntry: assert subprocess.check_output(['sh','count_records.sh','-input'],text=True).strip()=='1'\nfinally: p.unlink()\n",
+      "command": "sh tests.sh",
+      "kind": "code",
+      "allowed_edits": [
+        "count_records.sh"
+      ]
+    }
+  ],
+  "source_sha256": "f66cdfa0d686378a321c44c5dd81eb69dd7a044b128f63a13c896c71333384c7",
+  "oracle_results": [
+    {
+      "task": "keyed-window",
+      "broken_fails": true,
+      "reference_passes": true,
+      "reference_error": ""
+    },
+    {
+      "task": "dependency-order",
+      "broken_fails": true,
+      "reference_passes": true,
+      "reference_error": ""
+    },
+    {
+      "task": "lazy-chunks",
+      "broken_fails": true,
+      "reference_passes": true,
+      "reference_error": ""
+    },
+    {
+      "task": "atomic-json",
+      "broken_fails": true,
+      "reference_passes": true,
+      "reference_error": ""
+    },
+    {
+      "task": "swift-numeric-version",
+      "broken_fails": true,
+      "reference_passes": true,
+      "reference_error": ""
+    },
+    {
+      "task": "shell-text-records",
+      "broken_fails": true,
+      "reference_passes": true,
+      "reference_error": ""
+    }
+  ],
+  "fingerprint": "08e450f8932b1f494028987c7536720dcbeda2d4f591da58fe19bbef23d38064"
+}

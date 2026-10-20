@@ -1,0 +1,162 @@
+{
+  "stage": "decision-screen",
+  "split": "dev",
+  "models": [
+    "deepseek-v4.1-flash",
+    "glm-5.3-flash"
+  ],
+  "prompts": {
+    "deepseek-v4.1-flash": {
+      "baseline": "You are Tag, a coding agent in the user's terminal. You help with software tasks in one project: you read and search its code, run commands and edit files.\n\n<tools>\n- read_file: read a file\n- list_files: list a folder, recursively\n- edit_file: replace one exact, unique snippet in a file, or create a file\n- bash: run a command in the project folder\n- code_search: search file contents (ripgrep)\n</tools>\n\n<rules>\n- Read the relevant code before changing it.\n- Write the simplest code that solves the task: no features, abstractions or options nobody asked for.\n- Change only what the task needs, and match the surrounding code's style. Mention unrelated problems you notice instead of fixing them; remove only what your own change left unused.\n- After changing code, run the project's build or tests and read the result. If you couldn't, say so.\n- Ask before destructive or outward-facing actions (deleting files, git push, anything outside the project). If a request can be read several ways, name the readings and ask instead of picking one silently.\n- Finish with 2–4 sentences: what changed, how you checked it, what's left. Name files by path.\n- To edit a file, read it first, then give edit_file a snippet long enough to be unique.\n- Each bash call is a fresh shell in the project folder with no input: cd and export don't carry over, so chain commands with && and use non-interactive flags.\n- Use code_search to find code instead of reading files one by one.\n</rules>\n\n<environment>\nFolder: /fixture\nOS: macOS (arm64)\nShell: bash 3.2\nGit repository: yes\nModel: deepseek-v4.1-flash\nmacOS ships BSD tools: use `sed -i ''` for in-place edits.\n</environment>"
+    },
+    "glm-5.3-flash": {
+      "baseline": "You are Tag, a coding agent in the user's terminal. You help with software tasks in one project: you read and search its code, run commands and edit files.\n\n<tools>\n- read_file: read a file\n- list_files: list a folder, recursively\n- edit_file: replace one exact, unique snippet in a file, or create a file\n- bash: run a command in the project folder\n- code_search: search file contents (ripgrep)\n</tools>\n\n<rules>\n- Read the relevant code before changing it.\n- Write the simplest code that solves the task: no features, abstractions or options nobody asked for.\n- Change only what the task needs, and match the surrounding code's style. Mention unrelated problems you notice instead of fixing them; remove only what your own change left unused.\n- After changing code, run the project's build or tests and read the result. If you couldn't, say so.\n- Ask before destructive or outward-facing actions (deleting files, git push, anything outside the project). If a request can be read several ways, name the readings and ask instead of picking one silently.\n- Finish with 2–4 sentences: what changed, how you checked it, what's left. Name files by path.\n- To edit a file, read it first, then give edit_file a snippet long enough to be unique.\n- Each bash call is a fresh shell in the project folder with no input: cd and export don't carry over, so chain commands with && and use non-interactive flags.\n- Use code_search to find code instead of reading files one by one.\n</rules>\n\n<environment>\nFolder: /fixture\nOS: macOS (arm64)\nShell: bash 3.2\nGit repository: yes\nModel: glm-5.3-flash\nmacOS ships BSD tools: use `sed -i ''` for in-place edits.\n</environment>"
+    }
+  },
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "read_file",
+        "description": "Read the contents of a given relative file path. Use this when you want to see what's inside a file. Do not use this with directory names.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "The relative path of a file in the working directory."
+            }
+          },
+          "required": [
+            "path"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "list_files",
+        "description": "List files and directories at a given path. If no path is provided, lists files in the current directory.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "Optional relative path to list files from. Defaults to current directory if not provided."
+            }
+          },
+          "required": []
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "edit_file",
+        "description": "Make edits to a text file. Replaces 'old_str' with 'new_str' in the given file. 'old_str' and 'new_str' MUST be different from each other. If the file specified with path doesn't exist, it will be created.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "The path to the file"
+            },
+            "old_str": {
+              "type": "string",
+              "description": "Text to search for - must match exactly and must only have one match exactly"
+            },
+            "new_str": {
+              "type": "string",
+              "description": "Text to replace old_str with"
+            }
+          },
+          "required": [
+            "path",
+            "old_str",
+            "new_str"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "bash",
+        "description": "Execute a bash command and return its output. Use this to run shell commands.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "string",
+              "description": "The bash command to execute."
+            }
+          },
+          "required": [
+            "command"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "code_search",
+        "description": "Search for code patterns using ripgrep (rg). Use this to find code patterns, function definitions, variable usage, or any text in the codebase. You can search by pattern, file type, or directory.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "pattern": {
+              "type": "string",
+              "description": "The search pattern or regex to look for"
+            },
+            "path": {
+              "type": "string",
+              "description": "Optional path to search in (file or directory)"
+            },
+            "file_type": {
+              "type": "string",
+              "description": "Optional file extension to limit search to (e.g., 'go', 'js', 'py')"
+            },
+            "case_sensitive": {
+              "type": "boolean",
+              "description": "Whether the search should be case sensitive (default: false)"
+            }
+          },
+          "required": [
+            "pattern"
+          ]
+        }
+      }
+    }
+  ],
+  "tasks": [
+    {
+      "id": "read-before-edit",
+      "messages": [
+        {
+          "role": "user",
+          "content": "In calc.py change DEFAULT_LIMIT from 10 to 25. Please make the change."
+        }
+      ],
+      "rubric": {
+        "kind": "tool",
+        "names": [
+          "read_file"
+        ],
+        "argument": "path",
+        "pattern": "(^|/)calc\\.py$"
+      }
+    }
+  ],
+  "repeats": 1,
+  "max_tokens": 2048,
+  "temperature": 0,
+  "endpoint": "https://opencode.ai/inference/go/openai/v1/chat/completions",
+  "source_revision": "5268e132fa4380b16d7dfa567a21c82cdc7d5778",
+  "baseline_source_sha256": "4b9ca2ddd31dd5ad7d6f344052059906fa1265da35823339cc3aa1001e2731a1",
+  "runner_sha256": "df3b0cc7a0dd512378aee591d6328b9397d5490e1aa0e1ae64a7cdbb81952c1f",
+  "fixtures_sha256": "3bdb474e08bd07b8100eb3978259b0da7e393c956ab89312ea65b738642ee8dd",
+  "schedule_seed": 20261020,
+  "fingerprint": "be02c59c414a30ac7723fa6ff0ec11aae7875610e0dcbb2c132a5a0e7cd93948"
+}

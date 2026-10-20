@@ -1,0 +1,21 @@
+[
+  {
+    "id": "gemini-4-argon-contributor--recommendation--framed-client--0",
+    "fingerprint": "99d1b199984096d890fd2e3704375bf086838fde92e045ba8166030fca246646",
+    "detail_sha256": "c4e276bcf98a6b4654510eb3dede09e99b2f160375f53cbcde3c13f70f20616d",
+    "classification": "retained context-stress supervisor deadline after externally passing saved code",
+    "observed": {
+      "wall_seconds": 180.124,
+      "process_exit": -15,
+      "functional_pass": true,
+      "changed_existing_files": [
+        "framing.py",
+        "client.py"
+      ],
+      "forbidden_changes": [],
+      "outcome_present": false,
+      "attempted_calls": null
+    },
+    "decision": "Retain original operational failure and saved-code grade separately. Missing usage, system-prompt capture and exact provider/tool cause remain unknown. No retry, override, prompt tuning or budget change."
+  }
+]

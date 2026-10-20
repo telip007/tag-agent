@@ -1,0 +1,54 @@
+{
+  "checked_at_utc": "2026-10-20T12:26:59.480946+00:00",
+  "repository_check": {
+    "command": "TAG_LIVE_TESTS=0 make check",
+    "exit_code": 0,
+    "stages": [
+      "wiki lint",
+      "strict swift-format",
+      "strict SwiftLint",
+      "build",
+      "parallel Swift tests",
+      "coverage gate"
+    ],
+    "swift_tests": 318,
+    "tagkit_tests": 205,
+    "modelkit_tests": 113,
+    "coverage_percent": 91.5,
+    "coverage_lines": 6968,
+    "minimum_coverage_percent": 80,
+    "log_sha256": "f32869d43ae312471098c75b9195c83f5bc6e2dbaea0da6500b9e9a33f41218b",
+    "dependency_warnings": "Generated OpenRouter SDK printed 66 warning diagnostic locations plus duplicated context lines (unused imports/deprecations); the required check exited zero. No lint, build or coverage check was weakened."
+  },
+  "offline_reporting_tests": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s Evals/prompt-lab -v",
+    "exit_code": 0,
+    "tests": 42,
+    "log_sha256": "7a7f05a67b7e7f3293f9866f69281da0f2204a0dd4002e597958a16b695623d4"
+  },
+  "fresh_report_reproduction": {
+    "commands": [
+      "python3 Evals/prompt-lab/repeat_selection.py",
+      "python3 Evals/prompt-lab/confirmation_report.py"
+    ],
+    "exit_code": 0,
+    "selected_development_cells": 528,
+    "ordinary_reserved_cells": 162,
+    "all_frozen_and_final_evidence_hashes_reproduced": true
+  },
+  "live_runs_terminal_before_rebuild": true,
+  "live_job_environment_absent_for_checks": true,
+  "frozen_live_bundle_sha256": "de514a9701f60acdf3edc0e4a7f7c52fa25896a6ff0006db3a9b3d8ddbb6a243",
+  "post_check_bundle_sha256": "de514a9701f60acdf3edc0e4a7f7c52fa25896a6ff0006db3a9b3d8ddbb6a243",
+  "post_check_bundle_still_matches_live_freeze": true,
+  "frozen_recommendation_assets_unchanged": true,
+  "production_prompt_changed": false,
+  "new_live_requests_during_checks": false,
+  "scope": "Local repository/offline verification only; no remote CI, release, publication or runtime activation inferred. Logs are retained privately and only their hashes are recorded here.",
+  "final_documentation_lint": {
+    "command": "make wiki-lint",
+    "exit_code": 0,
+    "pages": 38,
+    "scope": "After documentation-only ADR and traceability additions; Swift/Python implementation unchanged since passed full check."
+  }
+}

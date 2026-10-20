@@ -1,0 +1,20 @@
+[
+  {
+    "task": "inventory-import",
+    "broken_fails": true,
+    "reference_passes": true,
+    "reference_error": ""
+  },
+  {
+    "task": "framed-client",
+    "broken_fails": true,
+    "reference_passes": true,
+    "reference_error": ""
+  },
+  {
+    "task": "tree-report-cli",
+    "broken_fails": true,
+    "reference_passes": true,
+    "reference_error": ""
+  }
+]

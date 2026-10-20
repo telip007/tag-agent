@@ -1,0 +1,244 @@
+{
+  "fingerprint": "d05e281ab53f5ed51172f81c1d8ee9ff4d4b419aea12d5a8398b3e40d8e03034",
+  "split": "development",
+  "expected": 72,
+  "observed": 20,
+  "missing": 52,
+  "table": [
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "baseline",
+      "scheduled": 12,
+      "observed": 1,
+      "passed": 1,
+      "raw_passed": 1,
+      "functional_passes": 1,
+      "code_tasks_observed": 1,
+      "code_test_passes": 1,
+      "behavioral_tasks_observed": 0,
+      "behavioral_passes": 0,
+      "statuses": {
+        "ok": 1
+      },
+      "model_calls": 5,
+      "reported_tokens": 10173,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 10173.0,
+      "median_wall_seconds": 13.256,
+      "visible_check_string_observed": 1,
+      "monetary_cost": null,
+      "recorded_input_tokens": 9258,
+      "recorded_output_tokens": 915,
+      "recorded_cache_read_tokens": 6528,
+      "recorded_uncached_input_tokens": 2730,
+      "recorded_allowance_rate_value_usd_range": [
+        0.00097808,
+        0.00195617
+      ]
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "compact",
+      "scheduled": 12,
+      "observed": 5,
+      "passed": 3,
+      "raw_passed": 3,
+      "functional_passes": 3,
+      "code_tasks_observed": 5,
+      "code_test_passes": 3,
+      "behavioral_tasks_observed": 0,
+      "behavioral_passes": 0,
+      "statuses": {
+        "model_error": 1,
+        "ok": 3,
+        "timeout": 1
+      },
+      "model_calls": 17,
+      "reported_tokens": 33000,
+      "usage_complete_for_attempted_calls": false,
+      "reported_tokens_per_success": null,
+      "median_wall_seconds": 19.038,
+      "visible_check_string_observed": 3,
+      "monetary_cost": null,
+      "recorded_input_tokens": 29341,
+      "recorded_output_tokens": 3659,
+      "recorded_cache_read_tokens": 19840,
+      "recorded_uncached_input_tokens": 9501,
+      "recorded_allowance_rate_value_usd_range": [
+        0.00368007,
+        0.00736014
+      ]
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "evidence",
+      "scheduled": 12,
+      "observed": 8,
+      "passed": 8,
+      "raw_passed": 8,
+      "functional_passes": 8,
+      "code_tasks_observed": 6,
+      "code_test_passes": 6,
+      "behavioral_tasks_observed": 2,
+      "behavioral_passes": 2,
+      "statuses": {
+        "ok": 8
+      },
+      "model_calls": 48,
+      "reported_tokens": 130096,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 16262.0,
+      "median_wall_seconds": 21.491,
+      "visible_check_string_observed": 7,
+      "monetary_cost": null,
+      "recorded_input_tokens": 118915,
+      "recorded_output_tokens": 11181,
+      "recorded_cache_read_tokens": 91136,
+      "recorded_uncached_input_tokens": 27779,
+      "recorded_allowance_rate_value_usd_range": [
+        0.01114886,
+        0.02229772
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "baseline",
+      "scheduled": 12,
+      "observed": 3,
+      "passed": 3,
+      "raw_passed": 3,
+      "functional_passes": 3,
+      "code_tasks_observed": 2,
+      "code_test_passes": 2,
+      "behavioral_tasks_observed": 1,
+      "behavioral_passes": 1,
+      "statuses": {
+        "ok": 3
+      },
+      "model_calls": 15,
+      "reported_tokens": 28068,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 9356.0,
+      "median_wall_seconds": 16.108,
+      "visible_check_string_observed": 1,
+      "monetary_cost": null,
+      "recorded_input_tokens": 25353,
+      "recorded_output_tokens": 2715,
+      "recorded_cache_read_tokens": 18700,
+      "recorded_uncached_input_tokens": 6653,
+      "recorded_allowance_rate_value_usd_range": [
+        0.00291645,
+        0.00291645
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "compact",
+      "scheduled": 12,
+      "observed": 0,
+      "passed": 0,
+      "raw_passed": 0,
+      "functional_passes": 0,
+      "code_tasks_observed": 0,
+      "code_test_passes": 0,
+      "behavioral_tasks_observed": 0,
+      "behavioral_passes": 0,
+      "statuses": {},
+      "model_calls": 0,
+      "reported_tokens": 0,
+      "usage_complete_for_attempted_calls": false,
+      "reported_tokens_per_success": null,
+      "median_wall_seconds": null,
+      "visible_check_string_observed": 0,
+      "monetary_cost": null,
+      "recorded_input_tokens": 0,
+      "recorded_output_tokens": 0,
+      "recorded_cache_read_tokens": null,
+      "recorded_uncached_input_tokens": null,
+      "recorded_allowance_rate_value_usd_range": null
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "evidence",
+      "scheduled": 12,
+      "observed": 3,
+      "passed": 3,
+      "raw_passed": 3,
+      "functional_passes": 3,
+      "code_tasks_observed": 2,
+      "code_test_passes": 2,
+      "behavioral_tasks_observed": 1,
+      "behavioral_passes": 1,
+      "statuses": {
+        "ok": 3
+      },
+      "model_calls": 15,
+      "reported_tokens": 26015,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 8671.7,
+      "median_wall_seconds": 17.261,
+      "visible_check_string_observed": 0,
+      "monetary_cost": null,
+      "recorded_input_tokens": 23976,
+      "recorded_output_tokens": 2039,
+      "recorded_cache_read_tokens": 10076,
+      "recorded_uncached_input_tokens": 13900,
+      "recorded_allowance_rate_value_usd_range": [
+        0.00340678,
+        0.00340678
+      ]
+    }
+  ],
+  "paired": [
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "compact",
+      "paired_tasks": 1,
+      "delta_pp": 0,
+      "exploratory_95pct_task_bootstrap_pp": [
+        0,
+        0
+      ]
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "evidence",
+      "paired_tasks": 1,
+      "delta_pp": 0,
+      "exploratory_95pct_task_bootstrap_pp": [
+        0,
+        0
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "evidence",
+      "paired_tasks": 1,
+      "delta_pp": 0,
+      "exploratory_95pct_task_bootstrap_pp": [
+        0,
+        0
+      ]
+    }
+  ],
+  "behavioral_adjudications": 0,
+  "failed_runs": [
+    {
+      "id": "deepseek-v4.1-flash--compact--line-buffer--0",
+      "status": "model_error",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": "The request timed out."
+    },
+    {
+      "id": "deepseek-v4.1-flash--compact--clamp--0",
+      "status": "timeout",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": null
+    }
+  ],
+  "limits": "External tests cover declared cases, not arbitrary correctness. The split field records the frozen suite. Behavioral grades and visible-check strings are weaker evidence. Unadjusted exploratory intervals exclude infrastructure/model errors and do not establish equivalence. No confirmation winner inferred.",
+  "reporter_sha256": "b0e2367deedba3d7fd3d66b23c4eee7b6b324e0d210347ad267fad41675f5b18",
+  "rate_card_sha256": "37522b26d76c874397be920da516495ae1f5cc607d29f3725d4ea21213d72ee2"
+}

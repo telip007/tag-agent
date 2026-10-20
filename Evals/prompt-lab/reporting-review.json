@@ -1,0 +1,86 @@
+{
+  "finding": "Read-only reviewer found per-success tokens emitted with incomplete attempted-request usage.",
+  "severity": "minor",
+  "scope": "Derived native reporter only; family comparison already gates incomplete usage. No raw outcome, grade, manifest, subject request or frozen runtime source changed.",
+  "verification": "Missing-request regression failed with 110.0 instead of None before fix. After fix all 38 offline Python tests pass; complete failed-request usage remains counted.",
+  "refreshed_reports": [
+    {
+      "directory": "results/native-dev-01",
+      "changed_metrics": [
+        {
+          "model": "deepseek-v4.1-flash",
+          "candidate": "compact",
+          "previous": 11000.0,
+          "corrected": null
+        }
+      ],
+      "raw_results_sha256": "0a0178c7e60fd3b903cc49489ffdf69817164320200940424d03b7354262c998"
+    },
+    {
+      "directory": "results/native-dev-02",
+      "changed_metrics": [
+        {
+          "model": "deepseek-v4.1-flash",
+          "candidate": "baseline",
+          "previous": 13696.5,
+          "corrected": null
+        },
+        {
+          "model": "glm-5.3-flash",
+          "candidate": "evidence",
+          "previous": 12001.1,
+          "corrected": null
+        }
+      ],
+      "raw_results_sha256": "029316de671b84b7bbf2acc3e258174a6cf2daa662adb92981e4eb02fcaf2395"
+    },
+    {
+      "directory": "results/native-family-dev-01",
+      "changed_metrics": [],
+      "raw_results_sha256": "0e87112d5e555c4d4a5f5117a02f79aa9b31d351d675a2aad19c22ab7a94c5aa"
+    },
+    {
+      "directory": "results/native-fixed-policy-smoke-01",
+      "changed_metrics": [],
+      "raw_results_sha256": "b954a17f894d3d2ad76dfc24b6cd58da2dde9e1c760c95122a56bef5fde93550"
+    },
+    {
+      "directory": "results/native-hybrid-dev-01",
+      "changed_metrics": [],
+      "raw_results_sha256": "9e5813a55c2c23787d13d83ca1c7912c555046a8fdeaa4b856d36e9578885f40"
+    },
+    {
+      "directory": "results/native-joint-smoke-01",
+      "changed_metrics": [],
+      "raw_results_sha256": "71a1e3b5c156b8728c2fd73ab237adf1ee4a2252f7f6a08b2c950b0940e6ffc5"
+    },
+    {
+      "directory": "results/native-lean-smoke-01",
+      "changed_metrics": [],
+      "raw_results_sha256": "a526207fe3df9d5308f9300a9f74688ade48ffbddf235b981558aba99653d128"
+    },
+    {
+      "directory": "results/native-replay-smoke-03",
+      "changed_metrics": [],
+      "raw_results_sha256": "e853f9a002d1e3713112f82cdc17fde0ce7b15294b107237bf6dfb8a8d3d2a27"
+    },
+    {
+      "directory": "results/native-scaffold-dev-01",
+      "changed_metrics": [
+        {
+          "model": "glm-5.3-flash",
+          "candidate": "baseline_lean",
+          "previous": 13996.5,
+          "corrected": null
+        },
+        {
+          "model": "glm-5.3-flash",
+          "candidate": "compact_lean",
+          "previous": 15337.8,
+          "corrected": null
+        }
+      ],
+      "raw_results_sha256": "7a79dfeb183e6e61ea28781da4571aa375999c607ea6936f30ce4cc6824b2e6d"
+    }
+  ]
+}

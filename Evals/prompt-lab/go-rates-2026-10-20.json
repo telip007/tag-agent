@@ -1,0 +1,21 @@
+{
+  "source": "https://opencode.ai/v2/docs/console/go#usage-limits",
+  "retrieved": "2026-10-20",
+  "units": "USD rate value per million tokens against Go allowance; not a cash invoice",
+  "limits": "Derived estimates for recorded usage only. Unreturned requests and actual allowance debits remain unknown. DeepSeek peak timing is not inferred.",
+  "models": {
+    "deepseek-v4.1-flash": [
+      {"label": "off-peak", "input": 0.15, "cache_read": 0.003, "output": 0.60},
+      {"label": "peak", "input": 0.30, "cache_read": 0.006, "output": 1.20}
+    ],
+    "glm-5.3-flash": [
+      {"label": "standard", "input": 0.15, "cache_read": 0.03, "output": 0.50}
+    ],
+    "gemini-4-argon-contributor": [
+      {"label": "standard", "input": 4.00, "cache_read": 0.20, "output": 20.00}
+    ],
+    "grok-4.7": [
+      {"label": "at-most-200k-context", "input": 2.00, "cache_read": 0.50, "output": 6.00}
+    ]
+  }
+}

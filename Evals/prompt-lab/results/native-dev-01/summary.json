@@ -1,0 +1,72 @@
+[
+  {
+    "model": "deepseek-v4.1-flash",
+    "candidate": "baseline",
+    "attempted": 1,
+    "passed": 1,
+    "functional_passes": 1,
+    "infrastructure_errors": 0,
+    "model_errors": 0,
+    "timeouts": 0,
+    "request_limit_reached": 0,
+    "model_calls": 5,
+    "reported_tokens": 10173,
+    "monetary_cost": null
+  },
+  {
+    "model": "deepseek-v4.1-flash",
+    "candidate": "compact",
+    "attempted": 5,
+    "passed": 3,
+    "functional_passes": 3,
+    "infrastructure_errors": 0,
+    "model_errors": 1,
+    "timeouts": 1,
+    "request_limit_reached": 0,
+    "model_calls": 17,
+    "reported_tokens": 33000,
+    "monetary_cost": null
+  },
+  {
+    "model": "deepseek-v4.1-flash",
+    "candidate": "evidence",
+    "attempted": 8,
+    "passed": 8,
+    "functional_passes": 8,
+    "infrastructure_errors": 0,
+    "model_errors": 0,
+    "timeouts": 0,
+    "request_limit_reached": 0,
+    "model_calls": 48,
+    "reported_tokens": 130096,
+    "monetary_cost": null
+  },
+  {
+    "model": "glm-5.3-flash",
+    "candidate": "baseline",
+    "attempted": 3,
+    "passed": 3,
+    "functional_passes": 3,
+    "infrastructure_errors": 0,
+    "model_errors": 0,
+    "timeouts": 0,
+    "request_limit_reached": 0,
+    "model_calls": 15,
+    "reported_tokens": 28068,
+    "monetary_cost": null
+  },
+  {
+    "model": "glm-5.3-flash",
+    "candidate": "evidence",
+    "attempted": 3,
+    "passed": 3,
+    "functional_passes": 3,
+    "infrastructure_errors": 0,
+    "model_errors": 0,
+    "timeouts": 0,
+    "request_limit_reached": 0,
+    "model_calls": 15,
+    "reported_tokens": 26015,
+    "monetary_cost": null
+  }
+]

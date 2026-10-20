@@ -1,0 +1,12 @@
+{
+  "checked_at_utc": "2026-10-20T11:21:22.375193+00:00",
+  "run_fingerprint": "a75fe42de7cef5ff4d50f54369377ba24a88966a7d334fb580ea1b6e488e8624",
+  "recommendation_freeze": "f17741ca5404e3dfeaa3bc228cec6f998ab834fb24902aec2cc1fd13e18738cf",
+  "observed_rows": 108,
+  "verified_recorded_prompts": 107,
+  "unavailable_prompt_rows": [
+    "deepseek-v4.1-flash--baseline--lazy-chunks--1"
+  ],
+  "mismatches": [],
+  "scope": "Recorded redacted system messages match the exact fixed templates. One supervisor timeout has no outcome/prompt; no prompt is inferred for that row."
+}

@@ -1,0 +1,11 @@
+{
+  "task": "config-precedence",
+  "task_sha256": "f51dd3a1e1ba7f2ff8a44e9713600e371e41b2f1a5920f7623203854ed145ebf",
+  "recorded_before_confirmation": true,
+  "decision": "Preserve all original grades; exclude the whole task uniformly from primary candidate selection and report all-task sensitivity.",
+  "reason": "Task explicitly rejects booleans, negatives and non-integer strings but does not define whether numeric floats are accepted. The external oracle also rejects 2.5. GLM/combined truncates that value with int(); this is an under-specified test requirement, not an established prompt regression.",
+  "evidence": "../native-family-dev-01/runs/glm-5.3-flash--combined--config-precedence--0.json",
+  "evidence_sha256": "de546579725c3efaf68b50731a059aba0a38fc537ece103a481c3bb9ed77c489",
+  "no_code_test_override": true,
+  "future_development_selection": "Use the other eleven unchanged development tasks. Do not rewrite this task after observing candidate results."
+}

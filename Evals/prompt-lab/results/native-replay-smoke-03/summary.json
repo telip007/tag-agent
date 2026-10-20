@@ -1,0 +1,30 @@
+[
+  {
+    "model": "deepseek-v4.1-flash",
+    "candidate": "compact",
+    "attempted": 2,
+    "passed": 2,
+    "functional_passes": 2,
+    "infrastructure_errors": 0,
+    "model_errors": 0,
+    "timeouts": 0,
+    "request_limit_reached": 0,
+    "model_calls": 10,
+    "reported_tokens": 19109,
+    "monetary_cost": null
+  },
+  {
+    "model": "glm-5.3-flash",
+    "candidate": "compact",
+    "attempted": 2,
+    "passed": 2,
+    "functional_passes": 2,
+    "infrastructure_errors": 0,
+    "model_errors": 0,
+    "timeouts": 0,
+    "request_limit_reached": 0,
+    "model_calls": 12,
+    "reported_tokens": 20003,
+    "monetary_cost": null
+  }
+]

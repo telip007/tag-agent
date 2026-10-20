@@ -1,0 +1,14 @@
+{
+  "checked_at_utc": "2026-10-20T12:17:44.529277+00:00",
+  "run_fingerprint": "a39e47e084bc1b9f7b477687f492b423bf36fa5816e9071d8fd72375121d8692",
+  "recommendation_freeze": "f17741ca5404e3dfeaa3bc228cec6f998ab834fb24902aec2cc1fd13e18738cf",
+  "context_reserve_fingerprint": "159e1584ede3d5aed8e06f222fd790cd1cad110f922ef64f9fbdd36d148f40eb",
+  "position": "middle",
+  "rendered_task_characters": 126994,
+  "observed_rows": 6,
+  "verified_source_archives": 75,
+  "verified_recorded_prompts": 6,
+  "unavailable_prompt_rows": [],
+  "mismatches": [],
+  "scope": "One shared framed-client task; six model/prompt conditions per position. Exact recorded system texts and source bindings checked; no missing deadline evidence inferred."
+}

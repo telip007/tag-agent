@@ -1,0 +1,90 @@
+[
+  {
+    "id": "glm-5.3-flash--minimal_lean--shell-log-count--1",
+    "fingerprint": "83346c3f2f1d140b0e2611d61d4a818e20aa64c19e28b9421da4e101e384e1af",
+    "detail_sha256": "b22e977eccf0ec82117d790571028f424453f2abeddbbd998a172d3ac0ce3468",
+    "classification": "subject generation budget failure",
+    "observed": "Four inference replies and six successful inspection tools; last reply has 4096 output tokens, no actionable text/tool calls, and no saved edit. External check fails.",
+    "decision": "Original failure retained; no retry or grade override. No causal prompt claim from one sample."
+  },
+  {
+    "id": "deepseek-v4.1-flash--minimal_lean--ambiguous-rounding--2",
+    "fingerprint": "83346c3f2f1d140b0e2611d61d4a818e20aa64c19e28b9421da4e101e384e1af",
+    "detail_sha256": "d4d868d0d5db71c6eb2d9f42bd6e9c5a8cfed519abede7b225bf77a3414a6813",
+    "classification": "behavioral-rubric false negative",
+    "observed": "Bold Markdown surrounds an explicit Please choose request, both policies are offered, and every file is unchanged.",
+    "decision": "Separate hashed behavioral adjudication; raw failed grade preserved. Apply the same semantic criterion to all policy outputs."
+  },
+  {
+    "id": "glm-5.3-flash--minimal_lean--swift-slug--1",
+    "fingerprint": "83346c3f2f1d140b0e2611d61d4a818e20aa64c19e28b9421da4e101e384e1af",
+    "detail_sha256": "607e7c8d549e1a8223a2d11f4bed88e76a3ea13eb6efd0a34f4f9ac59d87610b",
+    "classification": "genuine functional failure after normal completion",
+    "observed": "The ASCII digit branch shares the uppercase +32 conversion. Compiled saved source returns abcQRS for slug(\"ABC123\"), while the explicit task requires abc123. Visible checks were observed but did not cover digits. External assertion fails.",
+    "counterexample": {
+      "input": "ABC123",
+      "expected": "abc123",
+      "actual": "abcQRS"
+    },
+    "decision": "Original failed code-test grade retained. No regrade, model retry or prompt-causation claim. Complete the predeclared repeated experiment."
+  },
+  {
+    "id": "glm-5.3-flash--minimal--duration--2",
+    "fingerprint": "83346c3f2f1d140b0e2611d61d4a818e20aa64c19e28b9421da4e101e384e1af",
+    "detail_sha256": "f8618f396e11e76feef3931b2fe51069c65241e62b8710be9937377cc6c46fde",
+    "classification": "subject call-limit failure after passing code",
+    "observed": "Twelve attempted inference replies exhausted the shared call limit. Saved code passes external tests; the agent turn did not complete normally.",
+    "decision": "Original operational failure retained; passing code is not successful completion. No retry or grade override."
+  },
+  {
+    "id": "glm-5.3-flash--minimal_lean--shell-log-count--2",
+    "fingerprint": "83346c3f2f1d140b0e2611d61d4a818e20aa64c19e28b9421da4e101e384e1af",
+    "detail_sha256": "304c966a991849018825fc2a247547cfa9d95cabfa4030997c5ac0b4972b7800",
+    "classification": "subject generation budget failure",
+    "observed": {
+      "attempted_calls": 3,
+      "last_output_tokens": 4096,
+      "changed_files": [],
+      "functional_pass": false,
+      "actionable_final_reply": false
+    },
+    "decision": "Original failure retained; no retry, grade override or causal policy attribution."
+  },
+  {
+    "id": "glm-5.3-flash--baseline_lean--shell-log-count--1",
+    "fingerprint": "83346c3f2f1d140b0e2611d61d4a818e20aa64c19e28b9421da4e101e384e1af",
+    "detail_sha256": "802209cf17fa1baab527dacdd2763da532eb8419fc0217d38d1fafbf687b2e6b",
+    "classification": "subject generation budget failure",
+    "observed": {
+      "attempted_calls": 3,
+      "last_output_tokens": 4096,
+      "changed_files": [],
+      "functional_pass": false,
+      "actionable_final_reply": false
+    },
+    "decision": "Original failure retained; no retry, grade override or causal policy attribution."
+  },
+  {
+    "id": "glm-5.3-flash--baseline--swift-slug--2",
+    "fingerprint": "83346c3f2f1d140b0e2611d61d4a818e20aa64c19e28b9421da4e101e384e1af",
+    "detail_sha256": "16d3810b21875e145f376529257953cfc0063f0467baf298ed3b963eb1c555f0",
+    "classification": "subject call-limit failure after passing code",
+    "observed": "Standard baseline exhausted twelve inference calls after producing code that passed external tests.",
+    "decision": "Original failed workflow grade retained; no model retry or code-test override."
+  },
+  {
+    "id": "glm-5.3-flash--evidence--swift-chunks--2",
+    "fingerprint": "83346c3f2f1d140b0e2611d61d4a818e20aa64c19e28b9421da4e101e384e1af",
+    "detail_sha256": "085b4b66df23532070e3560c43c7739732cb172c163d454cb54febfb1f143775",
+    "classification": "subject call-limit failure",
+    "observed": {
+      "attempted_calls": 12,
+      "functional_pass": true,
+      "changed_files": [
+        "Algorithms.swift"
+      ],
+      "failure": "The operation couldn\u2019t be completed. (TagKitTests.BenchmarkFailure error 1.)"
+    },
+    "decision": "Mechanical termination-field verification; original failed workflow grade retained. No retry, grade override or policy-causation claim."
+  }
+]

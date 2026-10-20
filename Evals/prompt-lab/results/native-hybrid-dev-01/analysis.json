@@ -1,0 +1,94 @@
+{
+  "fingerprint": "0392113c17e8b2db3d2796c1fec5efbba3d16eb070482a0eb070397d25b9d0f6",
+  "split": "development",
+  "expected": 24,
+  "observed": 24,
+  "missing": 0,
+  "table": [
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "adaptive_compact",
+      "scheduled": 12,
+      "observed": 12,
+      "passed": 12,
+      "raw_passed": 12,
+      "functional_passes": 12,
+      "code_tasks_observed": 10,
+      "code_test_passes": 10,
+      "behavioral_tasks_observed": 2,
+      "behavioral_passes": 2,
+      "statuses": {
+        "ok": 12
+      },
+      "model_calls": 73,
+      "reported_tokens": 208573,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 17381.1,
+      "median_wall_seconds": 19.37,
+      "visible_check_string_observed": 11,
+      "monetary_cost": null,
+      "recorded_input_tokens": 186461,
+      "recorded_output_tokens": 22112,
+      "recorded_cache_read_tokens": 144384,
+      "recorded_uncached_input_tokens": 42077,
+      "recorded_allowance_rate_value_usd_range": [
+        0.0200119,
+        0.0400238
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "adaptive_compact",
+      "scheduled": 12,
+      "observed": 12,
+      "passed": 10,
+      "raw_passed": 10,
+      "functional_passes": 11,
+      "code_tasks_observed": 10,
+      "code_test_passes": 9,
+      "behavioral_tasks_observed": 2,
+      "behavioral_passes": 2,
+      "statuses": {
+        "model_error": 1,
+        "ok": 10,
+        "request_limit": 1
+      },
+      "model_calls": 74,
+      "reported_tokens": 169375,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 16937.5,
+      "median_wall_seconds": 18.913,
+      "visible_check_string_observed": 2,
+      "monetary_cost": null,
+      "recorded_input_tokens": 151974,
+      "recorded_output_tokens": 17401,
+      "recorded_cache_read_tokens": 83852,
+      "recorded_uncached_input_tokens": 68122,
+      "recorded_allowance_rate_value_usd_range": [
+        0.02143436,
+        0.02143436
+      ]
+    }
+  ],
+  "paired": [],
+  "behavioral_adjudications": 0,
+  "failed_runs": [
+    {
+      "id": "glm-5.3-flash--adaptive_compact--shell-log-count--0",
+      "status": "model_error",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": "The model sent an empty reply."
+    },
+    {
+      "id": "glm-5.3-flash--adaptive_compact--swift-chunks--0",
+      "status": "request_limit",
+      "functional_pass": true,
+      "forbidden_changes": [],
+      "failure": "The operation couldn\u2019t be completed. (TagKitTests.BenchmarkFailure error 1.)"
+    }
+  ],
+  "limits": "External tests cover declared cases, not arbitrary correctness. The split field records the frozen suite. Behavioral grades and visible-check strings are weaker evidence. Unadjusted exploratory intervals exclude infrastructure/model errors and do not establish equivalence. No confirmation winner inferred.",
+  "reporter_sha256": "b0e2367deedba3d7fd3d66b23c4eee7b6b324e0d210347ad267fad41675f5b18",
+  "rate_card_sha256": "37522b26d76c874397be920da516495ae1f5cc607d29f3725d4ea21213d72ee2"
+}

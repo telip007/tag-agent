@@ -154,6 +154,61 @@ mapped in [`ResponsesStream`](../../Sources/ModelKit/Wire/ResponsesStream.swift)
 
 ## Gotchas
 
+### Sign-in with ChatGPT review (2026-10-19)
+
+Compared with the [cookbook](https://developers.openai.com/cookbook/articles/sign-in-with-chatgpt)
+and its linked integration guides, the registration parameters, loopback
+callback, saved issued client ID, refresh serialization, public endpoints,
+and completion handling follow the documented approach. This is a source
+review; a successful ChatGPT plan request is still unverified.
+
+Validation: `TAG_LIVE_TESTS=0 make check` passed, including the 80% coverage
+gate (91.3% measured). `make wiki-lint` passed after this review was added.
+The existing tests use fixtures; they do not establish live ChatGPT access.
+
+Known differences that need follow-up:
+
+- **ID-token signature:** `IDTokenClaims.validated` checks claims but skips
+  the signature. Regardless of its OIDC TLS rationale, the
+  [sign-in guide](https://developers.openai.com/siwc/token-sharing-open-source/sign-in#4-validate-the-id-token-and-chatgpt-plan-permission)
+  explicitly requires signature verification using OpenAI's JWKS.
+- **Account registrations:** `Credentials` stores one account and one client
+  ID. Sign-out retains that ID, and the next sign-in reuses it; there is no
+  separate new-profile path. The
+  [accounts guide](https://developers.openai.com/siwc/token-sharing-open-source/profiles-and-sessions)
+  requires separate registrations and credentials for account/workspace
+  switching. Signing out alone does not make an existing client switch its
+  bound workspace.
+- **Tool encoding:** `ResponsesChatModel.body` sends flat function tools in
+  top-level `tools`. The current
+  [preview limitations](https://developers.openai.com/siwc/token-sharing-open-source/preview-limitations)
+  require function/custom tools in namespaces or `additional_tools` input
+  items. OpenRouter adapter success does not validate this ChatGPT route.
+- **Consent declined:** `ChatGPTSignIn.account` throws before saving an
+  identity-only sign-in. The
+  [recovery guide](https://developers.openai.com/siwc/token-sharing-open-source/errors-and-recovery)
+  instead retains the sign-in with plan usage disabled.
+
+**Business denial evidence boundary:** The cookbook names eligible Plus and
+Pro users. No public documentation found in this review maps
+`3p_delegated_access_policy_denied` to a specific Business admin control.
+Eligibility/workspace policy is a plausible explanation, not a verified
+account-specific diagnosis. These implementation differences do not explain
+a denial shown by OpenAI before the callback. OpenAI support must confirm
+Business eligibility or a tenant-specific policy; no bypass was attempted.
+
+### Other provider gotchas
+
+- **Configured interleaving needs an empty field too.** Native prompt-evaluation
+  diagnostics on 2026-10-20 reconstructed a tool follow-up: omitting
+  `reasoning_content` returned HTTP 400, while an empty value was accepted.
+  `ChatCompletionsChatModel` now emits own-format replay or an empty string
+  whenever `reasoningField` is configured; `nil` still omits it and foreign
+  reasoning is never copied. The regression covers tool and text turns.
+  [DeepSeek documents this requirement for tool-enabled conversations](https://api-docs.deepseek.com/guides/thinking_mode/).
+  This diagnostic does not establish why two earlier native benchmark jobs
+  timed out, nor does it measure cache savings or prompt superiority.
+
 - **The ChatGPT plan route rejects many Responses fields**: `temperature`,
   `top_p`, `max_output_tokens`, `metadata`, `user`, `truncation`, and
   `previous_response_id` over HTTP. It also rejects system-role input items.
@@ -192,11 +247,11 @@ mapped in [`ResponsesStream`](../../Sources/ModelKit/Wire/ResponsesStream.swift)
   browser, which is how Tag opens it.
 - **ChatGPT Business workspaces refuse the sign-in** with
   `3p_delegated_access_policy_denied` in the browser (seen 2026-10-19, also
-  reported by users of other open-source agents). Plan usage in third-party
-  apps is offered to personal Plus and Pro plans; no admin setting for
-  Business was found (the Admin Console's External access, global admins
-  only, governs identity sign-in and delegated data access). The workaround
-  is to choose a personal Plus or Pro workspace when signing in. The
+  reported by users of other open-source agents). The cookbook names
+  eligible Plus and Pro plans; no documented Business override was found.
+  This does not establish the precise policy behind an individual denial.
+  A personal Plus or Pro workspace is the documented test path, but an
+  already-issued client remains bound to its original workspace. The
   Codex CLI's own sign-in still works for Business because it is OpenAI's app;
   using it from Tag would mean posing as the Codex CLI on an undocumented
   backend, which was left as an open decision: see

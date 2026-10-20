@@ -1,0 +1,192 @@
+{
+  "captured_at_utc": "2026-10-20T09:35:05.820319+00:00",
+  "relationship_to_run": "Supplemental near-start catalogue snapshot, not an immutable backend weight pin or proof of each native job's in-memory metadata.",
+  "go_catalog": {
+    "url": "https://opencode.ai/inference/go/v1/models",
+    "response_date": "Tue, 20 Oct 2026 09:35:05 GMT",
+    "body_sha256": "1e2282ca114fd9ea7e9654f2403a7460f0fc4e278cbe3c9efee360147542f197",
+    "total_entries": 37,
+    "selected_entries": [
+      {
+        "id": "deepseek-v4.1-flash",
+        "object": "model",
+        "created": 1792488905,
+        "owned_by": "opencode"
+      },
+      {
+        "id": "glm-5.3-flash",
+        "object": "model",
+        "created": 1792488905,
+        "owned_by": "opencode"
+      },
+      {
+        "id": "gemini-4-argon-contributor",
+        "object": "model",
+        "created": 1792488905,
+        "owned_by": "opencode"
+      }
+    ]
+  },
+  "models_dev": {
+    "url": "https://models.dev/api.json",
+    "response_date": "Tue, 20 Oct 2026 09:35:05 GMT",
+    "body_sha256": "deed7c7722e06db5c1c076edbd4003546e30273ae74411848a28c56e1a88b638",
+    "provider": "opencode-go",
+    "selected_models": {
+      "deepseek-v4.1-flash": {
+        "id": "deepseek-v4.1-flash",
+        "name": "DeepSeek V4.1 Flash",
+        "description": "DeepSeek V4.1 Flash model for reasoning and agentic coding",
+        "family": "deepseek-flash",
+        "attachment": true,
+        "reasoning": true,
+        "reasoning_options": [
+          {
+            "type": "effort",
+            "values": [
+              "low",
+              "high",
+              "max"
+            ]
+          }
+        ],
+        "tool_call": true,
+        "interleaved": {
+          "field": "reasoning_content"
+        },
+        "structured_output": true,
+        "temperature": true,
+        "knowledge": "2025-05",
+        "release_date": "2026-09-10",
+        "last_updated": "2026-09-10",
+        "modalities": {
+          "input": [
+            "text",
+            "image"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "open_weights": true,
+        "limit": {
+          "context": 1000000,
+          "output": 384000
+        },
+        "provider": {
+          "api": "https://opencode.ai/inference/go/openai/v1"
+        },
+        "cost": {
+          "input": 0.15,
+          "output": 0.6,
+          "cache_read": 0.003
+        },
+        "canonical_model_id": "deepseek/deepseek-v4.1-flash"
+      },
+      "glm-5.3-flash": {
+        "id": "glm-5.3-flash",
+        "name": "GLM-5.3-Flash",
+        "description": "Native multimodal GLM model for efficient coding and long-horizon agent tasks",
+        "family": "glm-flash",
+        "attachment": true,
+        "reasoning": true,
+        "reasoning_options": [
+          {
+            "type": "effort",
+            "values": [
+              "low",
+              "high",
+              "max"
+            ]
+          }
+        ],
+        "tool_call": true,
+        "interleaved": {
+          "field": "reasoning_content"
+        },
+        "structured_output": true,
+        "temperature": true,
+        "release_date": "2026-08-26",
+        "last_updated": "2026-08-26",
+        "modalities": {
+          "input": [
+            "text",
+            "image",
+            "video",
+            "pdf"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "open_weights": true,
+        "limit": {
+          "context": 1000000,
+          "output": 131072
+        },
+        "provider": {
+          "api": "https://opencode.ai/inference/go/openai/v1"
+        },
+        "cost": {
+          "input": 0.15,
+          "output": 0.5,
+          "cache_read": 0.03
+        },
+        "canonical_model_id": "zhipuai/glm-5.3-flash"
+      },
+      "gemini-4-argon-contributor": {
+        "id": "gemini-4-argon-contributor",
+        "name": "Gemini 4 Argon Contributor",
+        "description": "Google's flagship reasoning model for complex software engineering, deep math and science, and long-horizon autonomous agents",
+        "family": "gemini",
+        "attachment": true,
+        "reasoning": true,
+        "reasoning_options": [
+          {
+            "type": "effort",
+            "values": [
+              "low",
+              "medium",
+              "high"
+            ]
+          }
+        ],
+        "tool_call": true,
+        "structured_output": true,
+        "temperature": false,
+        "knowledge": "2026-03",
+        "release_date": "2026-10-13",
+        "last_updated": "2026-10-13",
+        "modalities": {
+          "input": [
+            "text",
+            "image",
+            "video",
+            "audio",
+            "pdf"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "open_weights": false,
+        "limit": {
+          "context": 1048576,
+          "output": 65536
+        },
+        "provider": {
+          "npm": "@ai-sdk/google",
+          "api": "https://opencode.ai/inference/go/google/v1beta"
+        },
+        "cost": {
+          "input": 4,
+          "output": 20,
+          "cache_read": 0.2,
+          "input_audio": 4
+        },
+        "canonical_model_id": "google/gemini-4-argon"
+      }
+    }
+  },
+  "limits": "Provider aliases and metadata may change. Immutable weights and actual backend routing were not returned. Go rate estimates use the separately dated official Go rate card, not models.dev pricing."
+}

@@ -1,0 +1,48 @@
+{
+  "status": "Final practical research recommendation for the measured distribution",
+  "selected_policy": "baseline",
+  "scaffold": "standard",
+  "template": "recommendation/final-system-prompt.template.txt",
+  "template_sha256": "ba96623960bd530898ccd5e5be219f2f81b5c1a7b406db86eecbed7e3e15daa1",
+  "general_rules": [
+    "Read the relevant code before changing it.",
+    "Write the simplest code that solves the task: no features, abstractions or options nobody asked for.",
+    "Change only what the task needs, and match the surrounding code's style. Mention unrelated problems you notice instead of fixing them; remove only what your own change left unused.",
+    "After changing code, run the project's build or tests and read the result. If you couldn't, say so.",
+    "Ask before destructive or outward-facing actions (deleting files, git push, anything outside the project). If a request can be read several ways, name the readings and ask instead of picking one silently.",
+    "Finish with 2\u20134 sentences: what changed, how you checked it, what's left. Name files by path."
+  ],
+  "general_rule_words": 118,
+  "development_candidate": "compact",
+  "development_candidate_api_id": "recommendation",
+  "development_freeze_fingerprint": "f17741ca5404e3dfeaa3bc228cec6f998ab834fb24902aec2cc1fd13e18738cf",
+  "decision": "Retain the existing baseline. Compact tied ordinary operational success, had fewer saved-code passes and no confirmed token saving; context shows a tradeoff rather than uniform dominance. The predeclared protocol permits baseline fallback when replacement is unjustified. This does not establish universal optimality or statistically proven baseline superiority.",
+  "ordinary_evidence": {
+    "conditions": 162,
+    "baseline_operational_success": "64/81",
+    "compact_operational_success": "64/81",
+    "baseline_saved_code_passes": "67/81",
+    "compact_saved_code_passes": "65/81",
+    "conditional_task_balanced_token_ratio": 0.999327,
+    "exploratory_interval": [
+      0.860771,
+      1.154257
+    ]
+  },
+  "context_evidence": {
+    "conditions": 18,
+    "underlying_tasks": 1,
+    "baseline_operational_success": "7/9",
+    "compact_operational_success": "6/9",
+    "baseline_saved_code_passes": "7/9",
+    "compact_saved_code_passes": "8/9"
+  },
+  "evidence_sha256": {
+    "results/native-heldout-comparison-01/analysis.json": "b8905fe066245ec2c97caa6de24c980c6b6bf5c47917dfcac38f9f4f3213469a",
+    "results/native-context-comparison-01/analysis.json": "41ee1a399b55b8c2b70d61789c4425399e9a0202413d454e0a5e191152ae2c87",
+    "results/native-repeat-comparison-01/selection.json": "aa755db13091f5349f6422c5d65eee54ee61a02e2be16fdf1f3749277556250f"
+  },
+  "production_prompt_changed": false,
+  "external_publication_or_push": false,
+  "limits": "Finite authored tasks, mutable model aliases, exploratory intervals and incomplete usage prevent a universal-best, causal quality or actual monetary-cost claim. All original frozen assets and raw grades remain unchanged."
+}

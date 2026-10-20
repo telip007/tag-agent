@@ -1,0 +1,707 @@
+{
+  "fingerprint": "83346c3f2f1d140b0e2611d61d4a818e20aa64c19e28b9421da4e101e384e1af",
+  "split": "development",
+  "expected": 352,
+  "observed": 352,
+  "missing": 0,
+  "table": [
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "baseline",
+      "scheduled": 22,
+      "observed": 22,
+      "passed": 22,
+      "raw_passed": 22,
+      "functional_passes": 22,
+      "code_tasks_observed": 18,
+      "code_test_passes": 18,
+      "behavioral_tasks_observed": 4,
+      "behavioral_passes": 4,
+      "statuses": {
+        "ok": 22
+      },
+      "model_calls": 118,
+      "reported_tokens": 272884,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 12403.8,
+      "median_wall_seconds": 17.018,
+      "visible_check_string_observed": 19,
+      "monetary_cost": null,
+      "recorded_input_tokens": 247173,
+      "recorded_output_tokens": 25711,
+      "recorded_cache_read_tokens": 166784,
+      "recorded_uncached_input_tokens": 80389,
+      "recorded_allowance_rate_value_usd_range": [
+        0.0279853,
+        0.0559706
+      ]
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "compact",
+      "scheduled": 22,
+      "observed": 22,
+      "passed": 22,
+      "raw_passed": 22,
+      "functional_passes": 22,
+      "code_tasks_observed": 18,
+      "code_test_passes": 18,
+      "behavioral_tasks_observed": 4,
+      "behavioral_passes": 4,
+      "statuses": {
+        "ok": 22
+      },
+      "model_calls": 125,
+      "reported_tokens": 294259,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 13375.4,
+      "median_wall_seconds": 17.222,
+      "visible_check_string_observed": 20,
+      "monetary_cost": null,
+      "recorded_input_tokens": 265366,
+      "recorded_output_tokens": 28893,
+      "recorded_cache_read_tokens": 177280,
+      "recorded_uncached_input_tokens": 88086,
+      "recorded_allowance_rate_value_usd_range": [
+        0.03108054,
+        0.06216108
+      ]
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "evidence",
+      "scheduled": 22,
+      "observed": 22,
+      "passed": 22,
+      "raw_passed": 22,
+      "functional_passes": 22,
+      "code_tasks_observed": 18,
+      "code_test_passes": 18,
+      "behavioral_tasks_observed": 4,
+      "behavioral_passes": 4,
+      "statuses": {
+        "ok": 22
+      },
+      "model_calls": 125,
+      "reported_tokens": 313554,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 14252.5,
+      "median_wall_seconds": 14.947,
+      "visible_check_string_observed": 20,
+      "monetary_cost": null,
+      "recorded_input_tokens": 284023,
+      "recorded_output_tokens": 29531,
+      "recorded_cache_read_tokens": 191360,
+      "recorded_uncached_input_tokens": 92663,
+      "recorded_allowance_rate_value_usd_range": [
+        0.03219213,
+        0.06438426
+      ]
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "minimal",
+      "scheduled": 22,
+      "observed": 22,
+      "passed": 22,
+      "raw_passed": 22,
+      "functional_passes": 22,
+      "code_tasks_observed": 18,
+      "code_test_passes": 18,
+      "behavioral_tasks_observed": 4,
+      "behavioral_passes": 4,
+      "statuses": {
+        "ok": 22
+      },
+      "model_calls": 127,
+      "reported_tokens": 311611,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 14164.1,
+      "median_wall_seconds": 17.53,
+      "visible_check_string_observed": 19,
+      "monetary_cost": null,
+      "recorded_input_tokens": 279432,
+      "recorded_output_tokens": 32179,
+      "recorded_cache_read_tokens": 196096,
+      "recorded_uncached_input_tokens": 83336,
+      "recorded_allowance_rate_value_usd_range": [
+        0.03239609,
+        0.06479218
+      ]
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "baseline_lean",
+      "scheduled": 22,
+      "observed": 22,
+      "passed": 22,
+      "raw_passed": 22,
+      "functional_passes": 22,
+      "code_tasks_observed": 18,
+      "code_test_passes": 18,
+      "behavioral_tasks_observed": 4,
+      "behavioral_passes": 4,
+      "statuses": {
+        "ok": 22
+      },
+      "model_calls": 126,
+      "reported_tokens": 358827,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 16310.3,
+      "median_wall_seconds": 18.755,
+      "visible_check_string_observed": 20,
+      "monetary_cost": null,
+      "recorded_input_tokens": 319961,
+      "recorded_output_tokens": 38866,
+      "recorded_cache_read_tokens": 226688,
+      "recorded_uncached_input_tokens": 93273,
+      "recorded_allowance_rate_value_usd_range": [
+        0.03799061,
+        0.07598123
+      ]
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "compact_lean",
+      "scheduled": 22,
+      "observed": 22,
+      "passed": 22,
+      "raw_passed": 22,
+      "functional_passes": 22,
+      "code_tasks_observed": 18,
+      "code_test_passes": 18,
+      "behavioral_tasks_observed": 4,
+      "behavioral_passes": 4,
+      "statuses": {
+        "ok": 22
+      },
+      "model_calls": 127,
+      "reported_tokens": 316801,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 14400.0,
+      "median_wall_seconds": 16.764,
+      "visible_check_string_observed": 19,
+      "monetary_cost": null,
+      "recorded_input_tokens": 286513,
+      "recorded_output_tokens": 30288,
+      "recorded_cache_read_tokens": 193792,
+      "recorded_uncached_input_tokens": 92721,
+      "recorded_allowance_rate_value_usd_range": [
+        0.03266233,
+        0.06532465
+      ]
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "evidence_lean",
+      "scheduled": 22,
+      "observed": 22,
+      "passed": 22,
+      "raw_passed": 22,
+      "functional_passes": 22,
+      "code_tasks_observed": 18,
+      "code_test_passes": 18,
+      "behavioral_tasks_observed": 4,
+      "behavioral_passes": 4,
+      "statuses": {
+        "ok": 22
+      },
+      "model_calls": 126,
+      "reported_tokens": 305289,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 13876.8,
+      "median_wall_seconds": 16.499,
+      "visible_check_string_observed": 20,
+      "monetary_cost": null,
+      "recorded_input_tokens": 275845,
+      "recorded_output_tokens": 29444,
+      "recorded_cache_read_tokens": 187136,
+      "recorded_uncached_input_tokens": 88709,
+      "recorded_allowance_rate_value_usd_range": [
+        0.03153416,
+        0.06306832
+      ]
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "minimal_lean",
+      "scheduled": 22,
+      "observed": 22,
+      "passed": 22,
+      "raw_passed": 21,
+      "functional_passes": 21,
+      "code_tasks_observed": 18,
+      "code_test_passes": 18,
+      "behavioral_tasks_observed": 4,
+      "behavioral_passes": 4,
+      "statuses": {
+        "ok": 22
+      },
+      "model_calls": 126,
+      "reported_tokens": 299503,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 13613.8,
+      "median_wall_seconds": 16.338,
+      "visible_check_string_observed": 18,
+      "monetary_cost": null,
+      "recorded_input_tokens": 265708,
+      "recorded_output_tokens": 33795,
+      "recorded_cache_read_tokens": 179584,
+      "recorded_uncached_input_tokens": 86124,
+      "recorded_allowance_rate_value_usd_range": [
+        0.03373435,
+        0.0674687
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "baseline",
+      "scheduled": 22,
+      "observed": 22,
+      "passed": 21,
+      "raw_passed": 21,
+      "functional_passes": 22,
+      "code_tasks_observed": 18,
+      "code_test_passes": 18,
+      "behavioral_tasks_observed": 4,
+      "behavioral_passes": 4,
+      "statuses": {
+        "ok": 21,
+        "request_limit": 1
+      },
+      "model_calls": 139,
+      "reported_tokens": 315682,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 15032.5,
+      "median_wall_seconds": 13.633,
+      "visible_check_string_observed": 8,
+      "monetary_cost": null,
+      "recorded_input_tokens": 286420,
+      "recorded_output_tokens": 29262,
+      "recorded_cache_read_tokens": 175972,
+      "recorded_uncached_input_tokens": 110448,
+      "recorded_allowance_rate_value_usd_range": [
+        0.03647736,
+        0.03647736
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "compact",
+      "scheduled": 22,
+      "observed": 22,
+      "passed": 22,
+      "raw_passed": 22,
+      "functional_passes": 22,
+      "code_tasks_observed": 18,
+      "code_test_passes": 18,
+      "behavioral_tasks_observed": 4,
+      "behavioral_passes": 4,
+      "statuses": {
+        "ok": 22
+      },
+      "model_calls": 133,
+      "reported_tokens": 297816,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 13537.1,
+      "median_wall_seconds": 11.298,
+      "visible_check_string_observed": 6,
+      "monetary_cost": null,
+      "recorded_input_tokens": 267975,
+      "recorded_output_tokens": 29841,
+      "recorded_cache_read_tokens": 172100,
+      "recorded_uncached_input_tokens": 95875,
+      "recorded_allowance_rate_value_usd_range": [
+        0.03446475,
+        0.03446475
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "evidence",
+      "scheduled": 22,
+      "observed": 22,
+      "passed": 21,
+      "raw_passed": 21,
+      "functional_passes": 22,
+      "code_tasks_observed": 18,
+      "code_test_passes": 18,
+      "behavioral_tasks_observed": 4,
+      "behavioral_passes": 4,
+      "statuses": {
+        "ok": 21,
+        "request_limit": 1
+      },
+      "model_calls": 132,
+      "reported_tokens": 351210,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 16724.3,
+      "median_wall_seconds": 15.177,
+      "visible_check_string_observed": 9,
+      "monetary_cost": null,
+      "recorded_input_tokens": 316771,
+      "recorded_output_tokens": 34439,
+      "recorded_cache_read_tokens": 211236,
+      "recorded_uncached_input_tokens": 105535,
+      "recorded_allowance_rate_value_usd_range": [
+        0.03938683,
+        0.03938683
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "minimal",
+      "scheduled": 22,
+      "observed": 22,
+      "passed": 21,
+      "raw_passed": 21,
+      "functional_passes": 22,
+      "code_tasks_observed": 18,
+      "code_test_passes": 18,
+      "behavioral_tasks_observed": 4,
+      "behavioral_passes": 4,
+      "statuses": {
+        "ok": 21,
+        "request_limit": 1
+      },
+      "model_calls": 134,
+      "reported_tokens": 305290,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 14537.6,
+      "median_wall_seconds": 13.274,
+      "visible_check_string_observed": 5,
+      "monetary_cost": null,
+      "recorded_input_tokens": 272419,
+      "recorded_output_tokens": 32871,
+      "recorded_cache_read_tokens": 147356,
+      "recorded_uncached_input_tokens": 125063,
+      "recorded_allowance_rate_value_usd_range": [
+        0.03961563,
+        0.03961563
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "baseline_lean",
+      "scheduled": 22,
+      "observed": 22,
+      "passed": 21,
+      "raw_passed": 21,
+      "functional_passes": 21,
+      "code_tasks_observed": 18,
+      "code_test_passes": 17,
+      "behavioral_tasks_observed": 4,
+      "behavioral_passes": 4,
+      "statuses": {
+        "generation_limit": 1,
+        "ok": 21
+      },
+      "model_calls": 120,
+      "reported_tokens": 237524,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 11310.7,
+      "median_wall_seconds": 11.72,
+      "visible_check_string_observed": 6,
+      "monetary_cost": null,
+      "recorded_input_tokens": 212639,
+      "recorded_output_tokens": 24885,
+      "recorded_cache_read_tokens": 119960,
+      "recorded_uncached_input_tokens": 92679,
+      "recorded_allowance_rate_value_usd_range": [
+        0.02994315,
+        0.02994315
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "compact_lean",
+      "scheduled": 22,
+      "observed": 22,
+      "passed": 22,
+      "raw_passed": 22,
+      "functional_passes": 22,
+      "code_tasks_observed": 18,
+      "code_test_passes": 18,
+      "behavioral_tasks_observed": 4,
+      "behavioral_passes": 4,
+      "statuses": {
+        "ok": 22
+      },
+      "model_calls": 130,
+      "reported_tokens": 249623,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 11346.5,
+      "median_wall_seconds": 15.876,
+      "visible_check_string_observed": 4,
+      "monetary_cost": null,
+      "recorded_input_tokens": 225471,
+      "recorded_output_tokens": 24152,
+      "recorded_cache_read_tokens": 131060,
+      "recorded_uncached_input_tokens": 94411,
+      "recorded_allowance_rate_value_usd_range": [
+        0.03016945,
+        0.03016945
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "evidence_lean",
+      "scheduled": 22,
+      "observed": 22,
+      "passed": 22,
+      "raw_passed": 22,
+      "functional_passes": 22,
+      "code_tasks_observed": 18,
+      "code_test_passes": 18,
+      "behavioral_tasks_observed": 4,
+      "behavioral_passes": 4,
+      "statuses": {
+        "ok": 22
+      },
+      "model_calls": 139,
+      "reported_tokens": 328514,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 14932.5,
+      "median_wall_seconds": 14.775,
+      "visible_check_string_observed": 9,
+      "monetary_cost": null,
+      "recorded_input_tokens": 296968,
+      "recorded_output_tokens": 31546,
+      "recorded_cache_read_tokens": 166320,
+      "recorded_uncached_input_tokens": 130648,
+      "recorded_allowance_rate_value_usd_range": [
+        0.0403598,
+        0.0403598
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "minimal_lean",
+      "scheduled": 22,
+      "observed": 22,
+      "passed": 19,
+      "raw_passed": 19,
+      "functional_passes": 19,
+      "code_tasks_observed": 18,
+      "code_test_passes": 15,
+      "behavioral_tasks_observed": 4,
+      "behavioral_passes": 4,
+      "statuses": {
+        "generation_limit": 2,
+        "ok": 20
+      },
+      "model_calls": 109,
+      "reported_tokens": 175660,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 9245.3,
+      "median_wall_seconds": 13.046,
+      "visible_check_string_observed": 5,
+      "monetary_cost": null,
+      "recorded_input_tokens": 152123,
+      "recorded_output_tokens": 23537,
+      "recorded_cache_read_tokens": 92260,
+      "recorded_uncached_input_tokens": 59863,
+      "recorded_allowance_rate_value_usd_range": [
+        0.02351575,
+        0.02351575
+      ]
+    }
+  ],
+  "paired": [
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "compact",
+      "paired_tasks": 11,
+      "delta_pp": 0,
+      "exploratory_95pct_task_bootstrap_pp": [
+        0,
+        0
+      ]
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "evidence",
+      "paired_tasks": 11,
+      "delta_pp": 0,
+      "exploratory_95pct_task_bootstrap_pp": [
+        0,
+        0
+      ]
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "minimal",
+      "paired_tasks": 11,
+      "delta_pp": 0,
+      "exploratory_95pct_task_bootstrap_pp": [
+        0,
+        0
+      ]
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "baseline_lean",
+      "paired_tasks": 11,
+      "delta_pp": 0,
+      "exploratory_95pct_task_bootstrap_pp": [
+        0,
+        0
+      ]
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "compact_lean",
+      "paired_tasks": 11,
+      "delta_pp": 0,
+      "exploratory_95pct_task_bootstrap_pp": [
+        0,
+        0
+      ]
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "evidence_lean",
+      "paired_tasks": 11,
+      "delta_pp": 0,
+      "exploratory_95pct_task_bootstrap_pp": [
+        0,
+        0
+      ]
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "minimal_lean",
+      "paired_tasks": 11,
+      "delta_pp": 0,
+      "exploratory_95pct_task_bootstrap_pp": [
+        0,
+        0
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "compact",
+      "paired_tasks": 11,
+      "delta_pp": 4.55,
+      "exploratory_95pct_task_bootstrap_pp": [
+        0,
+        13.64
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "evidence",
+      "paired_tasks": 11,
+      "delta_pp": 0.0,
+      "exploratory_95pct_task_bootstrap_pp": [
+        -13.64,
+        13.64
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "minimal",
+      "paired_tasks": 11,
+      "delta_pp": 0.0,
+      "exploratory_95pct_task_bootstrap_pp": [
+        -13.64,
+        13.64
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "baseline_lean",
+      "paired_tasks": 11,
+      "delta_pp": 0.0,
+      "exploratory_95pct_task_bootstrap_pp": [
+        -13.64,
+        13.64
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "compact_lean",
+      "paired_tasks": 11,
+      "delta_pp": 4.55,
+      "exploratory_95pct_task_bootstrap_pp": [
+        0,
+        13.64
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "evidence_lean",
+      "paired_tasks": 11,
+      "delta_pp": 4.55,
+      "exploratory_95pct_task_bootstrap_pp": [
+        0,
+        13.64
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "minimal_lean",
+      "paired_tasks": 11,
+      "delta_pp": -9.09,
+      "exploratory_95pct_task_bootstrap_pp": [
+        -27.27,
+        0
+      ]
+    }
+  ],
+  "behavioral_adjudications": 1,
+  "failed_runs": [
+    {
+      "id": "glm-5.3-flash--minimal_lean--shell-log-count--1",
+      "status": "generation_limit",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": "The model sent an empty reply."
+    },
+    {
+      "id": "glm-5.3-flash--minimal_lean--swift-slug--1",
+      "status": "ok",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": null
+    },
+    {
+      "id": "glm-5.3-flash--minimal--duration--2",
+      "status": "request_limit",
+      "functional_pass": true,
+      "forbidden_changes": [],
+      "failure": "The operation couldn\u2019t be completed. (TagKitTests.BenchmarkFailure error 1.)"
+    },
+    {
+      "id": "glm-5.3-flash--minimal_lean--shell-log-count--2",
+      "status": "generation_limit",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": "The model sent an empty reply."
+    },
+    {
+      "id": "glm-5.3-flash--baseline_lean--shell-log-count--1",
+      "status": "generation_limit",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": "The model sent an empty reply."
+    },
+    {
+      "id": "glm-5.3-flash--baseline--swift-slug--2",
+      "status": "request_limit",
+      "functional_pass": true,
+      "forbidden_changes": [],
+      "failure": "The operation couldn\u2019t be completed. (TagKitTests.BenchmarkFailure error 1.)"
+    },
+    {
+      "id": "glm-5.3-flash--evidence--swift-chunks--2",
+      "status": "request_limit",
+      "functional_pass": true,
+      "forbidden_changes": [],
+      "failure": "The operation couldn\u2019t be completed. (TagKitTests.BenchmarkFailure error 1.)"
+    }
+  ],
+  "limits": "External tests cover declared cases, not arbitrary correctness. The split field records the frozen suite. Behavioral grades and visible-check strings are weaker evidence. Unadjusted exploratory intervals exclude infrastructure/model errors and do not establish equivalence. No confirmation winner inferred.",
+  "reporter_sha256": "b0e2367deedba3d7fd3d66b23c4eee7b6b324e0d210347ad267fad41675f5b18",
+  "rate_card_sha256": "37522b26d76c874397be920da516495ae1f5cc607d29f3725d4ea21213d72ee2"
+}

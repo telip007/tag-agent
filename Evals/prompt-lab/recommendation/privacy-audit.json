@@ -1,0 +1,14 @@
+{
+  "checked_at_utc": "2026-10-20T12:38:48.604162+00:00",
+  "text_files_scanned": 2071,
+  "match_counts": {
+    "active_credential": 0,
+    "actual_home_prefix": 0,
+    "actual_hostname": 0,
+    "credential_shape": 0
+  },
+  "generic_toolchain_metadata_files": 19,
+  "all_generic_toolchain_metadata_files_git_ignored": true,
+  "raw_records_rewritten": false,
+  "scope": "Task lab, new bridge tests, touched encoder/test and current project wiki/ADR files. Exact active credential, actual home prefix and hostname checked without exposing values; credential-shape scan is heuristic. Pre-existing illustrative home-directory comments are not actual home identities. Raw JSONL/details preserve process/platform metadata and stay Git-ignored. This cannot detect every possible sensitive string."
+}

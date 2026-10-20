@@ -1,0 +1,288 @@
+{
+  "fingerprint": "70767f58de85d9f1079471fe6d5e5f0672d01f9265f8e737e9928a950fb0639b",
+  "split": "development",
+  "expected": 88,
+  "observed": 88,
+  "missing": 0,
+  "table": [
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "baseline_lean",
+      "scheduled": 11,
+      "observed": 11,
+      "passed": 11,
+      "raw_passed": 11,
+      "functional_passes": 11,
+      "code_tasks_observed": 9,
+      "code_test_passes": 9,
+      "behavioral_tasks_observed": 2,
+      "behavioral_passes": 2,
+      "statuses": {
+        "ok": 11
+      },
+      "model_calls": 62,
+      "reported_tokens": 137466,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 12496.9,
+      "median_wall_seconds": 13.752,
+      "visible_check_string_observed": 10,
+      "monetary_cost": null,
+      "recorded_input_tokens": 124724,
+      "recorded_output_tokens": 12742,
+      "recorded_cache_read_tokens": 74240,
+      "recorded_uncached_input_tokens": 50484,
+      "recorded_allowance_rate_value_usd_range": [
+        0.01544052,
+        0.03088104
+      ]
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "compact_lean",
+      "scheduled": 11,
+      "observed": 11,
+      "passed": 11,
+      "raw_passed": 11,
+      "functional_passes": 11,
+      "code_tasks_observed": 9,
+      "code_test_passes": 9,
+      "behavioral_tasks_observed": 2,
+      "behavioral_passes": 2,
+      "statuses": {
+        "ok": 11
+      },
+      "model_calls": 58,
+      "reported_tokens": 120278,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 10934.4,
+      "median_wall_seconds": 10.924,
+      "visible_check_string_observed": 10,
+      "monetary_cost": null,
+      "recorded_input_tokens": 107291,
+      "recorded_output_tokens": 12987,
+      "recorded_cache_read_tokens": 58496,
+      "recorded_uncached_input_tokens": 48795,
+      "recorded_allowance_rate_value_usd_range": [
+        0.01528694,
+        0.03057388
+      ]
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "evidence_lean",
+      "scheduled": 11,
+      "observed": 11,
+      "passed": 11,
+      "raw_passed": 11,
+      "functional_passes": 11,
+      "code_tasks_observed": 9,
+      "code_test_passes": 9,
+      "behavioral_tasks_observed": 2,
+      "behavioral_passes": 2,
+      "statuses": {
+        "ok": 11
+      },
+      "model_calls": 65,
+      "reported_tokens": 155617,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 14147.0,
+      "median_wall_seconds": 15.92,
+      "visible_check_string_observed": 10,
+      "monetary_cost": null,
+      "recorded_input_tokens": 142357,
+      "recorded_output_tokens": 13260,
+      "recorded_cache_read_tokens": 100224,
+      "recorded_uncached_input_tokens": 42133,
+      "recorded_allowance_rate_value_usd_range": [
+        0.01457662,
+        0.02915324
+      ]
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "minimal_lean",
+      "scheduled": 11,
+      "observed": 11,
+      "passed": 11,
+      "raw_passed": 11,
+      "functional_passes": 11,
+      "code_tasks_observed": 9,
+      "code_test_passes": 9,
+      "behavioral_tasks_observed": 2,
+      "behavioral_passes": 2,
+      "statuses": {
+        "ok": 11
+      },
+      "model_calls": 63,
+      "reported_tokens": 144502,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 13136.5,
+      "median_wall_seconds": 15.073,
+      "visible_check_string_observed": 9,
+      "monetary_cost": null,
+      "recorded_input_tokens": 130143,
+      "recorded_output_tokens": 14359,
+      "recorded_cache_read_tokens": 86272,
+      "recorded_uncached_input_tokens": 43871,
+      "recorded_allowance_rate_value_usd_range": [
+        0.01545487,
+        0.03090973
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "baseline_lean",
+      "scheduled": 11,
+      "observed": 11,
+      "passed": 10,
+      "raw_passed": 10,
+      "functional_passes": 10,
+      "code_tasks_observed": 9,
+      "code_test_passes": 9,
+      "behavioral_tasks_observed": 2,
+      "behavioral_passes": 1,
+      "statuses": {
+        "model_error": 1,
+        "ok": 10
+      },
+      "model_calls": 66,
+      "reported_tokens": 139965,
+      "usage_complete_for_attempted_calls": false,
+      "reported_tokens_per_success": null,
+      "median_wall_seconds": 14.062,
+      "visible_check_string_observed": 3,
+      "monetary_cost": null,
+      "recorded_input_tokens": 126987,
+      "recorded_output_tokens": 12978,
+      "recorded_cache_read_tokens": 82484,
+      "recorded_uncached_input_tokens": 44503,
+      "recorded_allowance_rate_value_usd_range": [
+        0.01563897,
+        0.01563897
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "compact_lean",
+      "scheduled": 11,
+      "observed": 11,
+      "passed": 9,
+      "raw_passed": 9,
+      "functional_passes": 10,
+      "code_tasks_observed": 9,
+      "code_test_passes": 9,
+      "behavioral_tasks_observed": 2,
+      "behavioral_passes": 1,
+      "statuses": {
+        "model_error": 1,
+        "ok": 9,
+        "request_limit": 1
+      },
+      "model_calls": 66,
+      "reported_tokens": 138040,
+      "usage_complete_for_attempted_calls": false,
+      "reported_tokens_per_success": null,
+      "median_wall_seconds": 12.106,
+      "visible_check_string_observed": 2,
+      "monetary_cost": null,
+      "recorded_input_tokens": 125251,
+      "recorded_output_tokens": 12789,
+      "recorded_cache_read_tokens": 85224,
+      "recorded_uncached_input_tokens": 40027,
+      "recorded_allowance_rate_value_usd_range": [
+        0.01495527,
+        0.01495527
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "evidence_lean",
+      "scheduled": 11,
+      "observed": 11,
+      "passed": 11,
+      "raw_passed": 11,
+      "functional_passes": 11,
+      "code_tasks_observed": 9,
+      "code_test_passes": 9,
+      "behavioral_tasks_observed": 2,
+      "behavioral_passes": 2,
+      "statuses": {
+        "ok": 11
+      },
+      "model_calls": 69,
+      "reported_tokens": 199057,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 18096.1,
+      "median_wall_seconds": 16.95,
+      "visible_check_string_observed": 4,
+      "monetary_cost": null,
+      "recorded_input_tokens": 177993,
+      "recorded_output_tokens": 21064,
+      "recorded_cache_read_tokens": 131772,
+      "recorded_uncached_input_tokens": 46221,
+      "recorded_allowance_rate_value_usd_range": [
+        0.02141831,
+        0.02141831
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "minimal_lean",
+      "scheduled": 11,
+      "observed": 11,
+      "passed": 11,
+      "raw_passed": 11,
+      "functional_passes": 11,
+      "code_tasks_observed": 9,
+      "code_test_passes": 9,
+      "behavioral_tasks_observed": 2,
+      "behavioral_passes": 2,
+      "statuses": {
+        "ok": 11
+      },
+      "model_calls": 58,
+      "reported_tokens": 116827,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 10620.6,
+      "median_wall_seconds": 34.593,
+      "visible_check_string_observed": 5,
+      "monetary_cost": null,
+      "recorded_input_tokens": 101612,
+      "recorded_output_tokens": 15215,
+      "recorded_cache_read_tokens": 43600,
+      "recorded_uncached_input_tokens": 58012,
+      "recorded_allowance_rate_value_usd_range": [
+        0.0176173,
+        0.0176173
+      ]
+    }
+  ],
+  "paired": [],
+  "behavioral_adjudications": 0,
+  "failed_runs": [
+    {
+      "id": "glm-5.3-flash--compact_lean--swift-chunks--0",
+      "status": "request_limit",
+      "functional_pass": true,
+      "forbidden_changes": [],
+      "failure": "The operation couldn\u2019t be completed. (TagKitTests.BenchmarkFailure error 1.)"
+    },
+    {
+      "id": "glm-5.3-flash--baseline_lean--ambiguous-rounding--0",
+      "status": "model_error",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": "The network connection was lost."
+    },
+    {
+      "id": "glm-5.3-flash--compact_lean--read-only-config--0",
+      "status": "model_error",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": "The network connection was lost."
+    }
+  ],
+  "limits": "External tests cover declared cases, not arbitrary correctness. The split field records the frozen suite. Behavioral grades and visible-check strings are weaker evidence. Unadjusted exploratory intervals exclude infrastructure/model errors and do not establish equivalence. No confirmation winner inferred.",
+  "reporter_sha256": "b0e2367deedba3d7fd3d66b23c4eee7b6b324e0d210347ad267fad41675f5b18",
+  "rate_card_sha256": "37522b26d76c874397be920da516495ae1f5cc607d29f3725d4ea21213d72ee2"
+}

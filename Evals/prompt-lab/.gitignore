@@ -1,0 +1,5 @@
+# Immutable local research traces include native process/toolchain metadata.
+results/**/*.jsonl
+results/**/runs/
+__pycache__/
+*.py[cod]

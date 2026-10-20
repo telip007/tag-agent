@@ -1,0 +1,256 @@
+{
+  "fingerprint": "7ccd8b2eb04315f60d7526f3104822d344d6fcb3b7631f1297077116809e66c8",
+  "split": "dev",
+  "expected": 144,
+  "observed": 144,
+  "missing": 0,
+  "table": [
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "baseline",
+      "prompt_characters": 1662,
+      "valid": 12,
+      "preferred_action_passes": 8,
+      "infra_errors": 0,
+      "total_tokens": 16750,
+      "tool_calls": 15,
+      "median_wall_seconds": 2.212,
+      "monetary_cost": null
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "compact",
+      "prompt_characters": 1378,
+      "valid": 12,
+      "preferred_action_passes": 7,
+      "infra_errors": 0,
+      "total_tokens": 15592,
+      "tool_calls": 13,
+      "median_wall_seconds": 2.392,
+      "monetary_cost": null
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "workflow",
+      "prompt_characters": 1732,
+      "valid": 12,
+      "preferred_action_passes": 7,
+      "infra_errors": 0,
+      "total_tokens": 16219,
+      "tool_calls": 13,
+      "median_wall_seconds": 2.588,
+      "monetary_cost": null
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "evidence",
+      "prompt_characters": 1900,
+      "valid": 12,
+      "preferred_action_passes": 9,
+      "infra_errors": 0,
+      "total_tokens": 16817,
+      "tool_calls": 12,
+      "median_wall_seconds": 2.593,
+      "monetary_cost": null
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "examples",
+      "prompt_characters": 2280,
+      "valid": 12,
+      "preferred_action_passes": 8,
+      "infra_errors": 0,
+      "total_tokens": 17715,
+      "tool_calls": 14,
+      "median_wall_seconds": 1.985,
+      "monetary_cost": null
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "combined",
+      "prompt_characters": 4120,
+      "valid": 12,
+      "preferred_action_passes": 8,
+      "infra_errors": 0,
+      "total_tokens": 21760,
+      "tool_calls": 13,
+      "median_wall_seconds": 2.57,
+      "monetary_cost": null
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "baseline",
+      "prompt_characters": 1656,
+      "valid": 12,
+      "preferred_action_passes": 9,
+      "infra_errors": 0,
+      "total_tokens": 14506,
+      "tool_calls": 12,
+      "median_wall_seconds": 2.021,
+      "monetary_cost": null
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "compact",
+      "prompt_characters": 1372,
+      "valid": 12,
+      "preferred_action_passes": 10,
+      "infra_errors": 0,
+      "total_tokens": 13624,
+      "tool_calls": 11,
+      "median_wall_seconds": 2.186,
+      "monetary_cost": null
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "workflow",
+      "prompt_characters": 1726,
+      "valid": 12,
+      "preferred_action_passes": 8,
+      "infra_errors": 0,
+      "total_tokens": 14449,
+      "tool_calls": 12,
+      "median_wall_seconds": 2.478,
+      "monetary_cost": null
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "evidence",
+      "prompt_characters": 1894,
+      "valid": 12,
+      "preferred_action_passes": 9,
+      "infra_errors": 0,
+      "total_tokens": 14544,
+      "tool_calls": 11,
+      "median_wall_seconds": 2.595,
+      "monetary_cost": null
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "examples",
+      "prompt_characters": 2274,
+      "valid": 12,
+      "preferred_action_passes": 10,
+      "infra_errors": 0,
+      "total_tokens": 15693,
+      "tool_calls": 10,
+      "median_wall_seconds": 2.506,
+      "monetary_cost": null
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "combined",
+      "prompt_characters": 4114,
+      "valid": 12,
+      "preferred_action_passes": 9,
+      "infra_errors": 0,
+      "total_tokens": 19677,
+      "tool_calls": 10,
+      "median_wall_seconds": 1.994,
+      "monetary_cost": null
+    }
+  ],
+  "paired": [
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "compact",
+      "paired_tasks": 12,
+      "mean_delta_pp": -8.33,
+      "exploratory_95pct_task_bootstrap_pp": [
+        -25.0,
+        0
+      ]
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "workflow",
+      "paired_tasks": 12,
+      "mean_delta_pp": -8.33,
+      "exploratory_95pct_task_bootstrap_pp": [
+        -33.33,
+        16.67
+      ]
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "evidence",
+      "paired_tasks": 12,
+      "mean_delta_pp": 8.33,
+      "exploratory_95pct_task_bootstrap_pp": [
+        0,
+        25.0
+      ]
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "examples",
+      "paired_tasks": 12,
+      "mean_delta_pp": 0,
+      "exploratory_95pct_task_bootstrap_pp": [
+        -25.0,
+        25.0
+      ]
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "combined",
+      "paired_tasks": 12,
+      "mean_delta_pp": 0,
+      "exploratory_95pct_task_bootstrap_pp": [
+        -25.0,
+        25.0
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "compact",
+      "paired_tasks": 12,
+      "mean_delta_pp": 8.33,
+      "exploratory_95pct_task_bootstrap_pp": [
+        0,
+        25.0
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "workflow",
+      "paired_tasks": 12,
+      "mean_delta_pp": -8.33,
+      "exploratory_95pct_task_bootstrap_pp": [
+        -25.0,
+        0
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "evidence",
+      "paired_tasks": 12,
+      "mean_delta_pp": 0,
+      "exploratory_95pct_task_bootstrap_pp": [
+        0,
+        0
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "examples",
+      "paired_tasks": 12,
+      "mean_delta_pp": 8.33,
+      "exploratory_95pct_task_bootstrap_pp": [
+        0,
+        25.0
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "combined",
+      "paired_tasks": 12,
+      "mean_delta_pp": 0,
+      "exploratory_95pct_task_bootstrap_pp": [
+        0,
+        0
+      ]
+    }
+  ],
+  "limits": "Preferred-action surface screen, not coding success. Small curated suite; exploratory intervals are unadjusted for candidate selection and multiple comparisons. No winner inference."
+}

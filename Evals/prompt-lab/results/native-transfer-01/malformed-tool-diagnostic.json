@@ -1,0 +1,30 @@
+{
+  "trajectory": {
+    "id": "glm-5.3-flash--recommendation--tree-report-cli--0",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "detail_sha256": "def4bba52722e516bc856e14154cf92d4655aa8755a82b56b528f72c1df56560",
+    "classification": "malformed tool-call JSON replay rejected at the shared output cap",
+    "observed": {
+      "last_output_tokens": 4096,
+      "invalid_json": {
+        "message": "Unterminated string starting at",
+        "offset": 12,
+        "characters": 1454
+      },
+      "tool_name": "edit_file",
+      "tool_validation_failed": true,
+      "attempted_calls": 6,
+      "recorded_replies": 5,
+      "upstream_failure": "OpenCode Go answered HTTP 400. Upstream request failed: [400] Invalid tool call in messages: tool_calls[].function.arguments for function 'edit_file' must be a JSON object string (or an object), got invalid JSON",
+      "changed_files": [],
+      "functional_pass": false
+    },
+    "decision": "Retain original operational/functional failure. No argument repair, grade override, failed-cell retry or runtime/prompt edit. Continue only unrun cells after verified terminal state.",
+    "cause_limit": "Recorded JSON and replay rejection are proven. The cap-consistent truncation mechanism is not independently proven because finish_reason is not captured."
+  },
+  "trace": [
+    "Sources/TagKit/Agent.swift: assistant message is retained and tools are invoked with raw arguments.",
+    "Sources/ModelKit/Wire/ChatCompletionsChatModel.swift: tool-call fragments are concatenated and raw arguments are serialized back in assistant history."
+  ],
+  "scope": "Observation from the frozen native Agent; no hardening change is made during this experiment."
+}

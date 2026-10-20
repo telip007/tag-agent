@@ -1,0 +1,9 @@
+[
+  {
+    "id": "deepseek-v4.1-flash--minimal_lean--ambiguous-rounding--2",
+    "fingerprint": "83346c3f2f1d140b0e2611d61d4a818e20aa64c19e28b9421da4e101e384e1af",
+    "detail_sha256": "d4d868d0d5db71c6eb2d9f42bd6e9c5a8cfed519abede7b225bf77a3414a6813",
+    "reviewed_passed": true,
+    "reason": "Author semantic review: explicit choice request in bold Markdown names both half-even and half-up and defers implementation; final files exactly match initial files. Existing explicit-choice criterion applies regardless of Markdown emphasis. Raw grade preserved; no code-test override."
+  }
+]

@@ -1,0 +1,105 @@
+[
+  {
+    "id": "glm-5.3-flash--baseline--keyed-window--1",
+    "fingerprint": "a75fe42de7cef5ff4d50f54369377ba24a88966a7d334fb580ea1b6e488e8624",
+    "detail_sha256": "615aa5b814aa61b963c01aaff103c42a45e034985783b70ee90f6be9d119ab72",
+    "classification": "interpretation-dependent bool validation oracle failure",
+    "observed": "Normal completion, six inference calls, no protected changes. Saved Limiter rejects 0, -1 and 1.5 but accepts True. External oracle rejects True. The task says positive integer limit without explicit bool exclusion; another reserved task explicitly excludes bool.",
+    "review": "Separate read-only reviewer judged this a material specification ambiguity.",
+    "decision": "Retain raw functional and operational failure in primary all-task confirmation. No override, retry, task or prompt rewrite. Show an additional uniform whole-task sensitivity only."
+  },
+  {
+    "id": "deepseek-v4.1-flash--baseline--atomic-json--0",
+    "fingerprint": "a75fe42de7cef5ff4d50f54369377ba24a88966a7d334fb580ea1b6e488e8624",
+    "detail_sha256": "66566e4f7e4a514e38e036297e59101b0ef021be44a15490f86d3443d0a04f13",
+    "classification": "retained provider transport failure before a saved repair",
+    "observed": {
+      "failure": "The request timed out.",
+      "attempted_calls": 3,
+      "recorded_replies": 2,
+      "changed_files": [],
+      "functional_pass": false
+    },
+    "decision": "Retain original operational and functional failure; no failed-cell retry, grade override or prompt-causation claim. Missing failed-request usage remains unknown."
+  },
+  {
+    "id": "gemini-4-argon-contributor--baseline--swift-numeric-version--0",
+    "fingerprint": "a75fe42de7cef5ff4d50f54369377ba24a88966a7d334fb580ea1b6e488e8624",
+    "detail_sha256": "3a90056c3016bea0d5ec2687a1852554603fefd9a18194cc635b8fcc51a6406e",
+    "classification": "retained provider transport failure after passing saved code",
+    "observed": {
+      "status": "model_error",
+      "functional_pass": true,
+      "forbidden_changes": [],
+      "changed_files": [
+        "Version.swift"
+      ],
+      "finished": false,
+      "failure": "The request timed out.",
+      "attempted_calls": 7,
+      "recorded_replies": 6
+    },
+    "decision": "Passing saved code does not override failed operational completion. Retain original outcome; no retry or prompt-causation claim. Failed-request usage remains unknown."
+  },
+  {
+    "id": "glm-5.3-flash--baseline--keyed-window--2",
+    "fingerprint": "a75fe42de7cef5ff4d50f54369377ba24a88966a7d334fb580ea1b6e488e8624",
+    "detail_sha256": "f883632d7095ca86a0a263fd67951cbfc3a1c62c77b98499600b104235bee45b",
+    "classification": "interpretation-dependent bool validation oracle failure",
+    "observed": "Normal completion and no protected changes. Of the frozen invalid-constructor cases, only limit=True is accepted. The external failure is the same previously audited implicit bool exclusion.",
+    "decision": "Preserve raw failure in primary all-task results; apply the already disclosed uniform whole-task sensitivity. No override, retry, task or prompt edit."
+  },
+  {
+    "id": "glm-5.3-flash--recommendation--keyed-window--1",
+    "fingerprint": "a75fe42de7cef5ff4d50f54369377ba24a88966a7d334fb580ea1b6e488e8624",
+    "detail_sha256": "9151ed777d621bcb32df59b58f5e3146a97b950090f756f936c99db7123f779e",
+    "classification": "interpretation-dependent bool validation oracle failure",
+    "observed": "Recommendation completes normally with no protected changes; only limit=True among frozen invalid-limit cases is accepted. Same implicit bool requirement as previously audited baseline cases.",
+    "decision": "Apply the same unchanged primary failing grade and uniform whole-task sensitivity as baseline. No override, retry, task or prompt edit."
+  },
+  {
+    "id": "glm-5.3-flash--recommendation--keyed-window--2",
+    "fingerprint": "a75fe42de7cef5ff4d50f54369377ba24a88966a7d334fb580ea1b6e488e8624",
+    "detail_sha256": "766ce73fe3c79c181f08af5ff5b86160c5ecc74054ade6ae82abcf35a6ce5e6f",
+    "classification": "interpretation-dependent bool validation oracle failure",
+    "observed": "Normal recommendation completion with no protected changes. Only limit=True among the frozen invalid-constructor inputs is accepted; all earlier functional assertions completed.",
+    "decision": "Retain original primary failure and apply the same previously disclosed whole-task sensitivity across both arms, models and repeats. No override or retry."
+  },
+  {
+    "id": "glm-5.3-flash--recommendation--keyed-window--0",
+    "fingerprint": "a75fe42de7cef5ff4d50f54369377ba24a88966a7d334fb580ea1b6e488e8624",
+    "detail_sha256": "4d3163fa1269c1c4b42f759dc55e696317eab13acca32a1109f9f058376f486e",
+    "classification": "genuine functional interval-boundary failure after normal completion",
+    "observed": "The task explicitly requires (now-window, now]. Saved code retains timestamps when now-t <= window, so an event exactly one window old still counts. No protected changes.",
+    "counterexample": {
+      "window": 10,
+      "limit": 1,
+      "accepted_at": 0,
+      "query_at": 10,
+      "expected": true,
+      "actual": false
+    },
+    "decision": "Original functional and operational failure retained; no override, retry or prompt tuning. The uniform keyed-window sensitivity also drops this genuine failure, so it is not a corrected score and cannot replace primary all-task evidence."
+  },
+  {
+    "id": "deepseek-v4.1-flash--baseline--lazy-chunks--1",
+    "fingerprint": "a75fe42de7cef5ff4d50f54369377ba24a88966a7d334fb580ea1b6e488e8624",
+    "detail_sha256": "7e9380ca777088048cf33c1c6487e49e19ad303229277fe6a78d979406eef4f1",
+    "classification": "retained supervisor deadline after externally passing saved code",
+    "observed": {
+      "status": "timeout",
+      "functional_pass": true,
+      "forbidden_changes": [],
+      "changed_files": [
+        "chunks.py"
+      ],
+      "finished": false,
+      "wall_seconds": 180.174,
+      "process_exit": -15,
+      "outcome_present": false,
+      "attempted_calls": null,
+      "recorded_replies": 0
+    },
+    "decision": "Shared 180-second job deadline remains a failed operational completion. No retry, pass override or unsupported provider/tool/prompt cause. Unreported usage stays unknown."
+  }
+]

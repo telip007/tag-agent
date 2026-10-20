@@ -1,0 +1,17 @@
+{
+  "checked_at_utc": "2026-10-20T12:02:40.168907+00:00",
+  "run_fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+  "recommendation_freeze": "f17741ca5404e3dfeaa3bc228cec6f998ab834fb24902aec2cc1fd13e18738cf",
+  "observed_rows": 54,
+  "verified_recorded_prompts": 51,
+  "unavailable_prompt_rows": [
+    "gemini-4-argon-contributor--baseline--tree-report-cli--1",
+    "gemini-4-argon-contributor--recommendation--inventory-import--1",
+    "gemini-4-argon-contributor--recommendation--inventory-import--0"
+  ],
+  "mismatches": [],
+  "verified_source_archives": 74,
+  "compiled_bundle_sha256": "de514a9701f60acdf3edc0e4a7f7c52fa25896a6ff0006db3a9b3d8ddbb6a243",
+  "retained_17_cell_prefix_unchanged": true,
+  "scope": "Exact redacted recorded system texts match fixed templates. Missing deadline outcomes/prompts are not inferred. All54 unique cells and26 hash-bound failure audits verified."
+}

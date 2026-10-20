@@ -1,0 +1,14 @@
+{
+  "same_character_count": 126994,
+  "archive_characters": 125952,
+  "task_occurrences": [
+    1,
+    1,
+    1
+  ],
+  "sha256_by_position": {
+    "beginning": "b45433508674c9c04f8513397a0bb199cbc022eae32f4fd2c244a33e2678f682",
+    "middle": "97a05c8da65fc4a23b6afc05c5f3f5bd9467b1a6e4d3faa16dbb6a47ef7c5048",
+    "end": "bacfd61bc740d012bc31922193d32a0f2bd3e320ba8633592c7dda991fa48e83"
+  }
+}

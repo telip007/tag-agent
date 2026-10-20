@@ -1,0 +1,30 @@
+[
+  {
+    "id": "glm-5.3-flash--baseline--framed-client--0",
+    "fingerprint": "a39e47e084bc1b9f7b477687f492b423bf36fa5816e9071d8fd72375121d8692",
+    "detail_sha256": "51a70fbf19bb3c0e7dfab8b59d7e93bf1978a128ef62f4b40b051ef11563f212",
+    "classification": "subject generation-budget failure in frozen middle context condition",
+    "observed": {
+      "attempted_calls": 4,
+      "last_output_tokens": 4096,
+      "changed_existing_files": [],
+      "forbidden_changes": [],
+      "functional_pass": false
+    },
+    "decision": "Retain original shared-cap operational failure and saved-code grade; no retry, override, tuning or causal position-effect claim."
+  },
+  {
+    "id": "glm-5.3-flash--recommendation--framed-client--0",
+    "fingerprint": "a39e47e084bc1b9f7b477687f492b423bf36fa5816e9071d8fd72375121d8692",
+    "detail_sha256": "d227d790372b51d3e97c09c9ce882ecef1382270dd84c5711172fa6581b446aa",
+    "classification": "subject generation-budget failure in frozen middle context condition",
+    "observed": {
+      "attempted_calls": 4,
+      "last_output_tokens": 4096,
+      "changed_existing_files": [],
+      "forbidden_changes": [],
+      "functional_pass": false
+    },
+    "decision": "Retain original shared-cap operational failure and saved-code grade; no retry, override, tuning or causal position-effect claim."
+  }
+]

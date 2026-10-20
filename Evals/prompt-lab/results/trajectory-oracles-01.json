@@ -1,0 +1,62 @@
+[
+  {
+    "task": "clamp",
+    "broken_fails": true,
+    "reference_passes": true,
+    "reference_error": ""
+  },
+  {
+    "task": "duration",
+    "broken_fails": true,
+    "reference_passes": true,
+    "reference_error": ""
+  },
+  {
+    "task": "csv-records",
+    "broken_fails": true,
+    "reference_passes": true,
+    "reference_error": ""
+  },
+  {
+    "task": "cache-expiry",
+    "broken_fails": true,
+    "reference_passes": true,
+    "reference_error": ""
+  },
+  {
+    "task": "shell-log-count",
+    "broken_fails": true,
+    "reference_passes": true,
+    "reference_error": ""
+  },
+  {
+    "task": "swift-chunks",
+    "broken_fails": true,
+    "reference_passes": true,
+    "reference_error": ""
+  },
+  {
+    "task": "swift-slug",
+    "broken_fails": true,
+    "reference_passes": true,
+    "reference_error": ""
+  },
+  {
+    "task": "config-precedence",
+    "broken_fails": true,
+    "reference_passes": true,
+    "reference_error": ""
+  },
+  {
+    "task": "first-index",
+    "broken_fails": true,
+    "reference_passes": true,
+    "reference_error": ""
+  },
+  {
+    "task": "line-buffer",
+    "broken_fails": true,
+    "reference_passes": true,
+    "reference_error": ""
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "recorded_at_utc": "2026-10-20T12:14:04.019972+00:00",
+    "fingerprint": "7118cae6715adc6fe531cc49575fed1b1210201ac553553a41a8b57e027052cb",
+    "prior_process_terminal": true,
+    "prior_exit_code": 0,
+    "stop_reason": "Invalid JSON tool-argument replay caused explicit fatal scheduling stop; pending job drained; PID95541 absent and session85270 terminalexit0. Not an observation timeout.",
+    "completed_cells": 2,
+    "scheduled_unrun_cells": 4,
+    "retained_prefix_bytes": 45843,
+    "retained_prefix_sha256": "6eaec3dd36f81e4341f7a951fbadd0a843df67235582138d3ccd3f5e4c07d209",
+    "completed_ids": [
+      "gemini-4-argon-contributor--recommendation--framed-client--0",
+      "glm-5.3-flash--baseline--framed-client--0"
+    ],
+    "decision": "Exact unchanged invocation continues only four unrun cells; retain both completed cells and the original failure. No controller/policy/budget/bundle change."
+  }
+]

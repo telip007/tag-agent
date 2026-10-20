@@ -212,6 +212,9 @@ After the import fix, CI reached test compilation and Swift 6.3 rejected
 a nested task's direct capture of a noncopyable Mutex. A checked Sendable
 reference now owns the mutex; the ordering assertion and locking stay intact.
 
+## [2026-10-19] update | ChatGPT integration review against the cookbook
+Source review confirmed the core OAuth and public API route, with gaps in JWKS signature verification, separate account registrations, tool encoding and identity-only consent handling. Business policy denial remains an account-specific eligibility question, with no documented admin override found. See [review findings](concepts/model-providers.md#sign-in-with-chatgpt-review-2026-10-19). Application code was not changed.
+
 ## [2026-10-20] update | Prompt caching across providers
 Added OpenRouter opt-in boundaries, retained Anthropic previous-turn boundaries, and normalized optional cache reads/writes for every adapter. The status panel shows latest-request cache metrics; default retention and stable session routing are preserved. See [prompt caching](concepts/prompt-caching.md) and [0013](decisions/0013-prompt-caching.md).
 
@@ -223,3 +226,153 @@ Integrated main's shared Responses stream and fixed a review finding: metrics no
 
 ## [2026-10-20] update | Prompt caching documentation audit
 Documented cache metrics in the README, added ModelKit to the contributor module map, and corrected the loop page's outdated claim that explicit caching is not implemented. Clarified that cache metrics describe the latest completed reply and persist during failed or in-flight requests. Existing validation results remain historical; final integration checks are recorded separately.
+
+## [2026-10-20] update | Prompt research and next-action benchmark
+Added a source-backed staged experiment, six candidate policies and a native-tool decision screen with synthetic development/holdout fixtures. Production prompt unchanged; full coding trajectories remain required.
+
+## [2026-10-20] update | First complete prompt development screen
+Saved 144 responses across six policies and two model aliases, with zero infrastructure errors and 197,346 reported tokens. Raw-response audit limits the screen to calibration; full coding trajectories, repeats and held-out model-tier evidence remain open.
+
+## [2026-10-20] update | Native prompt trajectories and empty reasoning replay
+Built an opt-in bridge over the actual Agent, adapters and tools, validated ten development and six reserved confirmation oracles, and retained an interrupted native comparison. A live reconstructed request exposed missing empty interleaved reasoning; the regression failed before a scoped encoder repair and all eight adapter tests passed.
+
+## [2026-10-20] update | Replay repair verified through native coding runs
+Full make check passed at 91.5% coverage; all four repaired native smoke trajectories passed, including both previously interrupted task/model combinations. The new development comparison uses a fresh manifest; interrupted results remain separate and do not rank prompts.
+
+## [2026-10-20] update | Complete native prompt comparison and cache-aware analysis
+Recorded all 72 development trajectories with 70 reviewed successes, two retained transport failures and one explicit punctuation-rubric correction. Added cache/input/output separation, dated allowance-rate estimates, a frozen 98-word proposal and a pre-confirmation selection protocol. Gemini cap preservation tests failed before adding research-only support and then passed.
+
+## [2026-10-20] update | Gemini native smoke and hybrid budget failure
+Gemini passed a real native coding smoke with six calls and external checks. The 98-word hybrid development run retained a GLM output-budget failure; the verified terminal process resumes only unrun cells under the same frozen manifest. Repository checks and 23 Python tests passed; finalist confirmation remains unopened.
+
+## [2026-10-20] update | Native prompt family analysis integrity
+
+Added a cross-run report with duplicate-sample/control/task/policy checks and
+explicit successful-pair resource conditioning. Audited an under-specified
+float requirement in the config fixture: preserve the raw test failure,
+exclude that task uniformly from primary selection and retain all-task
+sensitivity. Finalists and confirmation remain open.
+
+## [2026-10-20] update | Complete native prompt exploration and lean scaffold
+
+Completed all 192 policy exploration cells. Preserved subject budget failures
+and the under-specified float failure, with uniform primary-task exclusion.
+Shortlisted baseline/compact/evidence/minimal for further evaluation. Added a
+research-only lean scaffold; red-then-green tests preserve API tool schemas
+through the actual Agent and retain rules/environment/project instructions.
+No production prompt replacement or final recommendation yet.
+
+## [2026-10-20] update | Repeat-aware prompt analysis and transfer reserve
+
+Added task-clustered/equal-model exploratory intervals and complete-usage
+cost-per-success metrics that include failed attempts. Reserved three
+externally checked multi-file tasks for post-freeze transfer; no subject
+requests or tuning on that reserve. Retained scaffold transport failures
+and resumed only missing cells after verifying terminal state.
+
+## [2026-10-20] update | Complete scaffold study and interleaved prompt repeats
+
+Finished 88/88 scaffold cells, with 85 operational successes and all 72 saved
+coding states externally passing. Retained network/budget failures. Validated
+joint/fixed-template native treatment smokes and 34 Python checks. Started
+352 interleaved new samples to complete the predeclared 528-trajectory
+selected-template matrix. Reserved confirmation and transfer remain unused.
+
+## [2026-10-20] update | Frozen context-position stress check
+
+Reserved a bounded 18-condition post-freeze context-position check for the
+remaining paper-derived hypothesis. Identical task/archive blocks are reordered
+on one reserved multi-file task; this is not an independent task set. Three
+renderer tests pass; active native controls remain untouched. Audited the first
+repeat generation-cap failure without retry or regrading.
+
+## [2026-10-20] update | Prompt evidence audit and literature scope
+
+Verified the active repeat harness against all 72 frozen runtime source hashes
+and the compiled bundle; reserved functional/context definitions remain fixed
+and unsent. Added an explicit incomplete completion audit. Clarified that GEPA's
+instance-wise Pareto selection differs from this lab's manually designed
+quality/resource comparison; no MIPRO/GEPA/Self-Refine optimizer is implemented.
+Audited further retained generation-cap outcomes without regrading or retry.
+
+## [2026-10-20] update | Exact native prompt-template catalogue
+
+Exported twelve tested templates with hashes and explicit dynamic fields;
+verified roundtrips against all 280 completed exploration prompts and observed
+repeat prompts. Clarified the minimal policy's whitespace word count without
+changing experimental text or outcomes. Winner selection remains pending.
+
+## [2026-10-20] update | Prompt reporting review and incomplete usage
+
+Read-only review found no Critical or Important issue and one Minor incomplete-usage
+reporting inconsistency. A failing regression now passes; all 38 Python checks pass.
+Refreshed derived reports without changing raw outcomes or the pinned live runtime.
+
+## [2026-10-20] update | Complete prompt repeats and development choice
+
+Completed and audited all 352 fresh repeats and the exact 528-cell selection.
+Prepared compact/standard for confirmation with uncertainty and tradeoffs retained.
+Connected the frozen context treatment after process exit; all 40 Python tests pass.
+
+## [2026-10-20] update | Frozen prompt recommendation and reserved confirmation
+
+Full repository checks passed: 318 Swift tests and 91.5% coverage at unchanged gate.
+Froze exact compact/standard assets and decision evidence before reserved requests.
+Started 108 held-out confirmation cells; transfer and context checks remain pending.
+
+## [2026-10-20] update | Reserved bool-interpretation caveat
+
+Audited the first reserved baseline failure: bool acceptance versus an implicit
+integer-type oracle. Retain primary raw grades; disclose a uniform whole-task
+sensitivity after this outcome, without prompt tuning, fixture edits or retries.
+
+## [2026-10-20] update | Reserved comparison report integrity
+
+Added a freeze-bound report that preserves all-task primary grades and the separate
+whole-task sensitivity, rejects missing runtime bindings, and flags incomplete or
+unaudited evidence. All 42 Python tests pass; read-only review found no major issue.
+
+## [2026-10-20] update | Genuine reserved interval-boundary failure
+
+Reproduced a recommendation failure at the explicitly open window boundary.
+Retained its original grade and clarified that whole-task ambiguity sensitivity
+also drops genuine failures, so it cannot replace the all-task primary score.
+
+## [2026-10-20] update | Complete reserved confirmation and start transfer
+
+Verified 108/108 cells, eight failure audits, 74 frozen sources and 107 recorded
+prompt texts. Compact's pooled 51/54 versus baseline 49/54 retains a GLM regression
+and uncertain efficiency. Started the unchanged 54-cell multi-file transfer.
+
+## [2026-10-20] update | Early transfer failure audit
+
+Reproduced a baseline quoted-CSV parsing error and retained output-cap failures
+under both prompts. All grades remain unchanged; transfer collection continues
+without prompt edits or failed-cell retries.
+
+## [2026-10-20] update | Transfer malformed-argument stop and bounded continuation
+
+Traced recorded invalid JSON tool arguments through tool validation and upstream
+history rejection. Kept the failed cell and frozen runtime; after verified terminal
+state, the same manifest continues only 37 missing cells with prefix integrity checked.
+
+## [2026-10-20] update | Independent CSV transfer grading review
+A read-only review reproduced quoted-field failures for both prompt arms and the passing frozen reference. Primary grades remain unchanged; CSV dialect and fail-fast oracle limits are recorded in the research design and hash-bound review artifact.
+
+## [2026-10-20] update | Ordinary reserved prompt validation complete
+Verified54/54transfer cells, all26transfer failures and unchanged retained prefix; combined162/162 with34audited failures. Operational scores tie64/81, saved code67/81baseline versus65/81compact; paired efficiency gain unconfirmed. The18contextconditions and final choice/checks remain open.
+
+## [2026-10-20] update | Independent ordinary reserved report review
+Reviewer reproduced totals, intervals, failure hashes, retained prefix and runtime/template bindings with no Important or Critical findings. The two new report columns now say operational success instead of completed; scores and raw data are unchanged. Context and final selection remain open.
+
+## [2026-10-20] update | First frozen context position complete
+Beginning position completed6/6conditions: baseline3/3compact2/3operational, all6savedcodepasses. ThecompactGemini deadline remains an audited failure with unknown usage;75sourcearchives and5capturedtemplates match. Middle position is live; final choice/checks remain open.
+
+## [2026-10-20] update | Complete measurements and retain measured baseline
+All 18 context conditions completed with five audited failures; only unrun end-position cells continued after verified terminal state, preserving the original prefix. Final template retains baseline/standard, with no confirmed compact replacement advantage; reports preserve the original freeze and disclose contextual tradeoffs. Raw traces remain local and Git-ignored; final checks and closing review remain open.
+
+## [2026-10-20] update | Final prompt verification and read-only review
+Required check passed with 318 Swift tests and 91.5% coverage at the unchanged 80% gate; all 42 offline tests and exact frozen report reproduction passed. Closing review found no Important or Critical issue and supported baseline retention; stale README wording was corrected. Local privacy checks preserve immutable raw evidence outside Git.
+
+## [2026-10-20] decision | Bounded native prompt research
+Recorded the opt-in research bridge, frozen evidence, failure preservation and justified baseline retention in decision 0014. A complete run-qualified index now binds all 58 raw failures across 812 main trajectories; independent review confirmed coverage and unchanged scores.

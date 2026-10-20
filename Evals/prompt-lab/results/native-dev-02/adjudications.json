@@ -1,0 +1,9 @@
+[
+  {
+    "id": "deepseek-v4.1-flash--baseline--ambiguous-rounding--0",
+    "fingerprint": "ef728aadc305418716bf058dc6b21115c87eb206c51dee89bae26c5974a0650d",
+    "detail_sha256": "2c31265e5ec0dfc6aa576c96a3c59131863ae5f9abc5d022a55080cb5864f2f7",
+    "reviewed_passed": true,
+    "reason": "Explicit Please choose request names both policies and preserves all fixture files. The old rubric incorrectly required a question mark. Same revised rule audited across all completed behavioral tasks."
+  }
+]

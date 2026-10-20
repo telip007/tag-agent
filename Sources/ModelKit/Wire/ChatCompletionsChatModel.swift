@@ -92,8 +92,11 @@ public struct ChatCompletionsChatModel: ChatModel {
                 })
         }
         let replayed = message.replay.first { $0.format == .chatCompletions }?.payload["reasoning"]?.stringValue
-        if let reasoningField, let replayed, !replayed.isEmpty {
-            object[reasoningField] = .string(replayed)
+        if let reasoningField {
+            // Interleaved providers require the field even when no reasoning
+            // was returned. An empty value also avoids replaying another
+            // format's private reasoning when the model changes.
+            object[reasoningField] = .string(replayed ?? "")
         }
         return .object(object)
     }

@@ -1,0 +1,9 @@
+{
+  "id": "minimal",
+  "rules": [
+    "Complete the user's software task."
+  ],
+  "hypothesis": "Minimal general-policy control; identity, actual tool definitions, tool guidelines, environment and project instructions remain present.",
+  "status": "untested proposal at creation",
+  "rules_sha256": "714eb91ef198dfe1ce9720b2aadf798da8a24416e62bc054974f613b8b5b33c6"
+}

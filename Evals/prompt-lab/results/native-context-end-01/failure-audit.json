@@ -1,0 +1,42 @@
+[
+  {
+    "id": "glm-5.3-flash--baseline--framed-client--0",
+    "fingerprint": "7118cae6715adc6fe531cc49575fed1b1210201ac553553a41a8b57e027052cb",
+    "detail_sha256": "7e0fe2a47162ec17754ffcd1b9d572db920b17c0d63bae5edeb19a56df278561",
+    "classification": "malformed tool-call JSON replay rejected at shared output cap in end context condition",
+    "observed": {
+      "last_output_tokens": 4096,
+      "invalid_json": {
+        "message": "Unterminated string starting at",
+        "offset": 12,
+        "characters": 1062
+      },
+      "tool_name": "edit_file",
+      "tool_validation_failed": true,
+      "attempted_calls": 5,
+      "recorded_replies": 4,
+      "upstream_failure": "OpenCode Go answered HTTP 400. Upstream request failed: [400] Invalid tool call in messages: tool_calls[].function.arguments for function 'edit_file' must be a JSON object string (or an object), got invalid JSON",
+      "changed_existing_files": [],
+      "functional_pass": false
+    },
+    "decision": "Original failed operational and functional grade retained. No argument completion, grade override, failed-cell retry or runtime/prompt/budget edit; continue only unrun cells after verified terminal.",
+    "cause_limit": "Recorded malformed JSON and replay rejection are proven; cap-consistent truncation mechanism is not independently proven because finish_reason is not captured."
+  },
+  {
+    "id": "glm-5.3-flash--recommendation--framed-client--0",
+    "fingerprint": "7118cae6715adc6fe531cc49575fed1b1210201ac553553a41a8b57e027052cb",
+    "detail_sha256": "0fe97ab7649f0fbdb960acdbc3c81b8029555287c01a4793599317e26abd5f4a",
+    "classification": "retained call-limit failure after externally passing saved code in end context condition",
+    "observed": {
+      "attempted_calls": 12,
+      "functional_pass": true,
+      "finished": false,
+      "changed_existing_files": [
+        "framing.py",
+        "client.py"
+      ],
+      "forbidden_changes": []
+    },
+    "decision": "Original operational failure retained separately from passing saved code. No retry, override, budget/prompt/runtime edit or causal position-effect claim."
+  }
+]

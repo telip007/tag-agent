@@ -1,0 +1,106 @@
+{
+  "checked_at_utc": "2026-10-20T12:40:13.241662+00:00",
+  "objective": "Benchmark system prompts, research academic strategies, try new approaches and deliver an evidence-supported strong efficient practical prompt.",
+  "goal_complete": true,
+  "verdict": "All predeclared research/benchmark deliverables and repository/wiki gates are verified. Retain the tested baseline; finite measurements do not prove an ultimate universal prompt.",
+  "requirements": [
+    {
+      "requirement": "Academic research and strategy mapping",
+      "status": "verified",
+      "evidence": "Six fixed-version primary papers were opened and checked during the task. FINAL.md maps findings to actual tests and distinguishes unimplemented MIPRO, GEPA and Self-Refine algorithms; no paper performance is transferred to Tag."
+    },
+    {
+      "requirement": "Varied and experimental prompt approaches",
+      "status": "verified",
+      "evidence": "Eight core policies, including adaptive_compact and a minimal control; four lean-scaffold ablations give twelve exact templates. All 192 core, 88 scaffold and 352 fresh repeat cells are complete."
+    },
+    {
+      "requirement": "Repeated selection without duplicate reuse",
+      "status": "verified",
+      "evidence": "The strict 528-cell matrix has four cores \u00d7 two scaffolds \u00d7 two models \u00d7 eleven tasks \u00d7 three samples. Origins and hashes are checked; fresh reproduction exactly matches the frozen selection file."
+    },
+    {
+      "requirement": "Full native coding and behavior benchmark",
+      "status": "verified",
+      "evidence": "Real Agent, adapters and built-in tools; bug/reference oracle checks, external functional grades, protected existing files and fixed call/token/time bounds. The 144-response screen remains calibration only."
+    },
+    {
+      "requirement": "Freeze before reserved feedback",
+      "status": "verified",
+      "evidence": "FREEZE.json fingerprint f17741ca5404e3dfeaa3bc228cec6f998ab834fb24902aec2cc1fd13e18738cf binds the development choice, exact text, policies, reserves and execution/report sources before recorded reserved calls. Every bound artifact hash remains unchanged."
+    },
+    {
+      "requirement": "Reserved task and model-family validation",
+      "status": "verified",
+      "evidence": "All 108 six-task confirmation and 54 three-task multi-file transfer cells are complete across three aliases, two arms and three samples. All 34 raw failures are hash-audited; primary quality retains all nine tasks."
+    },
+    {
+      "requirement": "Predeclared context stress",
+      "status": "verified",
+      "evidence": "All 18 beginning/middle/end conditions are complete on one framed-client task. Identical archives contain 125,952 ASCII characters; every rendered message has 126,994 characters. Analysis stays descriptive and separate from ordinary tasks."
+    },
+    {
+      "requirement": "Preserve failures and uncertain measurements",
+      "status": "verified",
+      "evidence": "All 58 raw failures across 812 main cells have run-qualified identity/detail hashes. Exactly two pre-existing behavioral adjudications affect reviewed scores; no coding pass override. Only unrun cells continued after verified terminal stops, preserving original prefixes. Missing usage remains unknown."
+    },
+    {
+      "requirement": "Evidence-supported practical prompt selection",
+      "status": "verified",
+      "evidence": "The original protocol permits retaining baseline when replacement is unjustified. Ordinary operational success ties at 64/81, saved code favors baseline 67/81 versus 65/81, and conditional token ratio 0.999327 has interval 0.860771\u20131.154257. Context tradeoffs are disclosed. No causal or universal superiority claim."
+    },
+    {
+      "requirement": "Usable exact artifact and reproduction",
+      "status": "verified",
+      "evidence": "final-system-prompt.template.txt is byte-identical to the tested baseline catalogue; SHA-256 ba96623960bd530898ccd5e5be219f2f81b5c1a7b406db86eecbed7e3e15daa1. Local raw records, manifests, explicit source archives, hashes, audits and commands are available. The 528-cell matrix is overlapping development data, not additional new runs."
+    },
+    {
+      "requirement": "Required checks without weakening gates",
+      "status": "verified",
+      "evidence": "TAG_LIVE_TESTS=0 make check exited zero: 318 Swift tests, 91.5% of 6,968 lines, unchanged 80% gate. All 42 offline tests and fresh 528/162 report reproduction passed. Final documentation lint passed 38 pages; check configuration is unchanged and dependency warnings are disclosed."
+    },
+    {
+      "requirement": "Independent review and closure",
+      "status": "verified",
+      "evidence": "Closing review/readback found no Important or Critical issue, supported baseline retention and confirmed corrected README wording. Separate final failure-index review verified all 58 hashes and the older eleven classifications, including the saved 2.5-to-2 float counterexample."
+    },
+    {
+      "requirement": "Project and shared wiki upkeep",
+      "status": "verified",
+      "evidence": "Concept, design, index and log updated; decision 0014 records the bounded research architecture. Shared topic was saved through CAS, linted at 115 pages and read back exactly, including final choice, limits and complete failure index."
+    },
+    {
+      "requirement": "Requested scope and privacy",
+      "status": "verified",
+      "evidence": "No production prompt replacement, push, publication, release, SDK mutation or service activation performed. Unrelated pre-existing work preserved. Bounded task-file scan found no active credential, actual home prefix, hostname or credential-shape match; metadata-bearing raw traces remain local and Git-ignored."
+    }
+  ],
+  "main_native_trajectories": 812,
+  "raw_failures_indexed": 58,
+  "selection_cells_overlapping_main_development": 528,
+  "ordinary_reserved_cells": 162,
+  "separate_context_conditions": 18,
+  "remaining_required_work": [],
+  "incomplete": [],
+  "unaudited_main_failures": [],
+  "active_phase": null,
+  "bounded_limits": [
+    "Authored synthetic tasks and mutable aliases; no universal optimum, statistical equivalence or complete frontier/small-model coverage.",
+    "One long-input context task, not multi-turn-history or a paper reproduction.",
+    "Missing usage/cache data prevent complete all-attempt and actual-money comparisons; latency is observational.",
+    "Production evaluation CLI and public SWE-bench calibration remain broader roadmap work outside this research request.",
+    "Raw traces preserve generic toolchain/platform metadata locally; no external publication or activation inferred."
+  ],
+  "evidence_files_sha256": {
+    "recommendation/FINAL.md": "901a8ca04e3dd53b72388163d6b29198c0cdf8a5171e491be6fd156e876b57f2",
+    "recommendation/final-selection.json": "b4fba40490ae09100e70ba11f8eedf84f80c26f86b294bc9d843ad38136f1f8a",
+    "recommendation/final-system-prompt.template.txt": "ba96623960bd530898ccd5e5be219f2f81b5c1a7b406db86eecbed7e3e15daa1",
+    "recommendation/verification.json": "dd3bf320966769df3b40454b6f45c7d2f6cd9d8b84e4539335f5692d5d59c956",
+    "recommendation/final-review.json": "d6e1d548fb15908c284b8d7dc57710877ec4cd1054f40bb2b3509d2a6edd9240",
+    "recommendation/privacy-audit.json": "9c5dc374ca325cf9bda151d6406f672ddc6c230f4efcb4d35156f7d74fba99d3",
+    "results/main-failure-audit.json": "33027a47028ff2dcb1b3b2f85be17d9d0eab2ee9cac166b1885936901dbeae16",
+    "results/native-heldout-comparison-01/analysis.json": "b8905fe066245ec2c97caa6de24c980c6b6bf5c47917dfcac38f9f4f3213469a",
+    "results/native-context-comparison-01/analysis.json": "41ee1a399b55b8c2b70d61789c4425399e9a0202413d454e0a5e191152ae2c87"
+  },
+  "shared_wiki_final_topic_sha256": "d66e3fc121e4c493f306e948470d061ea370b56f3028428f718ef93d1f9341a3"
+}

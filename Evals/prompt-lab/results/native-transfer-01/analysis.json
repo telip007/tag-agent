@@ -1,0 +1,419 @@
+{
+  "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+  "split": "transfer",
+  "expected": 54,
+  "observed": 54,
+  "missing": 0,
+  "table": [
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "baseline",
+      "scheduled": 9,
+      "observed": 9,
+      "passed": 6,
+      "raw_passed": 6,
+      "functional_passes": 6,
+      "code_tasks_observed": 9,
+      "code_test_passes": 6,
+      "behavioral_tasks_observed": 0,
+      "behavioral_passes": 0,
+      "statuses": {
+        "ok": 9
+      },
+      "model_calls": 84,
+      "reported_tokens": 491983,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 81997.2,
+      "median_wall_seconds": 53.81,
+      "visible_check_string_observed": 9,
+      "monetary_cost": null,
+      "recorded_input_tokens": 439247,
+      "recorded_output_tokens": 52736,
+      "recorded_cache_read_tokens": 364928,
+      "recorded_uncached_input_tokens": 74319,
+      "recorded_allowance_rate_value_usd_range": [
+        0.04388423,
+        0.08776847
+      ]
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "recommendation",
+      "scheduled": 9,
+      "observed": 9,
+      "passed": 6,
+      "raw_passed": 6,
+      "functional_passes": 6,
+      "code_tasks_observed": 9,
+      "code_test_passes": 6,
+      "behavioral_tasks_observed": 0,
+      "behavioral_passes": 0,
+      "statuses": {
+        "generation_limit": 1,
+        "ok": 8
+      },
+      "model_calls": 68,
+      "reported_tokens": 368056,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 61342.7,
+      "median_wall_seconds": 37.835,
+      "visible_check_string_observed": 8,
+      "monetary_cost": null,
+      "recorded_input_tokens": 319729,
+      "recorded_output_tokens": 48327,
+      "recorded_cache_read_tokens": 235264,
+      "recorded_uncached_input_tokens": 84465,
+      "recorded_allowance_rate_value_usd_range": [
+        0.04237174,
+        0.08474348
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "baseline",
+      "scheduled": 9,
+      "observed": 9,
+      "passed": 4,
+      "raw_passed": 4,
+      "functional_passes": 4,
+      "code_tasks_observed": 9,
+      "code_test_passes": 4,
+      "behavioral_tasks_observed": 0,
+      "behavioral_passes": 0,
+      "statuses": {
+        "generation_limit": 5,
+        "ok": 4
+      },
+      "model_calls": 56,
+      "reported_tokens": 202099,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 50524.8,
+      "median_wall_seconds": 37.004,
+      "visible_check_string_observed": 4,
+      "monetary_cost": null,
+      "recorded_input_tokens": 163903,
+      "recorded_output_tokens": 38196,
+      "recorded_cache_read_tokens": 101408,
+      "recorded_uncached_input_tokens": 62495,
+      "recorded_allowance_rate_value_usd_range": [
+        0.03151449,
+        0.03151449
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "recommendation",
+      "scheduled": 9,
+      "observed": 9,
+      "passed": 3,
+      "raw_passed": 3,
+      "functional_passes": 4,
+      "code_tasks_observed": 9,
+      "code_test_passes": 4,
+      "behavioral_tasks_observed": 0,
+      "behavioral_passes": 0,
+      "statuses": {
+        "generation_limit": 2,
+        "model_error": 1,
+        "ok": 4,
+        "request_limit": 2
+      },
+      "model_calls": 79,
+      "reported_tokens": 316164,
+      "usage_complete_for_attempted_calls": false,
+      "reported_tokens_per_success": null,
+      "median_wall_seconds": 59.109,
+      "visible_check_string_observed": 5,
+      "monetary_cost": null,
+      "recorded_input_tokens": 273900,
+      "recorded_output_tokens": 42264,
+      "recorded_cache_read_tokens": 136776,
+      "recorded_uncached_input_tokens": 137124,
+      "recorded_allowance_rate_value_usd_range": [
+        0.04580388,
+        0.04580388
+      ]
+    },
+    {
+      "model": "gemini-4-argon-contributor",
+      "candidate": "baseline",
+      "scheduled": 9,
+      "observed": 9,
+      "passed": 5,
+      "raw_passed": 5,
+      "functional_passes": 6,
+      "code_tasks_observed": 9,
+      "code_test_passes": 6,
+      "behavioral_tasks_observed": 0,
+      "behavioral_passes": 0,
+      "statuses": {
+        "generation_limit": 1,
+        "model_error": 1,
+        "ok": 6,
+        "timeout": 1
+      },
+      "model_calls": 48,
+      "reported_tokens": 213167,
+      "usage_complete_for_attempted_calls": false,
+      "reported_tokens_per_success": null,
+      "median_wall_seconds": 150.33,
+      "visible_check_string_observed": 7,
+      "monetary_cost": null,
+      "recorded_input_tokens": 175286,
+      "recorded_output_tokens": 37881,
+      "recorded_cache_read_tokens": null,
+      "recorded_uncached_input_tokens": null,
+      "recorded_allowance_rate_value_usd_range": null
+    },
+    {
+      "model": "gemini-4-argon-contributor",
+      "candidate": "recommendation",
+      "scheduled": 9,
+      "observed": 9,
+      "passed": 4,
+      "raw_passed": 4,
+      "functional_passes": 4,
+      "code_tasks_observed": 9,
+      "code_test_passes": 4,
+      "behavioral_tasks_observed": 0,
+      "behavioral_passes": 0,
+      "statuses": {
+        "generation_limit": 3,
+        "ok": 4,
+        "timeout": 2
+      },
+      "model_calls": 36,
+      "reported_tokens": 128920,
+      "usage_complete_for_attempted_calls": false,
+      "reported_tokens_per_success": null,
+      "median_wall_seconds": 116.678,
+      "visible_check_string_observed": 5,
+      "monetary_cost": null,
+      "recorded_input_tokens": 96955,
+      "recorded_output_tokens": 31965,
+      "recorded_cache_read_tokens": null,
+      "recorded_uncached_input_tokens": null,
+      "recorded_allowance_rate_value_usd_range": null
+    }
+  ],
+  "paired": [
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "recommendation",
+      "paired_tasks": 3,
+      "delta_pp": 0,
+      "exploratory_95pct_task_bootstrap_pp": [
+        0,
+        0
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "recommendation",
+      "paired_tasks": 3,
+      "delta_pp": 5.56,
+      "exploratory_95pct_task_bootstrap_pp": [
+        -33.33,
+        50.0
+      ]
+    },
+    {
+      "model": "gemini-4-argon-contributor",
+      "candidate": "recommendation",
+      "paired_tasks": 3,
+      "delta_pp": -16.67,
+      "exploratory_95pct_task_bootstrap_pp": [
+        -50.0,
+        0
+      ]
+    }
+  ],
+  "behavioral_adjudications": 0,
+  "failed_runs": [
+    {
+      "id": "glm-5.3-flash--baseline--inventory-import--0",
+      "status": "generation_limit",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": "The model sent an empty reply."
+    },
+    {
+      "id": "deepseek-v4.1-flash--baseline--inventory-import--2",
+      "status": "ok",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": null
+    },
+    {
+      "id": "deepseek-v4.1-flash--recommendation--inventory-import--1",
+      "status": "generation_limit",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": "The model sent an empty reply."
+    },
+    {
+      "id": "glm-5.3-flash--recommendation--tree-report-cli--2",
+      "status": "generation_limit",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": "The model sent an empty reply."
+    },
+    {
+      "id": "gemini-4-argon-contributor--baseline--tree-report-cli--1",
+      "status": "timeout",
+      "functional_pass": true,
+      "forbidden_changes": [],
+      "failure": null
+    },
+    {
+      "id": "gemini-4-argon-contributor--recommendation--inventory-import--1",
+      "status": "timeout",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": null
+    },
+    {
+      "id": "deepseek-v4.1-flash--recommendation--inventory-import--2",
+      "status": "ok",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": null
+    },
+    {
+      "id": "glm-5.3-flash--recommendation--tree-report-cli--0",
+      "status": "model_error",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": "OpenCode Go answered HTTP 400. Upstream request failed: [400] Invalid tool call in messages: tool_calls[].function.arguments for function 'edit_file' must be a JSON object string (or an object), got invalid JSON"
+    },
+    {
+      "id": "glm-5.3-flash--baseline--inventory-import--1",
+      "status": "generation_limit",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": "The model sent an empty reply."
+    },
+    {
+      "id": "glm-5.3-flash--recommendation--inventory-import--1",
+      "status": "request_limit",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": "The operation couldn\u2019t be completed. (TagKitTests.BenchmarkFailure error 1.)"
+    },
+    {
+      "id": "gemini-4-argon-contributor--baseline--inventory-import--2",
+      "status": "generation_limit",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": "The model sent an empty reply."
+    },
+    {
+      "id": "gemini-4-argon-contributor--recommendation--inventory-import--2",
+      "status": "generation_limit",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": "The model sent an empty reply."
+    },
+    {
+      "id": "gemini-4-argon-contributor--baseline--inventory-import--0",
+      "status": "ok",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": null
+    },
+    {
+      "id": "gemini-4-argon-contributor--recommendation--inventory-import--0",
+      "status": "timeout",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": null
+    },
+    {
+      "id": "glm-5.3-flash--recommendation--inventory-import--0",
+      "status": "ok",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": null
+    },
+    {
+      "id": "deepseek-v4.1-flash--recommendation--inventory-import--0",
+      "status": "ok",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": null
+    },
+    {
+      "id": "glm-5.3-flash--baseline--tree-report-cli--2",
+      "status": "generation_limit",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": "The model sent an empty reply."
+    },
+    {
+      "id": "glm-5.3-flash--recommendation--inventory-import--2",
+      "status": "generation_limit",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": "The model sent an empty reply."
+    },
+    {
+      "id": "gemini-4-argon-contributor--recommendation--tree-report-cli--0",
+      "status": "generation_limit",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": "The model sent an empty reply."
+    },
+    {
+      "id": "deepseek-v4.1-flash--baseline--inventory-import--1",
+      "status": "ok",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": null
+    },
+    {
+      "id": "glm-5.3-flash--recommendation--framed-client--0",
+      "status": "request_limit",
+      "functional_pass": true,
+      "forbidden_changes": [],
+      "failure": "The operation couldn\u2019t be completed. (TagKitTests.BenchmarkFailure error 1.)"
+    },
+    {
+      "id": "glm-5.3-flash--baseline--tree-report-cli--1",
+      "status": "generation_limit",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": "The model sent an empty reply."
+    },
+    {
+      "id": "glm-5.3-flash--baseline--inventory-import--2",
+      "status": "generation_limit",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": "The model sent an empty reply."
+    },
+    {
+      "id": "deepseek-v4.1-flash--baseline--inventory-import--0",
+      "status": "ok",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": null
+    },
+    {
+      "id": "gemini-4-argon-contributor--recommendation--tree-report-cli--1",
+      "status": "generation_limit",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": "The model sent an empty reply."
+    },
+    {
+      "id": "gemini-4-argon-contributor--baseline--inventory-import--1",
+      "status": "model_error",
+      "functional_pass": false,
+      "forbidden_changes": [],
+      "failure": "The request timed out."
+    }
+  ],
+  "limits": "External tests cover declared cases, not arbitrary correctness. The split field records the frozen suite. Behavioral grades and visible-check strings are weaker evidence. Unadjusted exploratory intervals exclude infrastructure/model errors and do not establish equivalence. No confirmation winner inferred.",
+  "reporter_sha256": "b0e2367deedba3d7fd3d66b23c4eee7b6b324e0d210347ad267fad41675f5b18",
+  "rate_card_sha256": "37522b26d76c874397be920da516495ae1f5cc607d29f3725d4ea21213d72ee2"
+}

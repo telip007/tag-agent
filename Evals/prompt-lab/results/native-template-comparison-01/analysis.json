@@ -1,0 +1,3482 @@
+{
+  "runs": [
+    {
+      "directory": "Evals/prompt-lab/results/native-dev-02",
+      "fingerprint": "ef728aadc305418716bf058dc6b21115c87eb206c51dee89bae26c5974a0650d",
+      "expected": 72,
+      "observed": 72,
+      "native_bundle_sha256": "c75b8381a4b19988c8f4ba0db278dadfaabb7a8d89aff74b3a83f21793c972b0",
+      "scaffold": "standard",
+      "policy_scaffolds": {},
+      "results_sha256": "029316de671b84b7bbf2acc3e258174a6cf2daa662adb92981e4eb02fcaf2395"
+    },
+    {
+      "directory": "Evals/prompt-lab/results/native-hybrid-dev-01",
+      "fingerprint": "0392113c17e8b2db3d2796c1fec5efbba3d16eb070482a0eb070397d25b9d0f6",
+      "expected": 24,
+      "observed": 24,
+      "native_bundle_sha256": "37e16c8aabc3a464f421439187ab377430eb3eb7219822dd048e02a7795baaf9",
+      "scaffold": "standard",
+      "policy_scaffolds": {},
+      "results_sha256": "9e5813a55c2c23787d13d83ca1c7912c555046a8fdeaa4b856d36e9578885f40"
+    },
+    {
+      "directory": "Evals/prompt-lab/results/native-family-dev-01",
+      "fingerprint": "1a86cce84ccc31379d901d4898774d57a594d074a9d88914679d152d91033ac9",
+      "expected": 96,
+      "observed": 96,
+      "native_bundle_sha256": "37e16c8aabc3a464f421439187ab377430eb3eb7219822dd048e02a7795baaf9",
+      "scaffold": "standard",
+      "policy_scaffolds": {},
+      "results_sha256": "0e87112d5e555c4d4a5f5117a02f79aa9b31d351d675a2aad19c22ab7a94c5aa"
+    },
+    {
+      "directory": "Evals/prompt-lab/results/native-scaffold-dev-01",
+      "fingerprint": "70767f58de85d9f1079471fe6d5e5f0672d01f9265f8e737e9928a950fb0639b",
+      "expected": 88,
+      "observed": 88,
+      "native_bundle_sha256": "de514a9701f60acdf3edc0e4a7f7c52fa25896a6ff0006db3a9b3d8ddbb6a243",
+      "scaffold": "lean",
+      "policy_scaffolds": {},
+      "results_sha256": "7a79dfeb183e6e61ea28781da4571aa375999c607ea6936f30ce4cc6824b2e6d"
+    },
+    {
+      "directory": "Evals/prompt-lab/results/native-repeat-dev-01",
+      "fingerprint": "83346c3f2f1d140b0e2611d61d4a818e20aa64c19e28b9421da4e101e384e1af",
+      "expected": 352,
+      "observed": 138,
+      "native_bundle_sha256": "de514a9701f60acdf3edc0e4a7f7c52fa25896a6ff0006db3a9b3d8ddbb6a243",
+      "scaffold": "both",
+      "policy_scaffolds": {
+        "baseline": "standard",
+        "compact": "standard",
+        "evidence": "standard",
+        "minimal": "standard",
+        "baseline_lean": "lean",
+        "compact_lean": "lean",
+        "evidence_lean": "lean",
+        "minimal_lean": "lean"
+      },
+      "results_sha256": "ae22b23f24f9b8c0990f183c63a2694979a68d4d392a5e3d4f748b11f898abb1"
+    }
+  ],
+  "controls": {
+    "stage": "native-trajectories",
+    "split": "development",
+    "max_calls": 12,
+    "max_tokens": 4096,
+    "deadline_seconds": 180,
+    "temperature": 0,
+    "reasoning": "provider defaults",
+    "workers": 2
+  },
+  "excluded_selection_tasks": [
+    "config-precedence"
+  ],
+  "complete": false,
+  "table": [
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "adaptive_compact",
+      "all_tasks": {
+        "observed": 12,
+        "passed": 12,
+        "raw_passed": 12,
+        "functional_passes": 12,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 12
+        }
+      },
+      "selection_tasks": {
+        "observed": 11,
+        "passed": 11,
+        "raw_passed": 11,
+        "functional_passes": 11,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 11
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 180947,
+        "tokens_per_reviewed_success": 16449.727,
+        "rate_value_per_reviewed_success_range": [
+          0.00155719,
+          0.00311438
+        ],
+        "recorded_input_tokens": 162890,
+        "recorded_output_tokens": 18057,
+        "recorded_cache_read_tokens": 123392,
+        "recorded_uncached_input_tokens": 39498,
+        "recorded_allowance_rate_value_usd_range": [
+          0.01712908,
+          0.03425815
+        ]
+      },
+      "resource_pairs": 10,
+      "resource_pair_keys": [
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ]
+      ],
+      "paired_geomean_token_ratio": 1.119208,
+      "paired_geomean_call_ratio": 1.04138,
+      "rate_pairs": 10,
+      "paired_geomean_rate_ratio": 1.196156
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "baseline",
+      "all_tasks": {
+        "observed": 18,
+        "passed": 17,
+        "raw_passed": 16,
+        "functional_passes": 17,
+        "scope_failures": 0,
+        "statuses": {
+          "model_error": 1,
+          "ok": 17
+        }
+      },
+      "selection_tasks": {
+        "observed": 17,
+        "passed": 16,
+        "raw_passed": 15,
+        "functional_passes": 16,
+        "scope_failures": 0,
+        "statuses": {
+          "model_error": 1,
+          "ok": 16
+        }
+      },
+      "selection_resources": {
+        "usage_complete": false,
+        "recorded_tokens": 198313,
+        "tokens_per_reviewed_success": null,
+        "rate_value_per_reviewed_success_range": null,
+        "recorded_input_tokens": 178797,
+        "recorded_output_tokens": 19516,
+        "recorded_cache_read_tokens": 126208,
+        "recorded_uncached_input_tokens": 52589,
+        "recorded_allowance_rate_value_usd_range": [
+          0.01997657,
+          0.03995315
+        ]
+      },
+      "resource_pairs": 16,
+      "resource_pair_keys": [
+        [
+          "first-index",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "swift-slug",
+          2
+        ],
+        [
+          "shell-log-count",
+          1
+        ],
+        [
+          "ambiguous-rounding",
+          1
+        ],
+        [
+          "duration",
+          2
+        ],
+        [
+          "read-only-config",
+          2
+        ],
+        [
+          "ambiguous-rounding",
+          2
+        ]
+      ],
+      "paired_geomean_token_ratio": 1.0,
+      "paired_geomean_call_ratio": 1.0,
+      "rate_pairs": 16,
+      "paired_geomean_rate_ratio": 1.0
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "baseline_lean",
+      "all_tasks": {
+        "observed": 20,
+        "passed": 20,
+        "raw_passed": 20,
+        "functional_passes": 20,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 20
+        }
+      },
+      "selection_tasks": {
+        "observed": 20,
+        "passed": 20,
+        "raw_passed": 20,
+        "functional_passes": 20,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 20
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 257059,
+        "tokens_per_reviewed_success": 12852.95,
+        "rate_value_per_reviewed_success_range": [
+          0.00134411,
+          0.00268823
+        ],
+        "recorded_input_tokens": 234838,
+        "recorded_output_tokens": 22221,
+        "recorded_cache_read_tokens": 147456,
+        "recorded_uncached_input_tokens": 87382,
+        "recorded_allowance_rate_value_usd_range": [
+          0.02688227,
+          0.05376454
+        ]
+      },
+      "resource_pairs": 13,
+      "resource_pair_keys": [
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          1
+        ],
+        [
+          "read-only-config",
+          2
+        ],
+        [
+          "swift-slug",
+          2
+        ]
+      ],
+      "paired_geomean_token_ratio": 0.979476,
+      "paired_geomean_call_ratio": 1.006917,
+      "rate_pairs": 13,
+      "paired_geomean_rate_ratio": 1.133375
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "combined",
+      "all_tasks": {
+        "observed": 12,
+        "passed": 12,
+        "raw_passed": 12,
+        "functional_passes": 12,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 12
+        }
+      },
+      "selection_tasks": {
+        "observed": 11,
+        "passed": 11,
+        "raw_passed": 11,
+        "functional_passes": 11,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 11
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 194057,
+        "tokens_per_reviewed_success": 17641.545,
+        "rate_value_per_reviewed_success_range": [
+          0.00163968,
+          0.00327937
+        ],
+        "recorded_input_tokens": 177559,
+        "recorded_output_tokens": 16498,
+        "recorded_cache_read_tokens": 125824,
+        "recorded_uncached_input_tokens": 51735,
+        "recorded_allowance_rate_value_usd_range": [
+          0.01803652,
+          0.03607304
+        ]
+      },
+      "resource_pairs": 10,
+      "resource_pair_keys": [
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ]
+      ],
+      "paired_geomean_token_ratio": 1.306198,
+      "paired_geomean_call_ratio": 1.029186,
+      "rate_pairs": 10,
+      "paired_geomean_rate_ratio": 1.238451
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "compact",
+      "all_tasks": {
+        "observed": 21,
+        "passed": 21,
+        "raw_passed": 21,
+        "functional_passes": 21,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 21
+        }
+      },
+      "selection_tasks": {
+        "observed": 20,
+        "passed": 20,
+        "raw_passed": 20,
+        "functional_passes": 20,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 20
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 245115,
+        "tokens_per_reviewed_success": 12255.75,
+        "rate_value_per_reviewed_success_range": [
+          0.00124931,
+          0.00249862
+        ],
+        "recorded_input_tokens": 223168,
+        "recorded_output_tokens": 21947,
+        "recorded_cache_read_tokens": 147328,
+        "recorded_uncached_input_tokens": 75840,
+        "recorded_allowance_rate_value_usd_range": [
+          0.02498618,
+          0.04997237
+        ]
+      },
+      "resource_pairs": 13,
+      "resource_pair_keys": [
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "read-only-config",
+          2
+        ],
+        [
+          "ambiguous-rounding",
+          1
+        ],
+        [
+          "swift-slug",
+          2
+        ]
+      ],
+      "paired_geomean_token_ratio": 1.03035,
+      "paired_geomean_call_ratio": 1.030678,
+      "rate_pairs": 13,
+      "paired_geomean_rate_ratio": 1.080842
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "compact_lean",
+      "all_tasks": {
+        "observed": 18,
+        "passed": 18,
+        "raw_passed": 18,
+        "functional_passes": 18,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 18
+        }
+      },
+      "selection_tasks": {
+        "observed": 18,
+        "passed": 18,
+        "raw_passed": 18,
+        "functional_passes": 18,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 18
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 210940,
+        "tokens_per_reviewed_success": 11718.889,
+        "rate_value_per_reviewed_success_range": [
+          0.00137796,
+          0.00275592
+        ],
+        "recorded_input_tokens": 189381,
+        "recorded_output_tokens": 21559,
+        "recorded_cache_read_tokens": 112512,
+        "recorded_uncached_input_tokens": 76869,
+        "recorded_allowance_rate_value_usd_range": [
+          0.02480329,
+          0.04960657
+        ]
+      },
+      "resource_pairs": 12,
+      "resource_pair_keys": [
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "shell-log-count",
+          1
+        ],
+        [
+          "ambiguous-rounding",
+          2
+        ]
+      ],
+      "paired_geomean_token_ratio": 0.878661,
+      "paired_geomean_call_ratio": 0.993607,
+      "rate_pairs": 12,
+      "paired_geomean_rate_ratio": 1.155281
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "evidence",
+      "all_tasks": {
+        "observed": 19,
+        "passed": 19,
+        "raw_passed": 19,
+        "functional_passes": 19,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 19
+        }
+      },
+      "selection_tasks": {
+        "observed": 18,
+        "passed": 18,
+        "raw_passed": 18,
+        "functional_passes": 18,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 18
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 226170,
+        "tokens_per_reviewed_success": 12565.0,
+        "rate_value_per_reviewed_success_range": [
+          0.00136809,
+          0.00273619
+        ],
+        "recorded_input_tokens": 204103,
+        "recorded_output_tokens": 22067,
+        "recorded_cache_read_tokens": 130816,
+        "recorded_uncached_input_tokens": 73287,
+        "recorded_allowance_rate_value_usd_range": [
+          0.0246257,
+          0.0492514
+        ]
+      },
+      "resource_pairs": 12,
+      "resource_pair_keys": [
+        [
+          "clamp",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "duration",
+          2
+        ],
+        [
+          "ambiguous-rounding",
+          1
+        ]
+      ],
+      "paired_geomean_token_ratio": 1.006832,
+      "paired_geomean_call_ratio": 0.974022,
+      "rate_pairs": 12,
+      "paired_geomean_rate_ratio": 1.129355
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "evidence_lean",
+      "all_tasks": {
+        "observed": 21,
+        "passed": 21,
+        "raw_passed": 21,
+        "functional_passes": 21,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 21
+        }
+      },
+      "selection_tasks": {
+        "observed": 21,
+        "passed": 21,
+        "raw_passed": 21,
+        "functional_passes": 21,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 21
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 280907,
+        "tokens_per_reviewed_success": 13376.524,
+        "rate_value_per_reviewed_success_range": [
+          0.00140858,
+          0.00281717
+        ],
+        "recorded_input_tokens": 253657,
+        "recorded_output_tokens": 27250,
+        "recorded_cache_read_tokens": 168832,
+        "recorded_uncached_input_tokens": 84825,
+        "recorded_allowance_rate_value_usd_range": [
+          0.02958025,
+          0.05916049
+        ]
+      },
+      "resource_pairs": 14,
+      "resource_pair_keys": [
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          2
+        ],
+        [
+          "shell-log-count",
+          1
+        ],
+        [
+          "duration",
+          2
+        ],
+        [
+          "swift-slug",
+          2
+        ]
+      ],
+      "paired_geomean_token_ratio": 1.08835,
+      "paired_geomean_call_ratio": 1.065728,
+      "rate_pairs": 14,
+      "paired_geomean_rate_ratio": 1.14445
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "examples",
+      "all_tasks": {
+        "observed": 12,
+        "passed": 12,
+        "raw_passed": 12,
+        "functional_passes": 12,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 12
+        }
+      },
+      "selection_tasks": {
+        "observed": 11,
+        "passed": 11,
+        "raw_passed": 11,
+        "functional_passes": 11,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 11
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 190963,
+        "tokens_per_reviewed_success": 17360.273,
+        "rate_value_per_reviewed_success_range": [
+          0.00167574,
+          0.00335147
+        ],
+        "recorded_input_tokens": 173765,
+        "recorded_output_tokens": 17198,
+        "recorded_cache_read_tokens": 122112,
+        "recorded_uncached_input_tokens": 51653,
+        "recorded_allowance_rate_value_usd_range": [
+          0.01843309,
+          0.03686617
+        ]
+      },
+      "resource_pairs": 10,
+      "resource_pair_keys": [
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ]
+      ],
+      "paired_geomean_token_ratio": 1.235352,
+      "paired_geomean_call_ratio": 1.093746,
+      "rate_pairs": 10,
+      "paired_geomean_rate_ratio": 1.285445
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "minimal",
+      "all_tasks": {
+        "observed": 18,
+        "passed": 18,
+        "raw_passed": 18,
+        "functional_passes": 18,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 18
+        }
+      },
+      "selection_tasks": {
+        "observed": 17,
+        "passed": 17,
+        "raw_passed": 17,
+        "functional_passes": 17,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 17
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 250772,
+        "tokens_per_reviewed_success": 14751.294,
+        "rate_value_per_reviewed_success_range": [
+          0.00163813,
+          0.00327626
+        ],
+        "recorded_input_tokens": 224476,
+        "recorded_output_tokens": 26296,
+        "recorded_cache_read_tokens": 146944,
+        "recorded_uncached_input_tokens": 77532,
+        "recorded_allowance_rate_value_usd_range": [
+          0.02784823,
+          0.05569646
+        ]
+      },
+      "resource_pairs": 13,
+      "resource_pair_keys": [
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "swift-slug",
+          2
+        ],
+        [
+          "duration",
+          2
+        ],
+        [
+          "ambiguous-rounding",
+          1
+        ]
+      ],
+      "paired_geomean_token_ratio": 0.970301,
+      "paired_geomean_call_ratio": 1.0,
+      "rate_pairs": 13,
+      "paired_geomean_rate_ratio": 1.160652
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "minimal_lean",
+      "all_tasks": {
+        "observed": 20,
+        "passed": 20,
+        "raw_passed": 19,
+        "functional_passes": 19,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 20
+        }
+      },
+      "selection_tasks": {
+        "observed": 20,
+        "passed": 20,
+        "raw_passed": 19,
+        "functional_passes": 19,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 20
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 253331,
+        "tokens_per_reviewed_success": 12666.55,
+        "rate_value_per_reviewed_success_range": [
+          0.00139462,
+          0.00278924
+        ],
+        "recorded_input_tokens": 227539,
+        "recorded_output_tokens": 25792,
+        "recorded_cache_read_tokens": 147712,
+        "recorded_uncached_input_tokens": 79827,
+        "recorded_allowance_rate_value_usd_range": [
+          0.02789239,
+          0.05578477
+        ]
+      },
+      "resource_pairs": 12,
+      "resource_pair_keys": [
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          1
+        ],
+        [
+          "ambiguous-rounding",
+          2
+        ]
+      ],
+      "paired_geomean_token_ratio": 0.95327,
+      "paired_geomean_call_ratio": 1.033296,
+      "rate_pairs": 12,
+      "paired_geomean_rate_ratio": 1.179369
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "workflow",
+      "all_tasks": {
+        "observed": 12,
+        "passed": 12,
+        "raw_passed": 12,
+        "functional_passes": 12,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 12
+        }
+      },
+      "selection_tasks": {
+        "observed": 11,
+        "passed": 11,
+        "raw_passed": 11,
+        "functional_passes": 11,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 11
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 165483,
+        "tokens_per_reviewed_success": 15043.909,
+        "rate_value_per_reviewed_success_range": [
+          0.00178681,
+          0.00357362
+        ],
+        "recorded_input_tokens": 147488,
+        "recorded_output_tokens": 17995,
+        "recorded_cache_read_tokens": 90240,
+        "recorded_uncached_input_tokens": 57248,
+        "recorded_allowance_rate_value_usd_range": [
+          0.01965492,
+          0.03930984
+        ]
+      },
+      "resource_pairs": 10,
+      "resource_pair_keys": [
+        [
+          "clamp",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ]
+      ],
+      "paired_geomean_token_ratio": 1.095568,
+      "paired_geomean_call_ratio": 1.0,
+      "rate_pairs": 10,
+      "paired_geomean_rate_ratio": 1.410595
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "adaptive_compact",
+      "all_tasks": {
+        "observed": 12,
+        "passed": 10,
+        "raw_passed": 10,
+        "functional_passes": 11,
+        "scope_failures": 0,
+        "statuses": {
+          "model_error": 1,
+          "ok": 10,
+          "request_limit": 1
+        }
+      },
+      "selection_tasks": {
+        "observed": 11,
+        "passed": 9,
+        "raw_passed": 9,
+        "functional_passes": 10,
+        "scope_failures": 0,
+        "statuses": {
+          "model_error": 1,
+          "ok": 9,
+          "request_limit": 1
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 153998,
+        "tokens_per_reviewed_success": 17110.889,
+        "rate_value_per_reviewed_success_range": [
+          0.0021694,
+          0.0021694
+        ],
+        "recorded_input_tokens": 138748,
+        "recorded_output_tokens": 15250,
+        "recorded_cache_read_tokens": 74272,
+        "recorded_uncached_input_tokens": 64476,
+        "recorded_allowance_rate_value_usd_range": [
+          0.01952456,
+          0.01952456
+        ]
+      },
+      "resource_pairs": 9,
+      "resource_pair_keys": [
+        [
+          "duration",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ]
+      ],
+      "paired_geomean_token_ratio": 0.809407,
+      "paired_geomean_call_ratio": 0.841941,
+      "rate_pairs": 9,
+      "paired_geomean_rate_ratio": 1.076687
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "baseline",
+      "all_tasks": {
+        "observed": 18,
+        "passed": 18,
+        "raw_passed": 18,
+        "functional_passes": 18,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 18
+        }
+      },
+      "selection_tasks": {
+        "observed": 17,
+        "passed": 17,
+        "raw_passed": 17,
+        "functional_passes": 17,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 17
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 293072,
+        "tokens_per_reviewed_success": 17239.529,
+        "rate_value_per_reviewed_success_range": [
+          0.00182639,
+          0.00182639
+        ],
+        "recorded_input_tokens": 266331,
+        "recorded_output_tokens": 26741,
+        "recorded_cache_read_tokens": 185596,
+        "recorded_uncached_input_tokens": 80735,
+        "recorded_allowance_rate_value_usd_range": [
+          0.03104863,
+          0.03104863
+        ]
+      },
+      "resource_pairs": 17,
+      "resource_pair_keys": [
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "swift-chunks",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "csv-records",
+          1
+        ],
+        [
+          "first-index",
+          2
+        ],
+        [
+          "duration",
+          2
+        ],
+        [
+          "shell-log-count",
+          2
+        ],
+        [
+          "shell-log-count",
+          1
+        ],
+        [
+          "swift-chunks",
+          1
+        ]
+      ],
+      "paired_geomean_token_ratio": 1.0,
+      "paired_geomean_call_ratio": 1.0,
+      "rate_pairs": 17,
+      "paired_geomean_rate_ratio": 1.0
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "baseline_lean",
+      "all_tasks": {
+        "observed": 16,
+        "passed": 14,
+        "raw_passed": 14,
+        "functional_passes": 14,
+        "scope_failures": 0,
+        "statuses": {
+          "generation_limit": 1,
+          "model_error": 1,
+          "ok": 14
+        }
+      },
+      "selection_tasks": {
+        "observed": 16,
+        "passed": 14,
+        "raw_passed": 14,
+        "functional_passes": 14,
+        "scope_failures": 0,
+        "statuses": {
+          "generation_limit": 1,
+          "model_error": 1,
+          "ok": 14
+        }
+      },
+      "selection_resources": {
+        "usage_complete": false,
+        "recorded_tokens": 216702,
+        "tokens_per_reviewed_success": null,
+        "rate_value_per_reviewed_success_range": null,
+        "recorded_input_tokens": 193463,
+        "recorded_output_tokens": 23239,
+        "recorded_cache_read_tokens": 130508,
+        "recorded_uncached_input_tokens": 62955,
+        "recorded_allowance_rate_value_usd_range": [
+          0.02497799,
+          0.02497799
+        ]
+      },
+      "resource_pairs": 11,
+      "resource_pair_keys": [
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "swift-chunks",
+          0
+        ],
+        [
+          "shell-log-count",
+          2
+        ]
+      ],
+      "paired_geomean_token_ratio": 0.7705,
+      "paired_geomean_call_ratio": 0.875427,
+      "rate_pairs": 11,
+      "paired_geomean_rate_ratio": 0.784221
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "combined",
+      "all_tasks": {
+        "observed": 12,
+        "passed": 11,
+        "raw_passed": 11,
+        "functional_passes": 11,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 12
+        }
+      },
+      "selection_tasks": {
+        "observed": 11,
+        "passed": 11,
+        "raw_passed": 11,
+        "functional_passes": 11,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 11
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 191310,
+        "tokens_per_reviewed_success": 17391.818,
+        "rate_value_per_reviewed_success_range": [
+          0.00190259,
+          0.00190259
+        ],
+        "recorded_input_tokens": 176207,
+        "recorded_output_tokens": 15103,
+        "recorded_cache_read_tokens": 108784,
+        "recorded_uncached_input_tokens": 67423,
+        "recorded_allowance_rate_value_usd_range": [
+          0.02092847,
+          0.02092847
+        ]
+      },
+      "resource_pairs": 11,
+      "resource_pair_keys": [
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "swift-chunks",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ]
+      ],
+      "paired_geomean_token_ratio": 1.050831,
+      "paired_geomean_call_ratio": 0.857573,
+      "rate_pairs": 11,
+      "paired_geomean_rate_ratio": 1.212954
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "compact",
+      "all_tasks": {
+        "observed": 19,
+        "passed": 19,
+        "raw_passed": 19,
+        "functional_passes": 19,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 19
+        }
+      },
+      "selection_tasks": {
+        "observed": 18,
+        "passed": 18,
+        "raw_passed": 18,
+        "functional_passes": 18,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 18
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 223427,
+        "tokens_per_reviewed_success": 12412.611,
+        "rate_value_per_reviewed_success_range": [
+          0.00165365,
+          0.00165365
+        ],
+        "recorded_input_tokens": 200701,
+        "recorded_output_tokens": 22726,
+        "recorded_cache_read_tokens": 97520,
+        "recorded_uncached_input_tokens": 103181,
+        "recorded_allowance_rate_value_usd_range": [
+          0.02976575,
+          0.02976575
+        ]
+      },
+      "resource_pairs": 13,
+      "resource_pair_keys": [
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "swift-chunks",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "duration",
+          2
+        ],
+        [
+          "swift-chunks",
+          1
+        ]
+      ],
+      "paired_geomean_token_ratio": 0.765306,
+      "paired_geomean_call_ratio": 0.821403,
+      "rate_pairs": 13,
+      "paired_geomean_rate_ratio": 1.061997
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "compact_lean",
+      "all_tasks": {
+        "observed": 20,
+        "passed": 18,
+        "raw_passed": 18,
+        "functional_passes": 19,
+        "scope_failures": 0,
+        "statuses": {
+          "model_error": 1,
+          "ok": 18,
+          "request_limit": 1
+        }
+      },
+      "selection_tasks": {
+        "observed": 20,
+        "passed": 18,
+        "raw_passed": 18,
+        "functional_passes": 19,
+        "scope_failures": 0,
+        "statuses": {
+          "model_error": 1,
+          "ok": 18,
+          "request_limit": 1
+        }
+      },
+      "selection_resources": {
+        "usage_complete": false,
+        "recorded_tokens": 264275,
+        "tokens_per_reviewed_success": null,
+        "rate_value_per_reviewed_success_range": null,
+        "recorded_input_tokens": 239197,
+        "recorded_output_tokens": 25078,
+        "recorded_cache_read_tokens": 152400,
+        "recorded_uncached_input_tokens": 86797,
+        "recorded_allowance_rate_value_usd_range": [
+          0.03013055,
+          0.03013055
+        ]
+      },
+      "resource_pairs": 11,
+      "resource_pair_keys": [
+        [
+          "clamp",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "duration",
+          2
+        ],
+        [
+          "swift-chunks",
+          1
+        ]
+      ],
+      "paired_geomean_token_ratio": 0.648745,
+      "paired_geomean_call_ratio": 0.763614,
+      "rate_pairs": 11,
+      "paired_geomean_rate_ratio": 0.794459
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "evidence",
+      "all_tasks": {
+        "observed": 23,
+        "passed": 22,
+        "raw_passed": 22,
+        "functional_passes": 22,
+        "scope_failures": 0,
+        "statuses": {
+          "model_error": 1,
+          "ok": 22
+        }
+      },
+      "selection_tasks": {
+        "observed": 22,
+        "passed": 21,
+        "raw_passed": 21,
+        "functional_passes": 21,
+        "scope_failures": 0,
+        "statuses": {
+          "model_error": 1,
+          "ok": 21
+        }
+      },
+      "selection_resources": {
+        "usage_complete": false,
+        "recorded_tokens": 323500,
+        "tokens_per_reviewed_success": null,
+        "rate_value_per_reviewed_success_range": null,
+        "recorded_input_tokens": 292324,
+        "recorded_output_tokens": 31176,
+        "recorded_cache_read_tokens": 188176,
+        "recorded_uncached_input_tokens": 104148,
+        "recorded_allowance_rate_value_usd_range": [
+          0.03685548,
+          0.03685548
+        ]
+      },
+      "resource_pairs": 15,
+      "resource_pair_keys": [
+        [
+          "clamp",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "swift-chunks",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "shell-log-count",
+          1
+        ],
+        [
+          "shell-log-count",
+          2
+        ],
+        [
+          "swift-chunks",
+          1
+        ],
+        [
+          "first-index",
+          2
+        ],
+        [
+          "duration",
+          2
+        ]
+      ],
+      "paired_geomean_token_ratio": 0.801542,
+      "paired_geomean_call_ratio": 0.807769,
+      "rate_pairs": 15,
+      "paired_geomean_rate_ratio": 0.855352
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "evidence_lean",
+      "all_tasks": {
+        "observed": 22,
+        "passed": 22,
+        "raw_passed": 22,
+        "functional_passes": 22,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 22
+        }
+      },
+      "selection_tasks": {
+        "observed": 22,
+        "passed": 22,
+        "raw_passed": 22,
+        "functional_passes": 22,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 22
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 374028,
+        "tokens_per_reviewed_success": 17001.273,
+        "rate_value_per_reviewed_success_range": [
+          0.00195031,
+          0.00195031
+        ],
+        "recorded_input_tokens": 335319,
+        "recorded_output_tokens": 38709,
+        "recorded_cache_read_tokens": 222880,
+        "recorded_uncached_input_tokens": 112439,
+        "recorded_allowance_rate_value_usd_range": [
+          0.04290675,
+          0.04290675
+        ]
+      },
+      "resource_pairs": 16,
+      "resource_pair_keys": [
+        [
+          "swift-chunks",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "shell-log-count",
+          1
+        ],
+        [
+          "shell-log-count",
+          2
+        ],
+        [
+          "swift-chunks",
+          1
+        ],
+        [
+          "csv-records",
+          1
+        ],
+        [
+          "first-index",
+          2
+        ]
+      ],
+      "paired_geomean_token_ratio": 0.949574,
+      "paired_geomean_call_ratio": 0.938423,
+      "rate_pairs": 16,
+      "paired_geomean_rate_ratio": 1.049138
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "examples",
+      "all_tasks": {
+        "observed": 12,
+        "passed": 11,
+        "raw_passed": 11,
+        "functional_passes": 12,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 11,
+          "request_limit": 1
+        }
+      },
+      "selection_tasks": {
+        "observed": 11,
+        "passed": 10,
+        "raw_passed": 10,
+        "functional_passes": 11,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 10,
+          "request_limit": 1
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 157230,
+        "tokens_per_reviewed_success": 15723.0,
+        "rate_value_per_reviewed_success_range": [
+          0.00169466,
+          0.00169466
+        ],
+        "recorded_input_tokens": 142428,
+        "recorded_output_tokens": 14802,
+        "recorded_cache_read_tokens": 98488,
+        "recorded_uncached_input_tokens": 43940,
+        "recorded_allowance_rate_value_usd_range": [
+          0.01694664,
+          0.01694664
+        ]
+      },
+      "resource_pairs": 10,
+      "resource_pair_keys": [
+        [
+          "duration",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ]
+      ],
+      "paired_geomean_token_ratio": 0.823717,
+      "paired_geomean_call_ratio": 0.794049,
+      "rate_pairs": 10,
+      "paired_geomean_rate_ratio": 0.9552
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "minimal",
+      "all_tasks": {
+        "observed": 25,
+        "passed": 23,
+        "raw_passed": 23,
+        "functional_passes": 24,
+        "scope_failures": 0,
+        "statuses": {
+          "generation_limit": 1,
+          "ok": 23,
+          "request_limit": 1
+        }
+      },
+      "selection_tasks": {
+        "observed": 24,
+        "passed": 22,
+        "raw_passed": 22,
+        "functional_passes": 23,
+        "scope_failures": 0,
+        "statuses": {
+          "generation_limit": 1,
+          "ok": 22,
+          "request_limit": 1
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 293129,
+        "tokens_per_reviewed_success": 13324.045,
+        "rate_value_per_reviewed_success_range": [
+          0.00173467,
+          0.00173467
+        ],
+        "recorded_input_tokens": 257613,
+        "recorded_output_tokens": 35516,
+        "recorded_cache_read_tokens": 151976,
+        "recorded_uncached_input_tokens": 105637,
+        "recorded_allowance_rate_value_usd_range": [
+          0.03816283,
+          0.03816283
+        ]
+      },
+      "resource_pairs": 13,
+      "resource_pair_keys": [
+        [
+          "swift-chunks",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "shell-log-count",
+          1
+        ],
+        [
+          "first-index",
+          2
+        ],
+        [
+          "shell-log-count",
+          2
+        ]
+      ],
+      "paired_geomean_token_ratio": 0.780653,
+      "paired_geomean_call_ratio": 0.862097,
+      "rate_pairs": 13,
+      "paired_geomean_rate_ratio": 0.893437
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "minimal_lean",
+      "all_tasks": {
+        "observed": 24,
+        "passed": 21,
+        "raw_passed": 21,
+        "functional_passes": 21,
+        "scope_failures": 0,
+        "statuses": {
+          "generation_limit": 2,
+          "ok": 22
+        }
+      },
+      "selection_tasks": {
+        "observed": 24,
+        "passed": 21,
+        "raw_passed": 21,
+        "functional_passes": 21,
+        "scope_failures": 0,
+        "statuses": {
+          "generation_limit": 2,
+          "ok": 22
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 219814,
+        "tokens_per_reviewed_success": 10467.333,
+        "rate_value_per_reviewed_success_range": [
+          0.00152936,
+          0.00152936
+        ],
+        "recorded_input_tokens": 188225,
+        "recorded_output_tokens": 31589,
+        "recorded_cache_read_tokens": 99264,
+        "recorded_uncached_input_tokens": 88961,
+        "recorded_allowance_rate_value_usd_range": [
+          0.03211657,
+          0.03211657
+        ]
+      },
+      "resource_pairs": 13,
+      "resource_pair_keys": [
+        [
+          "first-index",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "swift-chunks",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "duration",
+          2
+        ],
+        [
+          "swift-chunks",
+          1
+        ]
+      ],
+      "paired_geomean_token_ratio": 0.601741,
+      "paired_geomean_call_ratio": 0.723739,
+      "rate_pairs": 13,
+      "paired_geomean_rate_ratio": 0.903622
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "workflow",
+      "all_tasks": {
+        "observed": 12,
+        "passed": 12,
+        "raw_passed": 12,
+        "functional_passes": 12,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 12
+        }
+      },
+      "selection_tasks": {
+        "observed": 11,
+        "passed": 11,
+        "raw_passed": 11,
+        "functional_passes": 11,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 11
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 164521,
+        "tokens_per_reviewed_success": 14956.455,
+        "rate_value_per_reviewed_success_range": [
+          0.00166221,
+          0.00166221
+        ],
+        "recorded_input_tokens": 149831,
+        "recorded_output_tokens": 14690,
+        "recorded_cache_read_tokens": 96128,
+        "recorded_uncached_input_tokens": 53703,
+        "recorded_allowance_rate_value_usd_range": [
+          0.01828429,
+          0.01828429
+        ]
+      },
+      "resource_pairs": 11,
+      "resource_pair_keys": [
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "swift-chunks",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ]
+      ],
+      "paired_geomean_token_ratio": 0.880975,
+      "paired_geomean_call_ratio": 0.885227,
+      "rate_pairs": 11,
+      "paired_geomean_rate_ratio": 1.02731
+    }
+  ],
+  "balanced_paired_summaries": [
+    {
+      "candidate": "adaptive_compact",
+      "models": [
+        "deepseek-v4.1-flash",
+        "glm-5.3-flash"
+      ],
+      "quality_pairs_by_model": {
+        "deepseek-v4.1-flash": 11,
+        "glm-5.3-flash": 11
+      },
+      "metrics": {
+        "quality_delta_pp": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": -4.55,
+          "exploratory_95pct_task_bootstrap": [
+            -13.64,
+            0
+          ]
+        },
+        "token_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "swift-slug"
+          ],
+          "point": 0.92244,
+          "exploratory_95pct_task_bootstrap": [
+            0.789139,
+            1.062949
+          ]
+        },
+        "call_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "swift-slug"
+          ],
+          "point": 0.917573,
+          "exploratory_95pct_task_bootstrap": [
+            0.833825,
+            1.008601
+          ]
+        },
+        "rate_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "swift-slug"
+          ],
+          "point": 1.120696,
+          "exploratory_95pct_task_bootstrap": [
+            0.942175,
+            1.36217
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "baseline_lean",
+      "models": [
+        "deepseek-v4.1-flash",
+        "glm-5.3-flash"
+      ],
+      "quality_pairs_by_model": {
+        "deepseek-v4.1-flash": 14,
+        "glm-5.3-flash": 13
+      },
+      "metrics": {
+        "quality_delta_pp": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": -1.52,
+          "exploratory_95pct_task_bootstrap": [
+            -15.15,
+            12.12
+          ]
+        },
+        "token_ratio": {
+          "common_tasks": [
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 0.860047,
+          "exploratory_95pct_task_bootstrap": [
+            0.745124,
+            0.975644
+          ]
+        },
+        "call_ratio": {
+          "common_tasks": [
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 0.919542,
+          "exploratory_95pct_task_bootstrap": [
+            0.856884,
+            0.986781
+          ]
+        },
+        "rate_ratio": {
+          "common_tasks": [
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 0.951182,
+          "exploratory_95pct_task_bootstrap": [
+            0.797908,
+            1.119167
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "combined",
+      "models": [
+        "deepseek-v4.1-flash",
+        "glm-5.3-flash"
+      ],
+      "quality_pairs_by_model": {
+        "deepseek-v4.1-flash": 11,
+        "glm-5.3-flash": 11
+      },
+      "metrics": {
+        "quality_delta_pp": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 4.55,
+          "exploratory_95pct_task_bootstrap": [
+            0,
+            13.64
+          ]
+        },
+        "token_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 1.151267,
+          "exploratory_95pct_task_bootstrap": [
+            1.008453,
+            1.299786
+          ]
+        },
+        "call_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 0.926805,
+          "exploratory_95pct_task_bootstrap": [
+            0.847244,
+            1.012398
+          ]
+        },
+        "rate_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 1.246357,
+          "exploratory_95pct_task_bootstrap": [
+            1.078062,
+            1.407305
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "compact",
+      "models": [
+        "deepseek-v4.1-flash",
+        "glm-5.3-flash"
+      ],
+      "quality_pairs_by_model": {
+        "deepseek-v4.1-flash": 14,
+        "glm-5.3-flash": 13
+      },
+      "metrics": {
+        "quality_delta_pp": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 4.55,
+          "exploratory_95pct_task_bootstrap": [
+            0,
+            13.64
+          ]
+        },
+        "token_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 0.928331,
+          "exploratory_95pct_task_bootstrap": [
+            0.822982,
+            1.067643
+          ]
+        },
+        "call_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 0.933494,
+          "exploratory_95pct_task_bootstrap": [
+            0.854135,
+            1.023745
+          ]
+        },
+        "rate_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 1.19077,
+          "exploratory_95pct_task_bootstrap": [
+            1.084191,
+            1.30562
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "compact_lean",
+      "models": [
+        "deepseek-v4.1-flash",
+        "glm-5.3-flash"
+      ],
+      "quality_pairs_by_model": {
+        "deepseek-v4.1-flash": 13,
+        "glm-5.3-flash": 13
+      },
+      "metrics": {
+        "quality_delta_pp": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": -2.27,
+          "exploratory_95pct_task_bootstrap": [
+            -13.64,
+            6.82
+          ]
+        },
+        "token_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 0.756973,
+          "exploratory_95pct_task_bootstrap": [
+            0.663735,
+            0.850745
+          ]
+        },
+        "call_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 0.862396,
+          "exploratory_95pct_task_bootstrap": [
+            0.781744,
+            0.952423
+          ]
+        },
+        "rate_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 0.969134,
+          "exploratory_95pct_task_bootstrap": [
+            0.826236,
+            1.10849
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "evidence",
+      "models": [
+        "deepseek-v4.1-flash",
+        "glm-5.3-flash"
+      ],
+      "quality_pairs_by_model": {
+        "deepseek-v4.1-flash": 13,
+        "glm-5.3-flash": 16
+      },
+      "metrics": {
+        "quality_delta_pp": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 3.03,
+          "exploratory_95pct_task_bootstrap": [
+            -4.55,
+            13.64
+          ]
+        },
+        "token_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 0.948778,
+          "exploratory_95pct_task_bootstrap": [
+            0.864556,
+            1.039196
+          ]
+        },
+        "call_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 0.913033,
+          "exploratory_95pct_task_bootstrap": [
+            0.85112,
+            0.97808
+          ]
+        },
+        "rate_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 1.055219,
+          "exploratory_95pct_task_bootstrap": [
+            0.952304,
+            1.182699
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "evidence_lean",
+      "models": [
+        "deepseek-v4.1-flash",
+        "glm-5.3-flash"
+      ],
+      "quality_pairs_by_model": {
+        "deepseek-v4.1-flash": 15,
+        "glm-5.3-flash": 16
+      },
+      "metrics": {
+        "quality_delta_pp": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 4.55,
+          "exploratory_95pct_task_bootstrap": [
+            0,
+            13.64
+          ]
+        },
+        "token_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 0.974669,
+          "exploratory_95pct_task_bootstrap": [
+            0.873707,
+            1.077052
+          ]
+        },
+        "call_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 0.966135,
+          "exploratory_95pct_task_bootstrap": [
+            0.897601,
+            1.036253
+          ]
+        },
+        "rate_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 1.061186,
+          "exploratory_95pct_task_bootstrap": [
+            0.967972,
+            1.165771
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "examples",
+      "models": [
+        "deepseek-v4.1-flash",
+        "glm-5.3-flash"
+      ],
+      "quality_pairs_by_model": {
+        "deepseek-v4.1-flash": 11,
+        "glm-5.3-flash": 11
+      },
+      "metrics": {
+        "quality_delta_pp": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 0,
+          "exploratory_95pct_task_bootstrap": [
+            0,
+            0
+          ]
+        },
+        "token_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 1.008752,
+          "exploratory_95pct_task_bootstrap": [
+            0.917176,
+            1.101403
+          ]
+        },
+        "call_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 0.931927,
+          "exploratory_95pct_task_bootstrap": [
+            0.875703,
+            0.982543
+          ]
+        },
+        "rate_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 1.108087,
+          "exploratory_95pct_task_bootstrap": [
+            0.993913,
+            1.226453
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "minimal",
+      "models": [
+        "deepseek-v4.1-flash",
+        "glm-5.3-flash"
+      ],
+      "quality_pairs_by_model": {
+        "deepseek-v4.1-flash": 14,
+        "glm-5.3-flash": 15
+      },
+      "metrics": {
+        "quality_delta_pp": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 0.76,
+          "exploratory_95pct_task_bootstrap": [
+            -8.33,
+            12.12
+          ]
+        },
+        "token_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 0.863384,
+          "exploratory_95pct_task_bootstrap": [
+            0.777751,
+            0.959844
+          ]
+        },
+        "call_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 0.914324,
+          "exploratory_95pct_task_bootstrap": [
+            0.861873,
+            0.982635
+          ]
+        },
+        "rate_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 1.064569,
+          "exploratory_95pct_task_bootstrap": [
+            0.953507,
+            1.161392
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "minimal_lean",
+      "models": [
+        "deepseek-v4.1-flash",
+        "glm-5.3-flash"
+      ],
+      "quality_pairs_by_model": {
+        "deepseek-v4.1-flash": 13,
+        "glm-5.3-flash": 15
+      },
+      "metrics": {
+        "quality_delta_pp": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 1.52,
+          "exploratory_95pct_task_bootstrap": [
+            -9.09,
+            13.64
+          ]
+        },
+        "token_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 0.811873,
+          "exploratory_95pct_task_bootstrap": [
+            0.736037,
+            0.888327
+          ]
+        },
+        "call_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 0.887153,
+          "exploratory_95pct_task_bootstrap": [
+            0.835386,
+            0.944008
+          ]
+        },
+        "rate_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 1.102336,
+          "exploratory_95pct_task_bootstrap": [
+            0.984215,
+            1.213069
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "workflow",
+      "models": [
+        "deepseek-v4.1-flash",
+        "glm-5.3-flash"
+      ],
+      "quality_pairs_by_model": {
+        "deepseek-v4.1-flash": 11,
+        "glm-5.3-flash": 11
+      },
+      "metrics": {
+        "quality_delta_pp": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 4.55,
+          "exploratory_95pct_task_bootstrap": [
+            0,
+            13.64
+          ]
+        },
+        "token_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 0.946005,
+          "exploratory_95pct_task_bootstrap": [
+            0.818464,
+            1.072591
+          ]
+        },
+        "call_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 0.91638,
+          "exploratory_95pct_task_bootstrap": [
+            0.832167,
+            0.995597
+          ]
+        },
+        "rate_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 1.208798,
+          "exploratory_95pct_task_bootstrap": [
+            1.024588,
+            1.425525
+          ]
+        }
+      }
+    }
+  ],
+  "equal_model_resource_ratios": [
+    {
+      "candidate": "adaptive_compact",
+      "models": 2,
+      "token_ratio": 0.951785,
+      "rate_ratio": 1.13485
+    },
+    {
+      "candidate": "baseline",
+      "models": 2,
+      "token_ratio": 1.0,
+      "rate_ratio": 1.0
+    },
+    {
+      "candidate": "baseline_lean",
+      "models": 2,
+      "token_ratio": 0.868727,
+      "rate_ratio": 0.942771
+    },
+    {
+      "candidate": "combined",
+      "models": 2,
+      "token_ratio": 1.171577,
+      "rate_ratio": 1.225636
+    },
+    {
+      "candidate": "compact",
+      "models": 2,
+      "token_ratio": 0.887994,
+      "rate_ratio": 1.071378
+    },
+    {
+      "candidate": "compact_lean",
+      "models": 2,
+      "token_ratio": 0.755001,
+      "rate_ratio": 0.958031
+    },
+    {
+      "candidate": "evidence",
+      "models": 2,
+      "token_ratio": 0.898342,
+      "rate_ratio": 0.982851
+    },
+    {
+      "candidate": "evidence_lean",
+      "models": 2,
+      "token_ratio": 1.016597,
+      "rate_ratio": 1.095758
+    },
+    {
+      "candidate": "examples",
+      "models": 2,
+      "token_ratio": 1.008752,
+      "rate_ratio": 1.108087
+    },
+    {
+      "candidate": "minimal",
+      "models": 2,
+      "token_ratio": 0.870327,
+      "rate_ratio": 1.018317
+    },
+    {
+      "candidate": "minimal_lean",
+      "models": 2,
+      "token_ratio": 0.757378,
+      "rate_ratio": 1.032329
+    },
+    {
+      "candidate": "workflow",
+      "models": 2,
+      "token_ratio": 0.98243,
+      "rate_ratio": 1.203793
+    }
+  ],
+  "limits": "Exploratory pooled runs with recorded bundle fingerprints, not a randomized contemporaneous comparison. Resource pairs condition on successful completions with complete usage; inspect all failure counts and all-attempt cost per success separately. Balanced summaries use only task clusters represented on every model, average repeats within model/task, and weight models equally. Task-bootstrap intervals are unadjusted for selection or multiple comparisons; a zero-width quality interval from all observed successes does not establish equivalence. Model aliases, cache states and routing vary. Same-tariff estimates are not actual cash or allowance debits. No winner is inferred.",
+  "reporter_sha256": "9dcee03e1dbf9920e1bf024cb2ab249ba41f4ca4ceca94c6a6c5e369832e9bba"
+}

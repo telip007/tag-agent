@@ -1,0 +1,4661 @@
+{
+  "runs": [
+    {
+      "directory": "Evals/prompt-lab/results/native-dev-02",
+      "fingerprint": "ef728aadc305418716bf058dc6b21115c87eb206c51dee89bae26c5974a0650d",
+      "expected": 72,
+      "observed": 72,
+      "native_bundle_sha256": "c75b8381a4b19988c8f4ba0db278dadfaabb7a8d89aff74b3a83f21793c972b0",
+      "scaffold": "standard",
+      "policy_scaffolds": {},
+      "results_sha256": "029316de671b84b7bbf2acc3e258174a6cf2daa662adb92981e4eb02fcaf2395"
+    },
+    {
+      "directory": "Evals/prompt-lab/results/native-hybrid-dev-01",
+      "fingerprint": "0392113c17e8b2db3d2796c1fec5efbba3d16eb070482a0eb070397d25b9d0f6",
+      "expected": 24,
+      "observed": 24,
+      "native_bundle_sha256": "37e16c8aabc3a464f421439187ab377430eb3eb7219822dd048e02a7795baaf9",
+      "scaffold": "standard",
+      "policy_scaffolds": {},
+      "results_sha256": "9e5813a55c2c23787d13d83ca1c7912c555046a8fdeaa4b856d36e9578885f40"
+    },
+    {
+      "directory": "Evals/prompt-lab/results/native-family-dev-01",
+      "fingerprint": "1a86cce84ccc31379d901d4898774d57a594d074a9d88914679d152d91033ac9",
+      "expected": 96,
+      "observed": 96,
+      "native_bundle_sha256": "37e16c8aabc3a464f421439187ab377430eb3eb7219822dd048e02a7795baaf9",
+      "scaffold": "standard",
+      "policy_scaffolds": {},
+      "results_sha256": "0e87112d5e555c4d4a5f5117a02f79aa9b31d351d675a2aad19c22ab7a94c5aa"
+    },
+    {
+      "directory": "Evals/prompt-lab/results/native-scaffold-dev-01",
+      "fingerprint": "70767f58de85d9f1079471fe6d5e5f0672d01f9265f8e737e9928a950fb0639b",
+      "expected": 88,
+      "observed": 88,
+      "native_bundle_sha256": "de514a9701f60acdf3edc0e4a7f7c52fa25896a6ff0006db3a9b3d8ddbb6a243",
+      "scaffold": "lean",
+      "policy_scaffolds": {},
+      "results_sha256": "7a79dfeb183e6e61ea28781da4571aa375999c607ea6936f30ce4cc6824b2e6d"
+    },
+    {
+      "directory": "Evals/prompt-lab/results/native-repeat-dev-01",
+      "fingerprint": "83346c3f2f1d140b0e2611d61d4a818e20aa64c19e28b9421da4e101e384e1af",
+      "expected": 352,
+      "observed": 352,
+      "native_bundle_sha256": "de514a9701f60acdf3edc0e4a7f7c52fa25896a6ff0006db3a9b3d8ddbb6a243",
+      "scaffold": "both",
+      "policy_scaffolds": {
+        "baseline": "standard",
+        "compact": "standard",
+        "evidence": "standard",
+        "minimal": "standard",
+        "baseline_lean": "lean",
+        "compact_lean": "lean",
+        "evidence_lean": "lean",
+        "minimal_lean": "lean"
+      },
+      "results_sha256": "b84e0b8b5cdf38d1da262f22753cb56487adc3948398d0c8242def03388ece3a"
+    }
+  ],
+  "controls": {
+    "stage": "native-trajectories",
+    "split": "development",
+    "max_calls": 12,
+    "max_tokens": 4096,
+    "deadline_seconds": 180,
+    "temperature": 0,
+    "reasoning": "provider defaults",
+    "workers": 2
+  },
+  "excluded_selection_tasks": [
+    "config-precedence"
+  ],
+  "complete": true,
+  "table": [
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "adaptive_compact",
+      "all_tasks": {
+        "observed": 12,
+        "passed": 12,
+        "raw_passed": 12,
+        "functional_passes": 12,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 12
+        }
+      },
+      "selection_tasks": {
+        "observed": 11,
+        "passed": 11,
+        "raw_passed": 11,
+        "functional_passes": 11,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 11
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 180947,
+        "tokens_per_reviewed_success": 16449.727,
+        "rate_value_per_reviewed_success_range": [
+          0.00155719,
+          0.00311438
+        ],
+        "recorded_input_tokens": 162890,
+        "recorded_output_tokens": 18057,
+        "recorded_cache_read_tokens": 123392,
+        "recorded_uncached_input_tokens": 39498,
+        "recorded_allowance_rate_value_usd_range": [
+          0.01712908,
+          0.03425815
+        ]
+      },
+      "resource_pairs": 10,
+      "resource_pair_keys": [
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ]
+      ],
+      "paired_geomean_token_ratio": 1.119208,
+      "paired_geomean_call_ratio": 1.04138,
+      "rate_pairs": 10,
+      "paired_geomean_rate_ratio": 1.196156
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "baseline",
+      "all_tasks": {
+        "observed": 34,
+        "passed": 33,
+        "raw_passed": 32,
+        "functional_passes": 33,
+        "scope_failures": 0,
+        "statuses": {
+          "model_error": 1,
+          "ok": 33
+        }
+      },
+      "selection_tasks": {
+        "observed": 33,
+        "passed": 32,
+        "raw_passed": 31,
+        "functional_passes": 32,
+        "scope_failures": 0,
+        "statuses": {
+          "model_error": 1,
+          "ok": 32
+        }
+      },
+      "selection_resources": {
+        "usage_complete": false,
+        "recorded_tokens": 405030,
+        "tokens_per_reviewed_success": null,
+        "rate_value_per_reviewed_success_range": null,
+        "recorded_input_tokens": 367127,
+        "recorded_output_tokens": 37903,
+        "recorded_cache_read_tokens": 253440,
+        "recorded_uncached_input_tokens": 113687,
+        "recorded_allowance_rate_value_usd_range": [
+          0.04055517,
+          0.08111034
+        ]
+      },
+      "resource_pairs": 32,
+      "resource_pair_keys": [
+        [
+          "first-index",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "swift-slug",
+          2
+        ],
+        [
+          "shell-log-count",
+          1
+        ],
+        [
+          "ambiguous-rounding",
+          1
+        ],
+        [
+          "duration",
+          2
+        ],
+        [
+          "read-only-config",
+          2
+        ],
+        [
+          "ambiguous-rounding",
+          2
+        ],
+        [
+          "csv-records",
+          1
+        ],
+        [
+          "read-only-config",
+          1
+        ],
+        [
+          "line-buffer",
+          1
+        ],
+        [
+          "swift-chunks",
+          1
+        ],
+        [
+          "line-buffer",
+          2
+        ],
+        [
+          "swift-chunks",
+          2
+        ],
+        [
+          "clamp",
+          2
+        ],
+        [
+          "swift-slug",
+          1
+        ],
+        [
+          "first-index",
+          1
+        ],
+        [
+          "duration",
+          1
+        ],
+        [
+          "first-index",
+          2
+        ],
+        [
+          "cache-expiry",
+          2
+        ],
+        [
+          "cache-expiry",
+          1
+        ],
+        [
+          "shell-log-count",
+          2
+        ],
+        [
+          "clamp",
+          1
+        ],
+        [
+          "csv-records",
+          2
+        ]
+      ],
+      "paired_geomean_token_ratio": 1.0,
+      "paired_geomean_call_ratio": 1.0,
+      "rate_pairs": 32,
+      "paired_geomean_rate_ratio": 1.0
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "baseline_lean",
+      "all_tasks": {
+        "observed": 33,
+        "passed": 33,
+        "raw_passed": 33,
+        "functional_passes": 33,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 33
+        }
+      },
+      "selection_tasks": {
+        "observed": 33,
+        "passed": 33,
+        "raw_passed": 33,
+        "functional_passes": 33,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 33
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 496293,
+        "tokens_per_reviewed_success": 15039.182,
+        "rate_value_per_reviewed_success_range": [
+          0.00161913,
+          0.00323825
+        ],
+        "recorded_input_tokens": 444685,
+        "recorded_output_tokens": 51608,
+        "recorded_cache_read_tokens": 300928,
+        "recorded_uncached_input_tokens": 143757,
+        "recorded_allowance_rate_value_usd_range": [
+          0.05343113,
+          0.10686227
+        ]
+      },
+      "resource_pairs": 32,
+      "resource_pair_keys": [
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "first-index",
+          1
+        ],
+        [
+          "clamp",
+          2
+        ],
+        [
+          "swift-slug",
+          1
+        ],
+        [
+          "first-index",
+          2
+        ],
+        [
+          "ambiguous-rounding",
+          1
+        ],
+        [
+          "read-only-config",
+          2
+        ],
+        [
+          "swift-chunks",
+          1
+        ],
+        [
+          "read-only-config",
+          1
+        ],
+        [
+          "swift-slug",
+          2
+        ],
+        [
+          "ambiguous-rounding",
+          2
+        ],
+        [
+          "shell-log-count",
+          1
+        ],
+        [
+          "shell-log-count",
+          2
+        ],
+        [
+          "cache-expiry",
+          1
+        ],
+        [
+          "csv-records",
+          2
+        ],
+        [
+          "swift-chunks",
+          2
+        ],
+        [
+          "cache-expiry",
+          2
+        ],
+        [
+          "clamp",
+          1
+        ],
+        [
+          "csv-records",
+          1
+        ],
+        [
+          "line-buffer",
+          2
+        ],
+        [
+          "duration",
+          1
+        ],
+        [
+          "line-buffer",
+          1
+        ],
+        [
+          "duration",
+          2
+        ]
+      ],
+      "paired_geomean_token_ratio": 1.067906,
+      "paired_geomean_call_ratio": 1.035012,
+      "rate_pairs": 32,
+      "paired_geomean_rate_ratio": 1.139405
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "combined",
+      "all_tasks": {
+        "observed": 12,
+        "passed": 12,
+        "raw_passed": 12,
+        "functional_passes": 12,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 12
+        }
+      },
+      "selection_tasks": {
+        "observed": 11,
+        "passed": 11,
+        "raw_passed": 11,
+        "functional_passes": 11,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 11
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 194057,
+        "tokens_per_reviewed_success": 17641.545,
+        "rate_value_per_reviewed_success_range": [
+          0.00163968,
+          0.00327937
+        ],
+        "recorded_input_tokens": 177559,
+        "recorded_output_tokens": 16498,
+        "recorded_cache_read_tokens": 125824,
+        "recorded_uncached_input_tokens": 51735,
+        "recorded_allowance_rate_value_usd_range": [
+          0.01803652,
+          0.03607304
+        ]
+      },
+      "resource_pairs": 10,
+      "resource_pair_keys": [
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ]
+      ],
+      "paired_geomean_token_ratio": 1.306198,
+      "paired_geomean_call_ratio": 1.029186,
+      "rate_pairs": 10,
+      "paired_geomean_rate_ratio": 1.238451
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "compact",
+      "all_tasks": {
+        "observed": 34,
+        "passed": 34,
+        "raw_passed": 34,
+        "functional_passes": 34,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 34
+        }
+      },
+      "selection_tasks": {
+        "observed": 33,
+        "passed": 33,
+        "raw_passed": 33,
+        "functional_passes": 33,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 33
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 446615,
+        "tokens_per_reviewed_success": 13533.788,
+        "rate_value_per_reviewed_success_range": [
+          0.00138119,
+          0.00276238
+        ],
+        "recorded_input_tokens": 403590,
+        "recorded_output_tokens": 43025,
+        "recorded_cache_read_tokens": 277376,
+        "recorded_uncached_input_tokens": 126214,
+        "recorded_allowance_rate_value_usd_range": [
+          0.04557923,
+          0.09115846
+        ]
+      },
+      "resource_pairs": 32,
+      "resource_pair_keys": [
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "duration",
+          1
+        ],
+        [
+          "read-only-config",
+          2
+        ],
+        [
+          "clamp",
+          1
+        ],
+        [
+          "read-only-config",
+          1
+        ],
+        [
+          "ambiguous-rounding",
+          1
+        ],
+        [
+          "first-index",
+          1
+        ],
+        [
+          "swift-chunks",
+          2
+        ],
+        [
+          "swift-slug",
+          2
+        ],
+        [
+          "cache-expiry",
+          2
+        ],
+        [
+          "swift-chunks",
+          1
+        ],
+        [
+          "shell-log-count",
+          1
+        ],
+        [
+          "csv-records",
+          1
+        ],
+        [
+          "line-buffer",
+          1
+        ],
+        [
+          "line-buffer",
+          2
+        ],
+        [
+          "swift-slug",
+          1
+        ],
+        [
+          "clamp",
+          2
+        ],
+        [
+          "first-index",
+          2
+        ],
+        [
+          "ambiguous-rounding",
+          2
+        ],
+        [
+          "duration",
+          2
+        ],
+        [
+          "cache-expiry",
+          1
+        ],
+        [
+          "shell-log-count",
+          2
+        ],
+        [
+          "csv-records",
+          2
+        ]
+      ],
+      "paired_geomean_token_ratio": 1.044418,
+      "paired_geomean_call_ratio": 1.053697,
+      "rate_pairs": 32,
+      "paired_geomean_rate_ratio": 1.080351
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "compact_lean",
+      "all_tasks": {
+        "observed": 33,
+        "passed": 33,
+        "raw_passed": 33,
+        "functional_passes": 33,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 33
+        }
+      },
+      "selection_tasks": {
+        "observed": 33,
+        "passed": 33,
+        "raw_passed": 33,
+        "functional_passes": 33,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 33
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 437079,
+        "tokens_per_reviewed_success": 13244.818,
+        "rate_value_per_reviewed_success_range": [
+          0.00145301,
+          0.00290602
+        ],
+        "recorded_input_tokens": 393804,
+        "recorded_output_tokens": 43275,
+        "recorded_cache_read_tokens": 252288,
+        "recorded_uncached_input_tokens": 141516,
+        "recorded_allowance_rate_value_usd_range": [
+          0.04794926,
+          0.09589853
+        ]
+      },
+      "resource_pairs": 32,
+      "resource_pair_keys": [
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "swift-chunks",
+          2
+        ],
+        [
+          "line-buffer",
+          1
+        ],
+        [
+          "first-index",
+          1
+        ],
+        [
+          "first-index",
+          2
+        ],
+        [
+          "swift-chunks",
+          1
+        ],
+        [
+          "shell-log-count",
+          1
+        ],
+        [
+          "ambiguous-rounding",
+          2
+        ],
+        [
+          "duration",
+          2
+        ],
+        [
+          "cache-expiry",
+          1
+        ],
+        [
+          "line-buffer",
+          2
+        ],
+        [
+          "csv-records",
+          1
+        ],
+        [
+          "csv-records",
+          2
+        ],
+        [
+          "swift-slug",
+          1
+        ],
+        [
+          "clamp",
+          2
+        ],
+        [
+          "cache-expiry",
+          2
+        ],
+        [
+          "read-only-config",
+          1
+        ],
+        [
+          "ambiguous-rounding",
+          1
+        ],
+        [
+          "swift-slug",
+          2
+        ],
+        [
+          "clamp",
+          1
+        ],
+        [
+          "read-only-config",
+          2
+        ],
+        [
+          "duration",
+          1
+        ],
+        [
+          "shell-log-count",
+          2
+        ]
+      ],
+      "paired_geomean_token_ratio": 0.971529,
+      "paired_geomean_call_ratio": 1.022039,
+      "rate_pairs": 32,
+      "paired_geomean_rate_ratio": 1.075908
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "evidence",
+      "all_tasks": {
+        "observed": 34,
+        "passed": 34,
+        "raw_passed": 34,
+        "functional_passes": 34,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 34
+        }
+      },
+      "selection_tasks": {
+        "observed": 33,
+        "passed": 33,
+        "raw_passed": 33,
+        "functional_passes": 33,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 33
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 454593,
+        "tokens_per_reviewed_success": 13775.545,
+        "rate_value_per_reviewed_success_range": [
+          0.001408,
+          0.002816
+        ],
+        "recorded_input_tokens": 411843,
+        "recorded_output_tokens": 42750,
+        "recorded_cache_read_tokens": 278656,
+        "recorded_uncached_input_tokens": 133187,
+        "recorded_allowance_rate_value_usd_range": [
+          0.04646402,
+          0.09292804
+        ]
+      },
+      "resource_pairs": 32,
+      "resource_pair_keys": [
+        [
+          "clamp",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "clamp",
+          1
+        ],
+        [
+          "shell-log-count",
+          2
+        ],
+        [
+          "read-only-config",
+          1
+        ],
+        [
+          "cache-expiry",
+          1
+        ],
+        [
+          "duration",
+          2
+        ],
+        [
+          "ambiguous-rounding",
+          1
+        ],
+        [
+          "first-index",
+          2
+        ],
+        [
+          "swift-slug",
+          1
+        ],
+        [
+          "clamp",
+          2
+        ],
+        [
+          "csv-records",
+          2
+        ],
+        [
+          "ambiguous-rounding",
+          2
+        ],
+        [
+          "read-only-config",
+          2
+        ],
+        [
+          "swift-slug",
+          2
+        ],
+        [
+          "csv-records",
+          1
+        ],
+        [
+          "cache-expiry",
+          2
+        ],
+        [
+          "shell-log-count",
+          1
+        ],
+        [
+          "swift-chunks",
+          1
+        ],
+        [
+          "first-index",
+          1
+        ],
+        [
+          "line-buffer",
+          1
+        ],
+        [
+          "swift-chunks",
+          2
+        ],
+        [
+          "duration",
+          1
+        ],
+        [
+          "line-buffer",
+          2
+        ]
+      ],
+      "paired_geomean_token_ratio": 1.066993,
+      "paired_geomean_call_ratio": 1.024116,
+      "rate_pairs": 32,
+      "paired_geomean_rate_ratio": 1.079137
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "evidence_lean",
+      "all_tasks": {
+        "observed": 33,
+        "passed": 33,
+        "raw_passed": 33,
+        "functional_passes": 33,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 33
+        }
+      },
+      "selection_tasks": {
+        "observed": 33,
+        "passed": 33,
+        "raw_passed": 33,
+        "functional_passes": 33,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 33
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 460906,
+        "tokens_per_reviewed_success": 13966.848,
+        "rate_value_per_reviewed_success_range": [
+          0.0013973,
+          0.00279459
+        ],
+        "recorded_input_tokens": 418202,
+        "recorded_output_tokens": 42704,
+        "recorded_cache_read_tokens": 287360,
+        "recorded_uncached_input_tokens": 130842,
+        "recorded_allowance_rate_value_usd_range": [
+          0.04611078,
+          0.09222156
+        ]
+      },
+      "resource_pairs": 32,
+      "resource_pair_keys": [
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          2
+        ],
+        [
+          "line-buffer",
+          1
+        ],
+        [
+          "shell-log-count",
+          1
+        ],
+        [
+          "clamp",
+          2
+        ],
+        [
+          "csv-records",
+          2
+        ],
+        [
+          "duration",
+          2
+        ],
+        [
+          "line-buffer",
+          2
+        ],
+        [
+          "swift-slug",
+          2
+        ],
+        [
+          "cache-expiry",
+          2
+        ],
+        [
+          "read-only-config",
+          1
+        ],
+        [
+          "first-index",
+          2
+        ],
+        [
+          "swift-chunks",
+          1
+        ],
+        [
+          "read-only-config",
+          2
+        ],
+        [
+          "first-index",
+          1
+        ],
+        [
+          "shell-log-count",
+          2
+        ],
+        [
+          "ambiguous-rounding",
+          1
+        ],
+        [
+          "swift-slug",
+          1
+        ],
+        [
+          "cache-expiry",
+          1
+        ],
+        [
+          "duration",
+          1
+        ],
+        [
+          "csv-records",
+          1
+        ],
+        [
+          "swift-chunks",
+          2
+        ],
+        [
+          "clamp",
+          1
+        ]
+      ],
+      "paired_geomean_token_ratio": 1.071086,
+      "paired_geomean_call_ratio": 1.058374,
+      "rate_pairs": 32,
+      "paired_geomean_rate_ratio": 1.066117
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "examples",
+      "all_tasks": {
+        "observed": 12,
+        "passed": 12,
+        "raw_passed": 12,
+        "functional_passes": 12,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 12
+        }
+      },
+      "selection_tasks": {
+        "observed": 11,
+        "passed": 11,
+        "raw_passed": 11,
+        "functional_passes": 11,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 11
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 190963,
+        "tokens_per_reviewed_success": 17360.273,
+        "rate_value_per_reviewed_success_range": [
+          0.00167574,
+          0.00335147
+        ],
+        "recorded_input_tokens": 173765,
+        "recorded_output_tokens": 17198,
+        "recorded_cache_read_tokens": 122112,
+        "recorded_uncached_input_tokens": 51653,
+        "recorded_allowance_rate_value_usd_range": [
+          0.01843309,
+          0.03686617
+        ]
+      },
+      "resource_pairs": 10,
+      "resource_pair_keys": [
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ]
+      ],
+      "paired_geomean_token_ratio": 1.235352,
+      "paired_geomean_call_ratio": 1.093746,
+      "rate_pairs": 10,
+      "paired_geomean_rate_ratio": 1.285445
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "minimal",
+      "all_tasks": {
+        "observed": 34,
+        "passed": 34,
+        "raw_passed": 34,
+        "functional_passes": 34,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 34
+        }
+      },
+      "selection_tasks": {
+        "observed": 33,
+        "passed": 33,
+        "raw_passed": 33,
+        "functional_passes": 33,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 33
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 462217,
+        "tokens_per_reviewed_success": 14006.576,
+        "rate_value_per_reviewed_success_range": [
+          0.00153169,
+          0.00306339
+        ],
+        "recorded_input_tokens": 413272,
+        "recorded_output_tokens": 48945,
+        "recorded_cache_read_tokens": 277632,
+        "recorded_uncached_input_tokens": 135640,
+        "recorded_allowance_rate_value_usd_range": [
+          0.0505459,
+          0.10109179
+        ]
+      },
+      "resource_pairs": 32,
+      "resource_pair_keys": [
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "swift-chunks",
+          1
+        ],
+        [
+          "shell-log-count",
+          2
+        ],
+        [
+          "cache-expiry",
+          2
+        ],
+        [
+          "swift-slug",
+          2
+        ],
+        [
+          "duration",
+          2
+        ],
+        [
+          "ambiguous-rounding",
+          1
+        ],
+        [
+          "duration",
+          1
+        ],
+        [
+          "read-only-config",
+          2
+        ],
+        [
+          "clamp",
+          1
+        ],
+        [
+          "line-buffer",
+          1
+        ],
+        [
+          "read-only-config",
+          1
+        ],
+        [
+          "first-index",
+          2
+        ],
+        [
+          "line-buffer",
+          2
+        ],
+        [
+          "csv-records",
+          1
+        ],
+        [
+          "csv-records",
+          2
+        ],
+        [
+          "shell-log-count",
+          1
+        ],
+        [
+          "swift-chunks",
+          2
+        ],
+        [
+          "clamp",
+          2
+        ],
+        [
+          "first-index",
+          1
+        ],
+        [
+          "ambiguous-rounding",
+          2
+        ],
+        [
+          "cache-expiry",
+          1
+        ],
+        [
+          "swift-slug",
+          1
+        ]
+      ],
+      "paired_geomean_token_ratio": 1.019689,
+      "paired_geomean_call_ratio": 1.032843,
+      "rate_pairs": 32,
+      "paired_geomean_rate_ratio": 1.101254
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "minimal_lean",
+      "all_tasks": {
+        "observed": 33,
+        "passed": 33,
+        "raw_passed": 32,
+        "functional_passes": 32,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 33
+        }
+      },
+      "selection_tasks": {
+        "observed": 33,
+        "passed": 33,
+        "raw_passed": 32,
+        "functional_passes": 32,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 33
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 444005,
+        "tokens_per_reviewed_success": 13454.697,
+        "rate_value_per_reviewed_success_range": [
+          0.00149058,
+          0.00298116
+        ],
+        "recorded_input_tokens": 395851,
+        "recorded_output_tokens": 48154,
+        "recorded_cache_read_tokens": 265856,
+        "recorded_uncached_input_tokens": 129995,
+        "recorded_allowance_rate_value_usd_range": [
+          0.04918922,
+          0.09837844
+        ]
+      },
+      "resource_pairs": 32,
+      "resource_pair_keys": [
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "first-index",
+          2
+        ],
+        [
+          "line-buffer",
+          1
+        ],
+        [
+          "duration",
+          1
+        ],
+        [
+          "ambiguous-rounding",
+          1
+        ],
+        [
+          "read-only-config",
+          1
+        ],
+        [
+          "csv-records",
+          2
+        ],
+        [
+          "swift-chunks",
+          2
+        ],
+        [
+          "swift-chunks",
+          1
+        ],
+        [
+          "ambiguous-rounding",
+          2
+        ],
+        [
+          "clamp",
+          1
+        ],
+        [
+          "cache-expiry",
+          2
+        ],
+        [
+          "read-only-config",
+          2
+        ],
+        [
+          "shell-log-count",
+          2
+        ],
+        [
+          "swift-slug",
+          2
+        ],
+        [
+          "line-buffer",
+          2
+        ],
+        [
+          "shell-log-count",
+          1
+        ],
+        [
+          "csv-records",
+          1
+        ],
+        [
+          "swift-slug",
+          1
+        ],
+        [
+          "first-index",
+          1
+        ],
+        [
+          "clamp",
+          2
+        ],
+        [
+          "duration",
+          2
+        ],
+        [
+          "cache-expiry",
+          1
+        ]
+      ],
+      "paired_geomean_token_ratio": 1.004061,
+      "paired_geomean_call_ratio": 1.039377,
+      "rate_pairs": 32,
+      "paired_geomean_rate_ratio": 1.164078
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "workflow",
+      "all_tasks": {
+        "observed": 12,
+        "passed": 12,
+        "raw_passed": 12,
+        "functional_passes": 12,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 12
+        }
+      },
+      "selection_tasks": {
+        "observed": 11,
+        "passed": 11,
+        "raw_passed": 11,
+        "functional_passes": 11,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 11
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 165483,
+        "tokens_per_reviewed_success": 15043.909,
+        "rate_value_per_reviewed_success_range": [
+          0.00178681,
+          0.00357362
+        ],
+        "recorded_input_tokens": 147488,
+        "recorded_output_tokens": 17995,
+        "recorded_cache_read_tokens": 90240,
+        "recorded_uncached_input_tokens": 57248,
+        "recorded_allowance_rate_value_usd_range": [
+          0.01965492,
+          0.03930984
+        ]
+      },
+      "resource_pairs": 10,
+      "resource_pair_keys": [
+        [
+          "clamp",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ]
+      ],
+      "paired_geomean_token_ratio": 1.095568,
+      "paired_geomean_call_ratio": 1.0,
+      "rate_pairs": 10,
+      "paired_geomean_rate_ratio": 1.410595
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "adaptive_compact",
+      "all_tasks": {
+        "observed": 12,
+        "passed": 10,
+        "raw_passed": 10,
+        "functional_passes": 11,
+        "scope_failures": 0,
+        "statuses": {
+          "model_error": 1,
+          "ok": 10,
+          "request_limit": 1
+        }
+      },
+      "selection_tasks": {
+        "observed": 11,
+        "passed": 9,
+        "raw_passed": 9,
+        "functional_passes": 10,
+        "scope_failures": 0,
+        "statuses": {
+          "model_error": 1,
+          "ok": 9,
+          "request_limit": 1
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 153998,
+        "tokens_per_reviewed_success": 17110.889,
+        "rate_value_per_reviewed_success_range": [
+          0.0021694,
+          0.0021694
+        ],
+        "recorded_input_tokens": 138748,
+        "recorded_output_tokens": 15250,
+        "recorded_cache_read_tokens": 74272,
+        "recorded_uncached_input_tokens": 64476,
+        "recorded_allowance_rate_value_usd_range": [
+          0.01952456,
+          0.01952456
+        ]
+      },
+      "resource_pairs": 9,
+      "resource_pair_keys": [
+        [
+          "duration",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ]
+      ],
+      "paired_geomean_token_ratio": 0.809407,
+      "paired_geomean_call_ratio": 0.841941,
+      "rate_pairs": 9,
+      "paired_geomean_rate_ratio": 1.076687
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "baseline",
+      "all_tasks": {
+        "observed": 34,
+        "passed": 33,
+        "raw_passed": 33,
+        "functional_passes": 34,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 33,
+          "request_limit": 1
+        }
+      },
+      "selection_tasks": {
+        "observed": 33,
+        "passed": 32,
+        "raw_passed": 32,
+        "functional_passes": 33,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 32,
+          "request_limit": 1
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 499534,
+        "tokens_per_reviewed_success": 15610.438,
+        "rate_value_per_reviewed_success_range": [
+          0.00169485,
+          0.00169485
+        ],
+        "recorded_input_tokens": 456007,
+        "recorded_output_tokens": 43527,
+        "recorded_cache_read_tokens": 299412,
+        "recorded_uncached_input_tokens": 156595,
+        "recorded_allowance_rate_value_usd_range": [
+          0.05423511,
+          0.05423511
+        ]
+      },
+      "resource_pairs": 32,
+      "resource_pair_keys": [
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "swift-chunks",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "csv-records",
+          1
+        ],
+        [
+          "first-index",
+          2
+        ],
+        [
+          "duration",
+          2
+        ],
+        [
+          "shell-log-count",
+          2
+        ],
+        [
+          "shell-log-count",
+          1
+        ],
+        [
+          "swift-chunks",
+          1
+        ],
+        [
+          "line-buffer",
+          1
+        ],
+        [
+          "clamp",
+          1
+        ],
+        [
+          "read-only-config",
+          1
+        ],
+        [
+          "line-buffer",
+          2
+        ],
+        [
+          "cache-expiry",
+          1
+        ],
+        [
+          "swift-slug",
+          1
+        ],
+        [
+          "csv-records",
+          2
+        ],
+        [
+          "duration",
+          1
+        ],
+        [
+          "clamp",
+          2
+        ],
+        [
+          "first-index",
+          1
+        ],
+        [
+          "ambiguous-rounding",
+          1
+        ],
+        [
+          "swift-chunks",
+          2
+        ],
+        [
+          "cache-expiry",
+          2
+        ],
+        [
+          "read-only-config",
+          2
+        ],
+        [
+          "ambiguous-rounding",
+          2
+        ]
+      ],
+      "paired_geomean_token_ratio": 1.0,
+      "paired_geomean_call_ratio": 1.0,
+      "rate_pairs": 32,
+      "paired_geomean_rate_ratio": 1.0
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "baseline_lean",
+      "all_tasks": {
+        "observed": 33,
+        "passed": 31,
+        "raw_passed": 31,
+        "functional_passes": 31,
+        "scope_failures": 0,
+        "statuses": {
+          "generation_limit": 1,
+          "model_error": 1,
+          "ok": 31
+        }
+      },
+      "selection_tasks": {
+        "observed": 33,
+        "passed": 31,
+        "raw_passed": 31,
+        "functional_passes": 31,
+        "scope_failures": 0,
+        "statuses": {
+          "generation_limit": 1,
+          "model_error": 1,
+          "ok": 31
+        }
+      },
+      "selection_resources": {
+        "usage_complete": false,
+        "recorded_tokens": 377489,
+        "tokens_per_reviewed_success": null,
+        "rate_value_per_reviewed_success_range": null,
+        "recorded_input_tokens": 339626,
+        "recorded_output_tokens": 37863,
+        "recorded_cache_read_tokens": 202444,
+        "recorded_uncached_input_tokens": 137182,
+        "recorded_allowance_rate_value_usd_range": [
+          0.04558212,
+          0.04558212
+        ]
+      },
+      "resource_pairs": 30,
+      "resource_pair_keys": [
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "swift-chunks",
+          0
+        ],
+        [
+          "shell-log-count",
+          2
+        ],
+        [
+          "swift-chunks",
+          2
+        ],
+        [
+          "cache-expiry",
+          2
+        ],
+        [
+          "read-only-config",
+          2
+        ],
+        [
+          "line-buffer",
+          1
+        ],
+        [
+          "swift-slug",
+          1
+        ],
+        [
+          "clamp",
+          2
+        ],
+        [
+          "duration",
+          1
+        ],
+        [
+          "swift-chunks",
+          1
+        ],
+        [
+          "read-only-config",
+          1
+        ],
+        [
+          "csv-records",
+          1
+        ],
+        [
+          "first-index",
+          1
+        ],
+        [
+          "line-buffer",
+          2
+        ],
+        [
+          "duration",
+          2
+        ],
+        [
+          "clamp",
+          1
+        ],
+        [
+          "ambiguous-rounding",
+          1
+        ],
+        [
+          "csv-records",
+          2
+        ],
+        [
+          "cache-expiry",
+          1
+        ],
+        [
+          "ambiguous-rounding",
+          2
+        ],
+        [
+          "first-index",
+          2
+        ]
+      ],
+      "paired_geomean_token_ratio": 0.798726,
+      "paired_geomean_call_ratio": 0.889359,
+      "rate_pairs": 30,
+      "paired_geomean_rate_ratio": 0.78735
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "combined",
+      "all_tasks": {
+        "observed": 12,
+        "passed": 11,
+        "raw_passed": 11,
+        "functional_passes": 11,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 12
+        }
+      },
+      "selection_tasks": {
+        "observed": 11,
+        "passed": 11,
+        "raw_passed": 11,
+        "functional_passes": 11,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 11
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 191310,
+        "tokens_per_reviewed_success": 17391.818,
+        "rate_value_per_reviewed_success_range": [
+          0.00190259,
+          0.00190259
+        ],
+        "recorded_input_tokens": 176207,
+        "recorded_output_tokens": 15103,
+        "recorded_cache_read_tokens": 108784,
+        "recorded_uncached_input_tokens": 67423,
+        "recorded_allowance_rate_value_usd_range": [
+          0.02092847,
+          0.02092847
+        ]
+      },
+      "resource_pairs": 11,
+      "resource_pair_keys": [
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "swift-chunks",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ]
+      ],
+      "paired_geomean_token_ratio": 1.050831,
+      "paired_geomean_call_ratio": 0.857573,
+      "rate_pairs": 11,
+      "paired_geomean_rate_ratio": 1.212954
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "compact",
+      "all_tasks": {
+        "observed": 34,
+        "passed": 34,
+        "raw_passed": 34,
+        "functional_passes": 34,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 34
+        }
+      },
+      "selection_tasks": {
+        "observed": 33,
+        "passed": 33,
+        "raw_passed": 33,
+        "functional_passes": 33,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 33
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 432371,
+        "tokens_per_reviewed_success": 13102.152,
+        "rate_value_per_reviewed_success_range": [
+          0.00160876,
+          0.00160876
+        ],
+        "recorded_input_tokens": 388157,
+        "recorded_output_tokens": 44214,
+        "recorded_cache_read_tokens": 227012,
+        "recorded_uncached_input_tokens": 161145,
+        "recorded_allowance_rate_value_usd_range": [
+          0.05308911,
+          0.05308911
+        ]
+      },
+      "resource_pairs": 32,
+      "resource_pair_keys": [
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "swift-chunks",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "csv-records",
+          2
+        ],
+        [
+          "duration",
+          2
+        ],
+        [
+          "clamp",
+          1
+        ],
+        [
+          "swift-slug",
+          1
+        ],
+        [
+          "ambiguous-rounding",
+          2
+        ],
+        [
+          "swift-chunks",
+          1
+        ],
+        [
+          "cache-expiry",
+          2
+        ],
+        [
+          "first-index",
+          2
+        ],
+        [
+          "duration",
+          1
+        ],
+        [
+          "first-index",
+          1
+        ],
+        [
+          "shell-log-count",
+          1
+        ],
+        [
+          "read-only-config",
+          1
+        ],
+        [
+          "line-buffer",
+          2
+        ],
+        [
+          "ambiguous-rounding",
+          1
+        ],
+        [
+          "clamp",
+          2
+        ],
+        [
+          "line-buffer",
+          1
+        ],
+        [
+          "read-only-config",
+          2
+        ],
+        [
+          "csv-records",
+          1
+        ],
+        [
+          "swift-chunks",
+          2
+        ],
+        [
+          "cache-expiry",
+          1
+        ],
+        [
+          "shell-log-count",
+          2
+        ]
+      ],
+      "paired_geomean_token_ratio": 0.875591,
+      "paired_geomean_call_ratio": 0.932056,
+      "rate_pairs": 32,
+      "paired_geomean_rate_ratio": 0.90403
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "compact_lean",
+      "all_tasks": {
+        "observed": 33,
+        "passed": 31,
+        "raw_passed": 31,
+        "functional_passes": 32,
+        "scope_failures": 0,
+        "statuses": {
+          "model_error": 1,
+          "ok": 31,
+          "request_limit": 1
+        }
+      },
+      "selection_tasks": {
+        "observed": 33,
+        "passed": 31,
+        "raw_passed": 31,
+        "functional_passes": 32,
+        "scope_failures": 0,
+        "statuses": {
+          "model_error": 1,
+          "ok": 31,
+          "request_limit": 1
+        }
+      },
+      "selection_resources": {
+        "usage_complete": false,
+        "recorded_tokens": 387663,
+        "tokens_per_reviewed_success": null,
+        "rate_value_per_reviewed_success_range": null,
+        "recorded_input_tokens": 350722,
+        "recorded_output_tokens": 36941,
+        "recorded_cache_read_tokens": 216284,
+        "recorded_uncached_input_tokens": 134438,
+        "recorded_allowance_rate_value_usd_range": [
+          0.04512472,
+          0.04512472
+        ]
+      },
+      "resource_pairs": 30,
+      "resource_pair_keys": [
+        [
+          "clamp",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "duration",
+          2
+        ],
+        [
+          "cache-expiry",
+          1
+        ],
+        [
+          "csv-records",
+          2
+        ],
+        [
+          "swift-chunks",
+          1
+        ],
+        [
+          "ambiguous-rounding",
+          1
+        ],
+        [
+          "swift-slug",
+          1
+        ],
+        [
+          "line-buffer",
+          2
+        ],
+        [
+          "clamp",
+          2
+        ],
+        [
+          "cache-expiry",
+          2
+        ],
+        [
+          "shell-log-count",
+          1
+        ],
+        [
+          "read-only-config",
+          1
+        ],
+        [
+          "read-only-config",
+          2
+        ],
+        [
+          "clamp",
+          1
+        ],
+        [
+          "ambiguous-rounding",
+          2
+        ],
+        [
+          "shell-log-count",
+          2
+        ],
+        [
+          "line-buffer",
+          1
+        ],
+        [
+          "csv-records",
+          1
+        ],
+        [
+          "duration",
+          1
+        ],
+        [
+          "first-index",
+          2
+        ],
+        [
+          "first-index",
+          1
+        ],
+        [
+          "swift-chunks",
+          2
+        ]
+      ],
+      "paired_geomean_token_ratio": 0.749993,
+      "paired_geomean_call_ratio": 0.879868,
+      "rate_pairs": 30,
+      "paired_geomean_rate_ratio": 0.776044
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "evidence",
+      "all_tasks": {
+        "observed": 34,
+        "passed": 32,
+        "raw_passed": 32,
+        "functional_passes": 33,
+        "scope_failures": 0,
+        "statuses": {
+          "model_error": 1,
+          "ok": 32,
+          "request_limit": 1
+        }
+      },
+      "selection_tasks": {
+        "observed": 33,
+        "passed": 31,
+        "raw_passed": 31,
+        "functional_passes": 32,
+        "scope_failures": 0,
+        "statuses": {
+          "model_error": 1,
+          "ok": 31,
+          "request_limit": 1
+        }
+      },
+      "selection_resources": {
+        "usage_complete": false,
+        "recorded_tokens": 470174,
+        "tokens_per_reviewed_success": null,
+        "rate_value_per_reviewed_success_range": null,
+        "recorded_input_tokens": 425641,
+        "recorded_output_tokens": 44533,
+        "recorded_cache_read_tokens": 267656,
+        "recorded_uncached_input_tokens": 157985,
+        "recorded_allowance_rate_value_usd_range": [
+          0.05399393,
+          0.05399393
+        ]
+      },
+      "resource_pairs": 30,
+      "resource_pair_keys": [
+        [
+          "clamp",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "swift-chunks",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "csv-records",
+          2
+        ],
+        [
+          "shell-log-count",
+          1
+        ],
+        [
+          "first-index",
+          1
+        ],
+        [
+          "shell-log-count",
+          2
+        ],
+        [
+          "swift-slug",
+          1
+        ],
+        [
+          "ambiguous-rounding",
+          2
+        ],
+        [
+          "swift-chunks",
+          1
+        ],
+        [
+          "first-index",
+          2
+        ],
+        [
+          "clamp",
+          2
+        ],
+        [
+          "clamp",
+          1
+        ],
+        [
+          "duration",
+          2
+        ],
+        [
+          "line-buffer",
+          2
+        ],
+        [
+          "read-only-config",
+          2
+        ],
+        [
+          "cache-expiry",
+          1
+        ],
+        [
+          "cache-expiry",
+          2
+        ],
+        [
+          "csv-records",
+          1
+        ],
+        [
+          "duration",
+          1
+        ],
+        [
+          "ambiguous-rounding",
+          1
+        ],
+        [
+          "read-only-config",
+          1
+        ],
+        [
+          "line-buffer",
+          1
+        ]
+      ],
+      "paired_geomean_token_ratio": 0.890921,
+      "paired_geomean_call_ratio": 0.876888,
+      "rate_pairs": 30,
+      "paired_geomean_rate_ratio": 0.882926
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "evidence_lean",
+      "all_tasks": {
+        "observed": 33,
+        "passed": 33,
+        "raw_passed": 33,
+        "functional_passes": 33,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 33
+        }
+      },
+      "selection_tasks": {
+        "observed": 33,
+        "passed": 33,
+        "raw_passed": 33,
+        "functional_passes": 33,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 33
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 527571,
+        "tokens_per_reviewed_success": 15987.0,
+        "rate_value_per_reviewed_success_range": [
+          0.00187206,
+          0.00187206
+        ],
+        "recorded_input_tokens": 474961,
+        "recorded_output_tokens": 52610,
+        "recorded_cache_read_tokens": 298092,
+        "recorded_uncached_input_tokens": 176869,
+        "recorded_allowance_rate_value_usd_range": [
+          0.06177811,
+          0.06177811
+        ]
+      },
+      "resource_pairs": 32,
+      "resource_pair_keys": [
+        [
+          "swift-chunks",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "read-only-config",
+          2
+        ],
+        [
+          "shell-log-count",
+          1
+        ],
+        [
+          "line-buffer",
+          2
+        ],
+        [
+          "csv-records",
+          2
+        ],
+        [
+          "shell-log-count",
+          2
+        ],
+        [
+          "cache-expiry",
+          2
+        ],
+        [
+          "swift-chunks",
+          1
+        ],
+        [
+          "csv-records",
+          1
+        ],
+        [
+          "ambiguous-rounding",
+          1
+        ],
+        [
+          "clamp",
+          2
+        ],
+        [
+          "first-index",
+          2
+        ],
+        [
+          "duration",
+          1
+        ],
+        [
+          "cache-expiry",
+          1
+        ],
+        [
+          "clamp",
+          1
+        ],
+        [
+          "swift-slug",
+          1
+        ],
+        [
+          "line-buffer",
+          1
+        ],
+        [
+          "duration",
+          2
+        ],
+        [
+          "first-index",
+          1
+        ],
+        [
+          "swift-chunks",
+          2
+        ],
+        [
+          "ambiguous-rounding",
+          2
+        ],
+        [
+          "read-only-config",
+          1
+        ]
+      ],
+      "paired_geomean_token_ratio": 0.89763,
+      "paired_geomean_call_ratio": 0.931667,
+      "rate_pairs": 32,
+      "paired_geomean_rate_ratio": 0.90576
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "examples",
+      "all_tasks": {
+        "observed": 12,
+        "passed": 11,
+        "raw_passed": 11,
+        "functional_passes": 12,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 11,
+          "request_limit": 1
+        }
+      },
+      "selection_tasks": {
+        "observed": 11,
+        "passed": 10,
+        "raw_passed": 10,
+        "functional_passes": 11,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 10,
+          "request_limit": 1
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 157230,
+        "tokens_per_reviewed_success": 15723.0,
+        "rate_value_per_reviewed_success_range": [
+          0.00169466,
+          0.00169466
+        ],
+        "recorded_input_tokens": 142428,
+        "recorded_output_tokens": 14802,
+        "recorded_cache_read_tokens": 98488,
+        "recorded_uncached_input_tokens": 43940,
+        "recorded_allowance_rate_value_usd_range": [
+          0.01694664,
+          0.01694664
+        ]
+      },
+      "resource_pairs": 10,
+      "resource_pair_keys": [
+        [
+          "duration",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ]
+      ],
+      "paired_geomean_token_ratio": 0.823717,
+      "paired_geomean_call_ratio": 0.794049,
+      "rate_pairs": 10,
+      "paired_geomean_rate_ratio": 0.9552
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "minimal",
+      "all_tasks": {
+        "observed": 34,
+        "passed": 32,
+        "raw_passed": 32,
+        "functional_passes": 33,
+        "scope_failures": 0,
+        "statuses": {
+          "generation_limit": 1,
+          "ok": 32,
+          "request_limit": 1
+        }
+      },
+      "selection_tasks": {
+        "observed": 33,
+        "passed": 31,
+        "raw_passed": 31,
+        "functional_passes": 32,
+        "scope_failures": 0,
+        "statuses": {
+          "generation_limit": 1,
+          "ok": 31,
+          "request_limit": 1
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 424006,
+        "tokens_per_reviewed_success": 13677.613,
+        "rate_value_per_reviewed_success_range": [
+          0.00178558,
+          0.00178558
+        ],
+        "recorded_input_tokens": 376515,
+        "recorded_output_tokens": 47491,
+        "recorded_cache_read_tokens": 207248,
+        "recorded_uncached_input_tokens": 169267,
+        "recorded_allowance_rate_value_usd_range": [
+          0.05535299,
+          0.05535299
+        ]
+      },
+      "resource_pairs": 30,
+      "resource_pair_keys": [
+        [
+          "swift-chunks",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "shell-log-count",
+          1
+        ],
+        [
+          "first-index",
+          2
+        ],
+        [
+          "cache-expiry",
+          1
+        ],
+        [
+          "ambiguous-rounding",
+          1
+        ],
+        [
+          "line-buffer",
+          2
+        ],
+        [
+          "read-only-config",
+          1
+        ],
+        [
+          "shell-log-count",
+          2
+        ],
+        [
+          "duration",
+          1
+        ],
+        [
+          "ambiguous-rounding",
+          2
+        ],
+        [
+          "line-buffer",
+          1
+        ],
+        [
+          "read-only-config",
+          2
+        ],
+        [
+          "csv-records",
+          2
+        ],
+        [
+          "swift-slug",
+          1
+        ],
+        [
+          "clamp",
+          2
+        ],
+        [
+          "first-index",
+          1
+        ],
+        [
+          "cache-expiry",
+          2
+        ],
+        [
+          "swift-chunks",
+          2
+        ],
+        [
+          "swift-chunks",
+          1
+        ],
+        [
+          "clamp",
+          1
+        ],
+        [
+          "csv-records",
+          1
+        ]
+      ],
+      "paired_geomean_token_ratio": 0.828527,
+      "paired_geomean_call_ratio": 0.904464,
+      "rate_pairs": 30,
+      "paired_geomean_rate_ratio": 0.928049
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "minimal_lean",
+      "all_tasks": {
+        "observed": 33,
+        "passed": 30,
+        "raw_passed": 30,
+        "functional_passes": 30,
+        "scope_failures": 0,
+        "statuses": {
+          "generation_limit": 2,
+          "ok": 31
+        }
+      },
+      "selection_tasks": {
+        "observed": 33,
+        "passed": 30,
+        "raw_passed": 30,
+        "functional_passes": 30,
+        "scope_failures": 0,
+        "statuses": {
+          "generation_limit": 2,
+          "ok": 31
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 292487,
+        "tokens_per_reviewed_success": 9749.567,
+        "rate_value_per_reviewed_success_range": [
+          0.0013711,
+          0.0013711
+        ],
+        "recorded_input_tokens": 253735,
+        "recorded_output_tokens": 38752,
+        "recorded_cache_read_tokens": 135860,
+        "recorded_uncached_input_tokens": 117875,
+        "recorded_allowance_rate_value_usd_range": [
+          0.04113305,
+          0.04113305
+        ]
+      },
+      "resource_pairs": 29,
+      "resource_pair_keys": [
+        [
+          "first-index",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "swift-chunks",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "duration",
+          2
+        ],
+        [
+          "ambiguous-rounding",
+          1
+        ],
+        [
+          "swift-chunks",
+          1
+        ],
+        [
+          "clamp",
+          1
+        ],
+        [
+          "ambiguous-rounding",
+          2
+        ],
+        [
+          "cache-expiry",
+          2
+        ],
+        [
+          "csv-records",
+          2
+        ],
+        [
+          "read-only-config",
+          1
+        ],
+        [
+          "swift-chunks",
+          2
+        ],
+        [
+          "first-index",
+          1
+        ],
+        [
+          "duration",
+          1
+        ],
+        [
+          "cache-expiry",
+          1
+        ],
+        [
+          "line-buffer",
+          2
+        ],
+        [
+          "clamp",
+          2
+        ],
+        [
+          "read-only-config",
+          2
+        ],
+        [
+          "csv-records",
+          1
+        ],
+        [
+          "first-index",
+          2
+        ],
+        [
+          "line-buffer",
+          1
+        ]
+      ],
+      "paired_geomean_token_ratio": 0.66929,
+      "paired_geomean_call_ratio": 0.811791,
+      "rate_pairs": 29,
+      "paired_geomean_rate_ratio": 0.789806
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "workflow",
+      "all_tasks": {
+        "observed": 12,
+        "passed": 12,
+        "raw_passed": 12,
+        "functional_passes": 12,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 12
+        }
+      },
+      "selection_tasks": {
+        "observed": 11,
+        "passed": 11,
+        "raw_passed": 11,
+        "functional_passes": 11,
+        "scope_failures": 0,
+        "statuses": {
+          "ok": 11
+        }
+      },
+      "selection_resources": {
+        "usage_complete": true,
+        "recorded_tokens": 164521,
+        "tokens_per_reviewed_success": 14956.455,
+        "rate_value_per_reviewed_success_range": [
+          0.00166221,
+          0.00166221
+        ],
+        "recorded_input_tokens": 149831,
+        "recorded_output_tokens": 14690,
+        "recorded_cache_read_tokens": 96128,
+        "recorded_uncached_input_tokens": 53703,
+        "recorded_allowance_rate_value_usd_range": [
+          0.01828429,
+          0.01828429
+        ]
+      },
+      "resource_pairs": 11,
+      "resource_pair_keys": [
+        [
+          "shell-log-count",
+          0
+        ],
+        [
+          "swift-slug",
+          0
+        ],
+        [
+          "ambiguous-rounding",
+          0
+        ],
+        [
+          "first-index",
+          0
+        ],
+        [
+          "clamp",
+          0
+        ],
+        [
+          "swift-chunks",
+          0
+        ],
+        [
+          "read-only-config",
+          0
+        ],
+        [
+          "cache-expiry",
+          0
+        ],
+        [
+          "csv-records",
+          0
+        ],
+        [
+          "duration",
+          0
+        ],
+        [
+          "line-buffer",
+          0
+        ]
+      ],
+      "paired_geomean_token_ratio": 0.880975,
+      "paired_geomean_call_ratio": 0.885227,
+      "rate_pairs": 11,
+      "paired_geomean_rate_ratio": 1.02731
+    }
+  ],
+  "balanced_paired_summaries": [
+    {
+      "candidate": "adaptive_compact",
+      "models": [
+        "deepseek-v4.1-flash",
+        "glm-5.3-flash"
+      ],
+      "quality_pairs_by_model": {
+        "deepseek-v4.1-flash": 11,
+        "glm-5.3-flash": 11
+      },
+      "metrics": {
+        "quality_delta_pp": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": -4.55,
+          "exploratory_95pct_task_bootstrap": [
+            -13.64,
+            0
+          ]
+        },
+        "token_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "swift-slug"
+          ],
+          "point": 0.92244,
+          "exploratory_95pct_task_bootstrap": [
+            0.789139,
+            1.062949
+          ]
+        },
+        "call_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "swift-slug"
+          ],
+          "point": 0.917573,
+          "exploratory_95pct_task_bootstrap": [
+            0.833825,
+            1.008601
+          ]
+        },
+        "rate_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "swift-slug"
+          ],
+          "point": 1.120696,
+          "exploratory_95pct_task_bootstrap": [
+            0.942175,
+            1.36217
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "baseline_lean",
+      "models": [
+        "deepseek-v4.1-flash",
+        "glm-5.3-flash"
+      ],
+      "quality_pairs_by_model": {
+        "deepseek-v4.1-flash": 33,
+        "glm-5.3-flash": 33
+      },
+      "metrics": {
+        "quality_delta_pp": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 0.0,
+          "exploratory_95pct_task_bootstrap": [
+            -6.06,
+            6.06
+          ]
+        },
+        "token_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 0.92197,
+          "exploratory_95pct_task_bootstrap": [
+            0.868157,
+            0.977381
+          ]
+        },
+        "call_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 0.958236,
+          "exploratory_95pct_task_bootstrap": [
+            0.925244,
+            0.998197
+          ]
+        },
+        "rate_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 0.955127,
+          "exploratory_95pct_task_bootstrap": [
+            0.865194,
+            1.065412
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "combined",
+      "models": [
+        "deepseek-v4.1-flash",
+        "glm-5.3-flash"
+      ],
+      "quality_pairs_by_model": {
+        "deepseek-v4.1-flash": 11,
+        "glm-5.3-flash": 11
+      },
+      "metrics": {
+        "quality_delta_pp": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 4.55,
+          "exploratory_95pct_task_bootstrap": [
+            0,
+            13.64
+          ]
+        },
+        "token_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 1.151267,
+          "exploratory_95pct_task_bootstrap": [
+            1.008453,
+            1.299786
+          ]
+        },
+        "call_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 0.926805,
+          "exploratory_95pct_task_bootstrap": [
+            0.847244,
+            1.012398
+          ]
+        },
+        "rate_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 1.246357,
+          "exploratory_95pct_task_bootstrap": [
+            1.078062,
+            1.407305
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "compact",
+      "models": [
+        "deepseek-v4.1-flash",
+        "glm-5.3-flash"
+      ],
+      "quality_pairs_by_model": {
+        "deepseek-v4.1-flash": 33,
+        "glm-5.3-flash": 33
+      },
+      "metrics": {
+        "quality_delta_pp": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 3.03,
+          "exploratory_95pct_task_bootstrap": [
+            0,
+            7.58
+          ]
+        },
+        "token_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 0.950913,
+          "exploratory_95pct_task_bootstrap": [
+            0.859797,
+            1.050893
+          ]
+        },
+        "call_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 0.986363,
+          "exploratory_95pct_task_bootstrap": [
+            0.919172,
+            1.052243
+          ]
+        },
+        "rate_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 0.992346,
+          "exploratory_95pct_task_bootstrap": [
+            0.896397,
+            1.086593
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "compact_lean",
+      "models": [
+        "deepseek-v4.1-flash",
+        "glm-5.3-flash"
+      ],
+      "quality_pairs_by_model": {
+        "deepseek-v4.1-flash": 33,
+        "glm-5.3-flash": 33
+      },
+      "metrics": {
+        "quality_delta_pp": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 0.0,
+          "exploratory_95pct_task_bootstrap": [
+            -4.55,
+            4.55
+          ]
+        },
+        "token_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 0.856071,
+          "exploratory_95pct_task_bootstrap": [
+            0.7941,
+            0.921636
+          ]
+        },
+        "call_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 0.945697,
+          "exploratory_95pct_task_bootstrap": [
+            0.89289,
+            1.002511
+          ]
+        },
+        "rate_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 0.920094,
+          "exploratory_95pct_task_bootstrap": [
+            0.842998,
+            1.013909
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "evidence",
+      "models": [
+        "deepseek-v4.1-flash",
+        "glm-5.3-flash"
+      ],
+      "quality_pairs_by_model": {
+        "deepseek-v4.1-flash": 33,
+        "glm-5.3-flash": 33
+      },
+      "metrics": {
+        "quality_delta_pp": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 0.0,
+          "exploratory_95pct_task_bootstrap": [
+            -4.55,
+            4.55
+          ]
+        },
+        "token_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 0.980098,
+          "exploratory_95pct_task_bootstrap": [
+            0.858075,
+            1.114865
+          ]
+        },
+        "call_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 0.950391,
+          "exploratory_95pct_task_bootstrap": [
+            0.883603,
+            1.019801
+          ]
+        },
+        "rate_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 0.981178,
+          "exploratory_95pct_task_bootstrap": [
+            0.855377,
+            1.124133
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "evidence_lean",
+      "models": [
+        "deepseek-v4.1-flash",
+        "glm-5.3-flash"
+      ],
+      "quality_pairs_by_model": {
+        "deepseek-v4.1-flash": 33,
+        "glm-5.3-flash": 33
+      },
+      "metrics": {
+        "quality_delta_pp": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 3.03,
+          "exploratory_95pct_task_bootstrap": [
+            0,
+            7.58
+          ]
+        },
+        "token_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 0.978649,
+          "exploratory_95pct_task_bootstrap": [
+            0.886577,
+            1.09757
+          ]
+        },
+        "call_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 0.991687,
+          "exploratory_95pct_task_bootstrap": [
+            0.926125,
+            1.069044
+          ]
+        },
+        "rate_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 0.985712,
+          "exploratory_95pct_task_bootstrap": [
+            0.881701,
+            1.110248
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "examples",
+      "models": [
+        "deepseek-v4.1-flash",
+        "glm-5.3-flash"
+      ],
+      "quality_pairs_by_model": {
+        "deepseek-v4.1-flash": 11,
+        "glm-5.3-flash": 11
+      },
+      "metrics": {
+        "quality_delta_pp": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 0,
+          "exploratory_95pct_task_bootstrap": [
+            0,
+            0
+          ]
+        },
+        "token_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 1.008752,
+          "exploratory_95pct_task_bootstrap": [
+            0.917176,
+            1.101403
+          ]
+        },
+        "call_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 0.931927,
+          "exploratory_95pct_task_bootstrap": [
+            0.875703,
+            0.982543
+          ]
+        },
+        "rate_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 1.108087,
+          "exploratory_95pct_task_bootstrap": [
+            0.993913,
+            1.226453
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "minimal",
+      "models": [
+        "deepseek-v4.1-flash",
+        "glm-5.3-flash"
+      ],
+      "quality_pairs_by_model": {
+        "deepseek-v4.1-flash": 33,
+        "glm-5.3-flash": 33
+      },
+      "metrics": {
+        "quality_delta_pp": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 0.0,
+          "exploratory_95pct_task_bootstrap": [
+            -6.06,
+            6.06
+          ]
+        },
+        "token_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 0.922876,
+          "exploratory_95pct_task_bootstrap": [
+            0.84721,
+            1.012047
+          ]
+        },
+        "call_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 0.967733,
+          "exploratory_95pct_task_bootstrap": [
+            0.934193,
+            1.002813
+          ]
+        },
+        "rate_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 1.018306,
+          "exploratory_95pct_task_bootstrap": [
+            0.94129,
+            1.124025
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "minimal_lean",
+      "models": [
+        "deepseek-v4.1-flash",
+        "glm-5.3-flash"
+      ],
+      "quality_pairs_by_model": {
+        "deepseek-v4.1-flash": 33,
+        "glm-5.3-flash": 33
+      },
+      "metrics": {
+        "quality_delta_pp": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": -1.52,
+          "exploratory_95pct_task_bootstrap": [
+            -9.09,
+            4.55
+          ]
+        },
+        "token_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 0.8255,
+          "exploratory_95pct_task_bootstrap": [
+            0.764445,
+            0.880974
+          ]
+        },
+        "call_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 0.914334,
+          "exploratory_95pct_task_bootstrap": [
+            0.866912,
+            0.958137
+          ]
+        },
+        "rate_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 0.980958,
+          "exploratory_95pct_task_bootstrap": [
+            0.897022,
+            1.068787
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "workflow",
+      "models": [
+        "deepseek-v4.1-flash",
+        "glm-5.3-flash"
+      ],
+      "quality_pairs_by_model": {
+        "deepseek-v4.1-flash": 11,
+        "glm-5.3-flash": 11
+      },
+      "metrics": {
+        "quality_delta_pp": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-chunks",
+            "swift-slug"
+          ],
+          "point": 4.55,
+          "exploratory_95pct_task_bootstrap": [
+            0,
+            13.64
+          ]
+        },
+        "token_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 0.946005,
+          "exploratory_95pct_task_bootstrap": [
+            0.818464,
+            1.072591
+          ]
+        },
+        "call_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 0.91638,
+          "exploratory_95pct_task_bootstrap": [
+            0.832167,
+            0.995597
+          ]
+        },
+        "rate_ratio": {
+          "common_tasks": [
+            "ambiguous-rounding",
+            "cache-expiry",
+            "clamp",
+            "csv-records",
+            "duration",
+            "first-index",
+            "line-buffer",
+            "read-only-config",
+            "shell-log-count",
+            "swift-slug"
+          ],
+          "point": 1.208798,
+          "exploratory_95pct_task_bootstrap": [
+            1.024588,
+            1.425525
+          ]
+        }
+      }
+    }
+  ],
+  "equal_model_resource_ratios": [
+    {
+      "candidate": "adaptive_compact",
+      "models": 2,
+      "token_ratio": 0.951785,
+      "rate_ratio": 1.13485
+    },
+    {
+      "candidate": "baseline",
+      "models": 2,
+      "token_ratio": 1.0,
+      "rate_ratio": 1.0
+    },
+    {
+      "candidate": "baseline_lean",
+      "models": 2,
+      "token_ratio": 0.923561,
+      "rate_ratio": 0.947159
+    },
+    {
+      "candidate": "combined",
+      "models": 2,
+      "token_ratio": 1.171577,
+      "rate_ratio": 1.225636
+    },
+    {
+      "candidate": "compact",
+      "models": 2,
+      "token_ratio": 0.956286,
+      "rate_ratio": 0.988266
+    },
+    {
+      "candidate": "compact_lean",
+      "models": 2,
+      "token_ratio": 0.853604,
+      "rate_ratio": 0.913757
+    },
+    {
+      "candidate": "evidence",
+      "models": 2,
+      "token_ratio": 0.97499,
+      "rate_ratio": 0.976114
+    },
+    {
+      "candidate": "evidence_lean",
+      "models": 2,
+      "token_ratio": 0.98053,
+      "rate_ratio": 0.982673
+    },
+    {
+      "candidate": "examples",
+      "models": 2,
+      "token_ratio": 1.008752,
+      "rate_ratio": 1.108087
+    },
+    {
+      "candidate": "minimal",
+      "models": 2,
+      "token_ratio": 0.919152,
+      "rate_ratio": 1.010949
+    },
+    {
+      "candidate": "minimal_lean",
+      "models": 2,
+      "token_ratio": 0.819761,
+      "rate_ratio": 0.958851
+    },
+    {
+      "candidate": "workflow",
+      "models": 2,
+      "token_ratio": 0.98243,
+      "rate_ratio": 1.203793
+    }
+  ],
+  "limits": "Exploratory pooled runs with recorded bundle fingerprints, not a randomized contemporaneous comparison. Resource pairs condition on successful completions with complete usage; inspect all failure counts and all-attempt cost per success separately. Balanced summaries use only task clusters represented on every model, average repeats within model/task, and weight models equally. Task-bootstrap intervals are unadjusted for selection or multiple comparisons; a zero-width quality interval from all observed successes does not establish equivalence. Model aliases, cache states and routing vary. Same-tariff estimates are not actual cash or allowance debits. No winner is inferred.",
+  "reporter_sha256": "9dcee03e1dbf9920e1bf024cb2ab249ba41f4ca4ceca94c6a6c5e369832e9bba"
+}

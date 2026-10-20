@@ -1,0 +1,77 @@
+{
+  "fingerprint": "3153c5ec611a447fa0632d779e86573c12203876d370fbefbac3d89d3fe7d850",
+  "split": "development",
+  "expected": 4,
+  "observed": 4,
+  "missing": 0,
+  "table": [
+    {
+      "model": "deepseek-v4.1-flash",
+      "candidate": "compact",
+      "scheduled": 2,
+      "observed": 2,
+      "passed": 2,
+      "raw_passed": 2,
+      "functional_passes": 2,
+      "code_tasks_observed": 2,
+      "code_test_passes": 2,
+      "behavioral_tasks_observed": 0,
+      "behavioral_passes": 0,
+      "statuses": {
+        "ok": 2
+      },
+      "model_calls": 10,
+      "reported_tokens": 19109,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 9554.5,
+      "median_wall_seconds": 11.643,
+      "visible_check_string_observed": 2,
+      "monetary_cost": null,
+      "recorded_input_tokens": 17355,
+      "recorded_output_tokens": 1754,
+      "recorded_cache_read_tokens": 10880,
+      "recorded_uncached_input_tokens": 6475,
+      "recorded_allowance_rate_value_usd_range": [
+        0.00205629,
+        0.00411258
+      ]
+    },
+    {
+      "model": "glm-5.3-flash",
+      "candidate": "compact",
+      "scheduled": 2,
+      "observed": 2,
+      "passed": 2,
+      "raw_passed": 2,
+      "functional_passes": 2,
+      "code_tasks_observed": 2,
+      "code_test_passes": 2,
+      "behavioral_tasks_observed": 0,
+      "behavioral_passes": 0,
+      "statuses": {
+        "ok": 2
+      },
+      "model_calls": 12,
+      "reported_tokens": 20003,
+      "usage_complete_for_attempted_calls": true,
+      "reported_tokens_per_success": 10001.5,
+      "median_wall_seconds": 19.928,
+      "visible_check_string_observed": 1,
+      "monetary_cost": null,
+      "recorded_input_tokens": 18270,
+      "recorded_output_tokens": 1733,
+      "recorded_cache_read_tokens": 8620,
+      "recorded_uncached_input_tokens": 9650,
+      "recorded_allowance_rate_value_usd_range": [
+        0.0025726,
+        0.0025726
+      ]
+    }
+  ],
+  "paired": [],
+  "behavioral_adjudications": 0,
+  "failed_runs": [],
+  "limits": "External tests cover declared cases, not arbitrary correctness. The split field records the frozen suite. Behavioral grades and visible-check strings are weaker evidence. Unadjusted exploratory intervals exclude infrastructure/model errors and do not establish equivalence. No confirmation winner inferred.",
+  "reporter_sha256": "b0e2367deedba3d7fd3d66b23c4eee7b6b324e0d210347ad267fad41675f5b18",
+  "rate_card_sha256": "37522b26d76c874397be920da516495ae1f5cc607d29f3725d4ea21213d72ee2"
+}

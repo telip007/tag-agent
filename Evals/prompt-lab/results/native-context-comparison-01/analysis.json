@@ -1,0 +1,353 @@
+{
+  "recommendation_freeze": "f17741ca5404e3dfeaa3bc228cec6f998ab834fb24902aec2cc1fd13e18738cf",
+  "context_reserve_fingerprint": "159e1584ede3d5aed8e06f222fd790cd1cad110f922ef64f9fbdd36d148f40eb",
+  "complete": true,
+  "expected_conditions": 18,
+  "observed_conditions": 18,
+  "independent_authored_tasks": 1,
+  "archive_characters": 125952,
+  "rendered_task_characters": 126994,
+  "positions": [
+    {
+      "position": "beginning",
+      "run": "results/native-context-beginning-01",
+      "fingerprint": "99d1b199984096d890fd2e3704375bf086838fde92e045ba8166030fca246646",
+      "results_sha256": "cc1126217af0dd3ce01fd05751688116c9bd61df006c6d7981189a2fb0d862ae",
+      "expected": 6,
+      "observed": 6,
+      "table": [
+        {
+          "model": "deepseek-v4.1-flash",
+          "candidate": "baseline",
+          "observed": 1,
+          "passed": 1,
+          "functional_passes": 1,
+          "statuses": {
+            "ok": 1
+          },
+          "model_calls": 9,
+          "reported_tokens": 327120,
+          "usage_complete_for_attempted_calls": true,
+          "reported_tokens_per_success": 327120.0
+        },
+        {
+          "model": "deepseek-v4.1-flash",
+          "candidate": "recommendation",
+          "observed": 1,
+          "passed": 1,
+          "functional_passes": 1,
+          "statuses": {
+            "ok": 1
+          },
+          "model_calls": 8,
+          "reported_tokens": 281788,
+          "usage_complete_for_attempted_calls": true,
+          "reported_tokens_per_success": 281788.0
+        },
+        {
+          "model": "glm-5.3-flash",
+          "candidate": "baseline",
+          "observed": 1,
+          "passed": 1,
+          "functional_passes": 1,
+          "statuses": {
+            "ok": 1
+          },
+          "model_calls": 10,
+          "reported_tokens": 381362,
+          "usage_complete_for_attempted_calls": true,
+          "reported_tokens_per_success": 381362.0
+        },
+        {
+          "model": "glm-5.3-flash",
+          "candidate": "recommendation",
+          "observed": 1,
+          "passed": 1,
+          "functional_passes": 1,
+          "statuses": {
+            "ok": 1
+          },
+          "model_calls": 11,
+          "reported_tokens": 424341,
+          "usage_complete_for_attempted_calls": true,
+          "reported_tokens_per_success": 424341.0
+        },
+        {
+          "model": "gemini-4-argon-contributor",
+          "candidate": "baseline",
+          "observed": 1,
+          "passed": 1,
+          "functional_passes": 1,
+          "statuses": {
+            "ok": 1
+          },
+          "model_calls": 6,
+          "reported_tokens": 269009,
+          "usage_complete_for_attempted_calls": true,
+          "reported_tokens_per_success": 269009.0
+        },
+        {
+          "model": "gemini-4-argon-contributor",
+          "candidate": "recommendation",
+          "observed": 1,
+          "passed": 0,
+          "functional_passes": 1,
+          "statuses": {
+            "timeout": 1
+          },
+          "model_calls": 0,
+          "reported_tokens": 0,
+          "usage_complete_for_attempted_calls": false,
+          "reported_tokens_per_success": null
+        }
+      ],
+      "verified_recorded_prompts": 5
+    },
+    {
+      "position": "middle",
+      "run": "results/native-context-middle-01",
+      "fingerprint": "a39e47e084bc1b9f7b477687f492b423bf36fa5816e9071d8fd72375121d8692",
+      "results_sha256": "0159196a5c5d9446def6eba3ff974c8b77f6f404216462627ebb4ba42c490994",
+      "expected": 6,
+      "observed": 6,
+      "table": [
+        {
+          "model": "deepseek-v4.1-flash",
+          "candidate": "baseline",
+          "observed": 1,
+          "passed": 1,
+          "functional_passes": 1,
+          "statuses": {
+            "ok": 1
+          },
+          "model_calls": 6,
+          "reported_tokens": 207741,
+          "usage_complete_for_attempted_calls": true,
+          "reported_tokens_per_success": 207741.0
+        },
+        {
+          "model": "deepseek-v4.1-flash",
+          "candidate": "recommendation",
+          "observed": 1,
+          "passed": 1,
+          "functional_passes": 1,
+          "statuses": {
+            "ok": 1
+          },
+          "model_calls": 6,
+          "reported_tokens": 202226,
+          "usage_complete_for_attempted_calls": true,
+          "reported_tokens_per_success": 202226.0
+        },
+        {
+          "model": "glm-5.3-flash",
+          "candidate": "baseline",
+          "observed": 1,
+          "passed": 0,
+          "functional_passes": 0,
+          "statuses": {
+            "generation_limit": 1
+          },
+          "model_calls": 4,
+          "reported_tokens": 144819,
+          "usage_complete_for_attempted_calls": true,
+          "reported_tokens_per_success": null
+        },
+        {
+          "model": "glm-5.3-flash",
+          "candidate": "recommendation",
+          "observed": 1,
+          "passed": 0,
+          "functional_passes": 0,
+          "statuses": {
+            "generation_limit": 1
+          },
+          "model_calls": 4,
+          "reported_tokens": 144385,
+          "usage_complete_for_attempted_calls": true,
+          "reported_tokens_per_success": null
+        },
+        {
+          "model": "gemini-4-argon-contributor",
+          "candidate": "baseline",
+          "observed": 1,
+          "passed": 1,
+          "functional_passes": 1,
+          "statuses": {
+            "ok": 1
+          },
+          "model_calls": 5,
+          "reported_tokens": 220459,
+          "usage_complete_for_attempted_calls": true,
+          "reported_tokens_per_success": 220459.0
+        },
+        {
+          "model": "gemini-4-argon-contributor",
+          "candidate": "recommendation",
+          "observed": 1,
+          "passed": 1,
+          "functional_passes": 1,
+          "statuses": {
+            "ok": 1
+          },
+          "model_calls": 5,
+          "reported_tokens": 220862,
+          "usage_complete_for_attempted_calls": true,
+          "reported_tokens_per_success": 220862.0
+        }
+      ],
+      "verified_recorded_prompts": 6
+    },
+    {
+      "position": "end",
+      "run": "results/native-context-end-01",
+      "fingerprint": "7118cae6715adc6fe531cc49575fed1b1210201ac553553a41a8b57e027052cb",
+      "results_sha256": "87c534e5f2a96524cea71a0711e177a7691cf6600b639f6a49fac0846d69a970",
+      "expected": 6,
+      "observed": 6,
+      "table": [
+        {
+          "model": "deepseek-v4.1-flash",
+          "candidate": "baseline",
+          "observed": 1,
+          "passed": 1,
+          "functional_passes": 1,
+          "statuses": {
+            "ok": 1
+          },
+          "model_calls": 5,
+          "reported_tokens": 168899,
+          "usage_complete_for_attempted_calls": true,
+          "reported_tokens_per_success": 168899.0
+        },
+        {
+          "model": "deepseek-v4.1-flash",
+          "candidate": "recommendation",
+          "observed": 1,
+          "passed": 1,
+          "functional_passes": 1,
+          "statuses": {
+            "ok": 1
+          },
+          "model_calls": 6,
+          "reported_tokens": 206449,
+          "usage_complete_for_attempted_calls": true,
+          "reported_tokens_per_success": 206449.0
+        },
+        {
+          "model": "glm-5.3-flash",
+          "candidate": "baseline",
+          "observed": 1,
+          "passed": 0,
+          "functional_passes": 0,
+          "statuses": {
+            "model_error": 1
+          },
+          "model_calls": 5,
+          "reported_tokens": 144613,
+          "usage_complete_for_attempted_calls": false,
+          "reported_tokens_per_success": null
+        },
+        {
+          "model": "glm-5.3-flash",
+          "candidate": "recommendation",
+          "observed": 1,
+          "passed": 0,
+          "functional_passes": 1,
+          "statuses": {
+            "request_limit": 1
+          },
+          "model_calls": 12,
+          "reported_tokens": 471579,
+          "usage_complete_for_attempted_calls": true,
+          "reported_tokens_per_success": null
+        },
+        {
+          "model": "gemini-4-argon-contributor",
+          "candidate": "baseline",
+          "observed": 1,
+          "passed": 1,
+          "functional_passes": 1,
+          "statuses": {
+            "ok": 1
+          },
+          "model_calls": 5,
+          "reported_tokens": 222594,
+          "usage_complete_for_attempted_calls": true,
+          "reported_tokens_per_success": 222594.0
+        },
+        {
+          "model": "gemini-4-argon-contributor",
+          "candidate": "recommendation",
+          "observed": 1,
+          "passed": 1,
+          "functional_passes": 1,
+          "statuses": {
+            "ok": 1
+          },
+          "model_calls": 5,
+          "reported_tokens": 222785,
+          "usage_complete_for_attempted_calls": true,
+          "reported_tokens_per_success": 222785.0
+        }
+      ],
+      "verified_recorded_prompts": 6
+    }
+  ],
+  "descriptive_by_arm": {
+    "baseline": {
+      "observed": 9,
+      "operational_success": 7,
+      "saved_code_passes": 7
+    },
+    "recommendation": {
+      "observed": 9,
+      "operational_success": 6,
+      "saved_code_passes": 8
+    }
+  },
+  "audited_failures": [
+    {
+      "position": "beginning",
+      "id": "gemini-4-argon-contributor--recommendation--framed-client--0",
+      "status": "timeout",
+      "functional_pass": true
+    },
+    {
+      "position": "middle",
+      "id": "glm-5.3-flash--baseline--framed-client--0",
+      "status": "generation_limit",
+      "functional_pass": false
+    },
+    {
+      "position": "middle",
+      "id": "glm-5.3-flash--recommendation--framed-client--0",
+      "status": "generation_limit",
+      "functional_pass": false
+    },
+    {
+      "position": "end",
+      "id": "glm-5.3-flash--baseline--framed-client--0",
+      "status": "model_error",
+      "functional_pass": false
+    },
+    {
+      "position": "end",
+      "id": "glm-5.3-flash--recommendation--framed-client--0",
+      "status": "request_limit",
+      "functional_pass": true
+    }
+  ],
+  "verified_common_sources": 75,
+  "verified_archive_copies": 225,
+  "verified_captured_system_texts": 17,
+  "missing_outcome_system_texts": [
+    {
+      "position": "beginning",
+      "id": "gemini-4-argon-contributor--recommendation--framed-client--0"
+    }
+  ],
+  "recorded_tokens_lower_bound": 4261031,
+  "recorded_attempted_calls_lower_bound": 112,
+  "interpretation": "Descriptive one-sample conditions on one task. Do not pool these with ordinary holdout tasks or treat positions/models as independent task clusters. No task-bootstrap CI, position causation, guaranteed saving, general optimality, actual cash cost or allowance debit is inferred. Missing deadline and failed-request usage remain unknown. All original failures retained; only unrun end-position cells continued after verified terminal."
+}

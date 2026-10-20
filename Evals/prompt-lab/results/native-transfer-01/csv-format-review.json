@@ -1,0 +1,23 @@
+{
+  "checked_at_utc": "2026-10-20T11:51:12.663669+00:00",
+  "run_fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+  "task_id": "inventory-import",
+  "task_sha256": "b355eac5a9ecd17b725f81bf10f63101593de30ccbceb8b1aafd875bb0c71ae7",
+  "independent_review": "Existing read-only reviewer independently reproduced both saved-code ValueErrors and the frozen reference importing one row (b,c, 0). No artifact changes, builds or subject calls.",
+  "reviewed_details_sha256": {
+    "gemini-4-argon-contributor--baseline--inventory-import--0": "8e436a7b0c14c4ddf366f1dd108243e81fdd150904e428fcf6ebf276be5492fd",
+    "glm-5.3-flash--recommendation--inventory-import--0": "5e016e160eb8e5552d90465e731370d1c15b8326f087c5c6ff126f376ccdc2a4"
+  },
+  "sources": [
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc4180#section-2",
+      "finding": "Section 2 documents double-quoted fields containing commas as a common CSV format; Informational RFC, not an Internet Standard."
+    },
+    {
+      "url": "https://docs.python.org/3/library/csv.html",
+      "finding": "The default CSV reader recognizes quoted fields; dialect differences are explicitly acknowledged."
+    }
+  ],
+  "decision": "Retain all inventory-import primary grades under the same criterion for both prompts. The task requests CSV, fixes a comma-separated header and permits nonempty IDs without excluding commas; it specifies no dialect disabling quotes. Unspecified dialect is a disclosure limitation, not a grade override or task exclusion.",
+  "limits": "The reproduced counterexample establishes this failure only. The external oracle stops at its first failed quoted-comma assertion; subsequent transaction/CLI behavior is not established for those failing states. No universal CSV standard or prompt causation is inferred."
+}

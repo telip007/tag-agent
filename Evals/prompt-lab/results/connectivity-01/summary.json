@@ -1,0 +1,26 @@
+[
+  {
+    "model": "deepseek-v4.1-flash",
+    "candidate": "baseline",
+    "attempted": 1,
+    "valid": 1,
+    "passed": 1,
+    "infra_errors": 0,
+    "prompt_tokens": 1237,
+    "completion_tokens": 45,
+    "wall_seconds": 2.646,
+    "cost": null
+  },
+  {
+    "model": "glm-5.3-flash",
+    "candidate": "baseline",
+    "attempted": 1,
+    "valid": 1,
+    "passed": 0,
+    "infra_errors": 0,
+    "prompt_tokens": 1098,
+    "completion_tokens": 40,
+    "wall_seconds": 4.114,
+    "cost": null
+  }
+]

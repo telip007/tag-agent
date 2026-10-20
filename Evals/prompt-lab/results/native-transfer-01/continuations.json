@@ -1,0 +1,33 @@
+[
+  {
+    "recorded_at_utc": "2026-10-20T11:34:46.628148+00:00",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "prior_process_terminal": true,
+    "prior_exit_code": 0,
+    "stop_reason": "One recorded upstream invalid-JSON tool-history rejection; fatal_row stopped scheduling, pending work drained. Not an observation timeout.",
+    "completed_cells": 17,
+    "scheduled_unrun_cells": 37,
+    "retained_prefix_bytes": 471066,
+    "retained_prefix_sha256": "4a1c19562114ffcb88470b857adcbe04de4e6219844d467e83ba4d9d0abcad20",
+    "completed_ids": [
+      "deepseek-v4.1-flash--baseline--inventory-import--2",
+      "deepseek-v4.1-flash--recommendation--framed-client--0",
+      "deepseek-v4.1-flash--recommendation--framed-client--1",
+      "deepseek-v4.1-flash--recommendation--inventory-import--1",
+      "deepseek-v4.1-flash--recommendation--inventory-import--2",
+      "deepseek-v4.1-flash--recommendation--tree-report-cli--0",
+      "deepseek-v4.1-flash--recommendation--tree-report-cli--1",
+      "deepseek-v4.1-flash--recommendation--tree-report-cli--2",
+      "gemini-4-argon-contributor--baseline--framed-client--0",
+      "gemini-4-argon-contributor--baseline--tree-report-cli--1",
+      "gemini-4-argon-contributor--recommendation--inventory-import--1",
+      "gemini-4-argon-contributor--recommendation--tree-report-cli--2",
+      "glm-5.3-flash--baseline--framed-client--1",
+      "glm-5.3-flash--baseline--inventory-import--0",
+      "glm-5.3-flash--recommendation--framed-client--1",
+      "glm-5.3-flash--recommendation--tree-report-cli--0",
+      "glm-5.3-flash--recommendation--tree-report-cli--2"
+    ],
+    "decision": "Exact unchanged invocation; preserve every completed failure and run only missing cells. No manifest/controller/policy/bundle changes."
+  }
+]

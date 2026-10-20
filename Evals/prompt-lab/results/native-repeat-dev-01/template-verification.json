@@ -1,0 +1,10 @@
+{
+  "checked_at_utc": "2026-10-20T10:34:46.470663+00:00",
+  "catalogue_fingerprint": "9408888cf687e2331c67c25e8bc343e116280981ba235ee76dccc3f95dbcbf8d",
+  "run_fingerprint": "83346c3f2f1d140b0e2611d61d4a818e20aa64c19e28b9421da4e101e384e1af",
+  "observed_rows": 352,
+  "verified_prompts": 352,
+  "unavailable_prompt_rows": [],
+  "mismatches": [],
+  "scope": "All completed repeat outgoing system texts match the fixed catalogue; not a quality claim."
+}

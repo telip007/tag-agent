@@ -1,13 +1,35 @@
 ---
 title: Evaluation loop
-summary: A plan for measuring system prompt changes across frontier, cheap and open-weight models, so the prompt works as well on non-frontier models as on frontier ones. Not built yet.
-updated: 2026-10-18
+summary: Native prompt evaluation and completed reserved comparisons; retain baseline because compact did not confirm a replacement advantage.
+updated: 2026-10-20
 ---
 
 # Evaluation loop
 
-Status: **a plan, not built.** Nothing here is a decision yet; it is meant
-to be worked through and then recorded in `decisions/`.
+Status: **planned prompt measurements complete; retain baseline/standard.**
+The [final recommendation](../../Evals/prompt-lab/recommendation/FINAL.md)
+provides exact text, hashes, comparisons, limitations and reproduction commands.
+Eight cores and a lean-scaffold ablation were explored; the strict repeated
+selection matrix has 528 cells. The frozen compact development winner and
+baseline then received 162 ordinary reserved trajectories and 18 separate
+context conditions. Ordinary operational success tied at 64/81, saved code
+passed in 67/81 baseline versus 65/81 compact, and no token saving was confirmed.
+The context check shows a tradeoff on one task, not independent new tasks.
+Local verification passed with 318 Swift tests, 91.5% coverage and 42 offline
+reporting tests; a closing read-only review found no Important or Critical issue.
+
+The research supervisor uses the actual Tag loop, adapters and tools in synthetic
+fixture directories, with external functional grading and bounded calls/tokens/
+time. The [decision screen](../../Evals/prompt-lab/README.md) did not execute
+returned actions and did not select a coding winner. Current model coverage is
+three Go aliases across two native wire formats; broad frontier/small-model
+coverage, a production headless CLI and public SWE-bench calibration below
+remain roadmap proposals. Production `SystemPrompt.swift` is unchanged.
+
+The following sections retain that broader production-facing proposal and
+research questions; they are not claims that every proposed capability exists.
+Commands, frozen evidence and current behavior are in the
+[research README](../../Evals/prompt-lab/README.md).
 
 ## Why
 
@@ -35,7 +57,8 @@ is:
 2. **Equal behaviour on the basics.** On easy tasks every tier should get
    the same things right: read before editing, run the tests, ask when the
    request is ambiguous, leave unrelated code alone, end with a short
-   summary. These are prompt-controlled, so a gap there is a prompt problem.
+   summary. Prompt changes can affect these behaviors; a gap still requires investigation
+   of the model, tools, harness and grading before assigning a cause.
 3. **Close the gap where the prompt can.** Track the gap between tiers per
    task category; a prompt change that narrows it without hurting the top
    tier is the kind we want.
@@ -65,6 +88,10 @@ Gotchas for open models on OpenRouter:
   sooner as the conversation grows, so include some long tasks.
 
 ## What Tag needs first
+
+The list below is the original production-facing proposal. The research bridge
+provides fixture execution and trajectory recording through tests; the user CLI
+still does not expose these evaluation flags.
 
 From [mini-swe-agent](../sources/mini-swe-agent.md#what-tag-can-borrow):
 
@@ -129,9 +156,10 @@ numbers. Caveat: public tasks may be in the models' training data.
 - **Cost estimate** before each run: tasks × models × repeats × average cost
   per run. A guess, not measured: layer 1 on cheap models should cost cents
   per full pass; frontier models dominate the bill.
-- **Results** saved as JSON lines per run (prompt version, model, provider,
-  task, metrics), committed so changes can be compared over time. No
-  personal data or local paths in them; the repository is public.
+- **Results:** frozen manifests, source archives, hashes, audits and derived
+  reports support comparisons. Current immutable raw JSONL/details stay local
+  and are excluded from Git because native logs can retain toolchain metadata.
+  Any future public raw projection needs separate redaction and provenance.
 
 ## The loop
 
@@ -168,3 +196,22 @@ Ideas the loop would test first, all guesses until measured:
    users get and rely on repeats?
 6. **CI:** run a small smoke subset on every prompt change, the full matrix
    on demand?
+
+
+The prompt lab now also varies the system scaffold with `--scaffold lean`: a
+short identity and no prose tool list. It preserves actual API tools, tool
+guidelines, environment and project instructions; the standard control retains
+the exact native renderer. Sample labels gain `_lean`, and the frozen manifest
+records the scaffold separately. See the prompt optimization design for the
+completed eight-policy exploration, fixture ambiguity audit, repeated selection
+and reserved validation. The [final choice](../../Evals/prompt-lab/recommendation/FINAL.md)
+retains the existing baseline; shorter text alone did not establish efficiency.
+
+## Gotchas
+
+Recorded token totals are lower bounds when a request fails without usage.
+Do not divide such a total by successful turns and present it as complete
+cost per success. Both native and family reports now leave that metric unknown
+unless every attempted inference has usage; known consumption from failed
+turns still counts. A missing-request regression covers this distinction.
+See `Evals/prompt-lab/reporting-review.json` and the research design.

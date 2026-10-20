@@ -1,0 +1,16 @@
+[
+  {
+    "model": "gemini-4-argon-contributor",
+    "candidate": "baseline",
+    "attempted": 1,
+    "passed": 1,
+    "functional_passes": 1,
+    "infrastructure_errors": 0,
+    "model_errors": 0,
+    "timeouts": 0,
+    "request_limit_reached": 0,
+    "model_calls": 6,
+    "reported_tokens": 10660,
+    "monetary_cost": null
+  }
+]

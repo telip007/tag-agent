@@ -1,0 +1,22 @@
+{
+  "recorded_at_utc": "2026-10-20T10:43:26.615341+00:00",
+  "phase": "After recommendation freeze and first keyed-window baseline outcome; not a predeclared exclusion.",
+  "task_id": "keyed-window",
+  "task_sha256": "68e008cc3d96ee8ffddbbb74c1230ca6d7aef569d23da7bfd137ad4af789ebed",
+  "trigger_trajectory": "glm-5.3-flash--baseline--keyed-window--1",
+  "trigger_detail_sha256": "615aa5b814aa61b963c01aaff103c42a45e034985783b70ee90f6be9d119ab72",
+  "specification_caveat": "Normal completion, six inference calls, no protected changes. Saved Limiter rejects 0, -1 and 1.5 but accepts True. External oracle rejects True. The task says positive integer limit without explicit bool exclusion; another reserved task explicitly excludes bool.",
+  "primary_analysis": "All nine reserved tasks retained with original external grades.",
+  "additional_sensitivity": "Exclude the whole keyed-window task uniformly across all policies, models and repetitions; show alongside primary results.",
+  "forbidden_actions": "No isolated assertion deletion, pass override, fixture edit, prompt tuning, failure replacement or retry.",
+  "recommendation_unchanged": true,
+  "later_observations": [
+    {
+      "recorded_at_utc": "2026-10-20T11:02:18.463855+00:00",
+      "trajectory": "glm-5.3-flash--recommendation--keyed-window--0",
+      "detail_sha256": "4d3163fa1269c1c4b42f759dc55e696317eab13acca32a1109f9f058376f486e",
+      "finding": "Unambiguous open-interval-boundary failure independent of bool validation."
+    }
+  ],
+  "sensitivity_limitation": "Uniform removal of keyed-window also removes a genuine recommendation boundary failure. It is a secondary robustness view, not corrected primary quality; retain the original all-task score and failure-type audit."
+}

@@ -1,0 +1,439 @@
+[
+  {
+    "id": "glm-5.3-flash--baseline--inventory-import--0",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "detail_sha256": "0a8d6b6bf27521a6a960fff6707196b21927681f441b991be3dde08faf1324c3",
+    "classification": "subject generation-budget failure before an edit",
+    "observed": {
+      "attempted_calls": 4,
+      "last_output_tokens": 4096,
+      "changed_files": [],
+      "functional_pass": false
+    },
+    "decision": "Retain original operational and functional failure under shared 4096-token cap. No retry, pass override, task/prompt edit or single-case prompt-causation claim."
+  },
+  {
+    "id": "deepseek-v4.1-flash--recommendation--inventory-import--1",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "detail_sha256": "6f5867ddd2a99afc86524cdfd03277863784332b7867ce415151da3dd4f9cb73",
+    "classification": "subject generation-budget failure before an edit",
+    "observed": {
+      "attempted_calls": 3,
+      "last_output_tokens": 4096,
+      "changed_files": [],
+      "functional_pass": false
+    },
+    "decision": "Retain original operational/functional failure under shared output cap. No retry, grade override or prompt-causation claim."
+  },
+  {
+    "id": "glm-5.3-flash--recommendation--tree-report-cli--2",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "detail_sha256": "af0b70bbb9e9319853583e6a1665b97c3a49d31e0dc2b3f9c0ae164926ec524d",
+    "classification": "subject generation-budget failure before an edit",
+    "observed": {
+      "attempted_calls": 5,
+      "last_output_tokens": 4096,
+      "changed_files": [],
+      "functional_pass": false
+    },
+    "decision": "Retain original operational/functional failure under shared output cap. No retry, grade override or prompt-causation claim."
+  },
+  {
+    "id": "deepseek-v4.1-flash--baseline--inventory-import--2",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "detail_sha256": "c570c9f5bef650b860a15f6086c0e0dca185450d746d8565fa5ebbbe14899820",
+    "classification": "genuine functional quoted-CSV failure after normal completion",
+    "observed": "Saved importer splits each line on commas and rejects the reserved valid quoted-comma item ID. The task calls for CSV import; both modules were edited and no protected changes occurred.",
+    "counterexample": {
+      "input": "item_id,qty\n\"b,c\",0\n",
+      "expected_imported_records": 1,
+      "expected_item_id": "b,c",
+      "actual": "ValueError: malformed row: '\"b,c\",0'"
+    },
+    "decision": "Original failed external grade retained; no override, retry or prompt/task tuning. One example does not establish prompt causation."
+  },
+  {
+    "id": "gemini-4-argon-contributor--baseline--tree-report-cli--1",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "detail_sha256": "a6c92d752135e6b9c353a07995909e89197c889b8b2dc0042cfa5fed1ef3c000",
+    "classification": "retained supervisor deadline after externally passing saved code",
+    "observed": {
+      "status": "timeout",
+      "functional_pass": true,
+      "forbidden_changes": [],
+      "changed_files": [
+        "scanner.py",
+        "report.py"
+      ],
+      "finished": false,
+      "wall_seconds": 180.256,
+      "process_exit": -15,
+      "outcome_present": false,
+      "attempted_calls": null,
+      "recorded_replies": 0
+    },
+    "decision": "Original operational failure retained despite correct saved code. No retry, grade override or unsupported cause assignment. Missing outcome/usage remains unknown."
+  },
+  {
+    "id": "gemini-4-argon-contributor--recommendation--inventory-import--1",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "detail_sha256": "8dbb17d4ed5212d8f910adcc44e6f20035e4a24f6281a9c540d6df0c5a6034d9",
+    "classification": "retained supervisor deadline before a saved repair",
+    "observed": {
+      "status": "timeout",
+      "functional_pass": false,
+      "changed_files": [],
+      "finished": false,
+      "wall_seconds": 180.189,
+      "process_exit": -15,
+      "outcome_present": false,
+      "attempted_calls": null
+    },
+    "decision": "Original failed operational and functional grade retained. No retry, override or unsupported provider/tool/prompt cause. Uncaptured usage remains unknown."
+  },
+  {
+    "id": "deepseek-v4.1-flash--recommendation--inventory-import--2",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "detail_sha256": "8f911b95e635fb2ad2e3ba36a223f71c9f0d60a1e2bfa7a7a826f82ee20c2c94",
+    "classification": "genuine functional quoted-CSV failure after normal completion",
+    "observed": "Recommendation also splits each CSV record on commas and rejects the reserved quoted-comma item ID; both modules were edited and no protected changes occurred.",
+    "counterexample": {
+      "input": "item_id,qty\n\"b,c\",0\n",
+      "expected_imported_records": 1,
+      "expected_item_id": "b,c",
+      "actual": "ValueError: line 2: expected 2 fields"
+    },
+    "decision": "Apply the same unchanged failed grade as the equivalent baseline case. No override, retry or prompt/task tuning."
+  },
+  {
+    "id": "glm-5.3-flash--recommendation--tree-report-cli--0",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "detail_sha256": "def4bba52722e516bc856e14154cf92d4655aa8755a82b56b528f72c1df56560",
+    "classification": "malformed tool-call JSON replay rejected at the shared output cap",
+    "observed": {
+      "last_output_tokens": 4096,
+      "invalid_json": {
+        "message": "Unterminated string starting at",
+        "offset": 12,
+        "characters": 1454
+      },
+      "tool_name": "edit_file",
+      "tool_validation_failed": true,
+      "attempted_calls": 6,
+      "recorded_replies": 5,
+      "upstream_failure": "OpenCode Go answered HTTP 400. Upstream request failed: [400] Invalid tool call in messages: tool_calls[].function.arguments for function 'edit_file' must be a JSON object string (or an object), got invalid JSON",
+      "changed_files": [],
+      "functional_pass": false
+    },
+    "decision": "Retain original operational/functional failure. No argument repair, grade override, failed-cell retry or runtime/prompt edit. Continue only unrun cells after verified terminal state.",
+    "cause_limit": "Recorded JSON and replay rejection are proven. The cap-consistent truncation mechanism is not independently proven because finish_reason is not captured."
+  },
+  {
+    "id": "glm-5.3-flash--baseline--inventory-import--1",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "detail_sha256": "22867369e7a93ace65b9ad5d8c5c77b73f3ac61997034e3aeb463fe004ae3e66",
+    "classification": "subject generation-budget failure",
+    "observed": {
+      "status": "generation_limit",
+      "attempted_calls": 4,
+      "functional_pass": false,
+      "changed_files": [],
+      "forbidden_changes": [],
+      "last_output_tokens": 4096
+    },
+    "decision": "Original budget-limited operational failure retained, with external saved-code grade unchanged. No retry, override or single-case prompt-causation claim."
+  },
+  {
+    "id": "glm-5.3-flash--recommendation--inventory-import--1",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "detail_sha256": "254937f5e0e8505a35d3de789ab92e4602bfd8014989f6a7c061c20ee91848e4",
+    "classification": "subject call-limit failure with failing saved code",
+    "observed": {
+      "status": "request_limit",
+      "attempted_calls": 12,
+      "functional_pass": false,
+      "changed_files": [
+        "inventory/importer.py",
+        "inventory/cli.py"
+      ],
+      "forbidden_changes": [],
+      "external_failure": "Traceback (most recent call last):\n  File \"/temporary\", line 8, in <module>\n    assert apply_rows(connection, 'item_id,qty\\n a ,2\\na,3\\n\"b,c\",0\\n\\n') == 3\n           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/fixture/inventory/importer.py\", line 20, in apply_rows\n    raise ValueError(f'malformed row: {line!r}')\nValueError: malformed row: '\"b,c\",0'\n"
+    },
+    "decision": "Original budget-limited operational failure retained, with external saved-code grade unchanged. No retry, override or single-case prompt-causation claim."
+  },
+  {
+    "id": "gemini-4-argon-contributor--baseline--inventory-import--2",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "detail_sha256": "c4ce381ef92f0b1775962021678c852df58c7700bba5ebbd5dc58a3616764e67",
+    "classification": "subject generation-budget failure",
+    "observed": {
+      "status": "generation_limit",
+      "attempted_calls": 4,
+      "functional_pass": false,
+      "changed_files": [],
+      "forbidden_changes": [],
+      "last_output_tokens": 4096
+    },
+    "decision": "Original budget-limited operational failure retained, with external saved-code grade unchanged. No retry, override or single-case prompt-causation claim."
+  },
+  {
+    "id": "gemini-4-argon-contributor--recommendation--inventory-import--2",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "detail_sha256": "01b771a8fcbbfd5eb79b589ad2d3675e5a6248123078660b78b34f77907be729",
+    "classification": "subject generation-budget failure",
+    "observed": {
+      "attempted_calls": 5,
+      "last_output_tokens": 4096,
+      "changed_existing_files": [],
+      "functional_pass": false,
+      "forbidden_changes": []
+    },
+    "decision": "Original failed operational grade and external saved-code result retained. No retry, override or prompt-causation claim."
+  },
+  {
+    "id": "gemini-4-argon-contributor--baseline--inventory-import--0",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "detail_sha256": "8e436a7b0c14c4ddf366f1dd108243e81fdd150904e428fcf6ebf276be5492fd",
+    "classification": "genuine functional quoted-CSV failure after normal completion",
+    "observed": {
+      "attempted_calls": 8,
+      "changed_existing_files": [
+        "inventory/importer.py",
+        "inventory/cli.py"
+      ],
+      "forbidden_changes": [],
+      "functional_pass": false
+    },
+    "counterexample": {
+      "input": "item_id,qty\n\"b,c\",0\n",
+      "expected_imported_records": 1,
+      "expected_item_id": "b,c",
+      "expected_qty": 0,
+      "actual": "ValueError: malformed row"
+    },
+    "decision": "Same unchanged criterion as both DeepSeek arms. Retain original failed grade; no override, retry, task/prompt tuning or single-case causation claim."
+  },
+  {
+    "id": "gemini-4-argon-contributor--recommendation--inventory-import--0",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "detail_sha256": "d54ce4608da389c14dc6de208b7e2c48c805a2876f0cf4064787a000b3ed6dc7",
+    "classification": "retained supervisor deadline before a saved repair",
+    "observed": {
+      "wall_seconds": 180.197,
+      "process_exit": -15,
+      "outcome_present": false,
+      "attempted_calls": null,
+      "functional_pass": false,
+      "changed_existing_files": [],
+      "forbidden_changes": []
+    },
+    "decision": "Retain original operational failure and external saved-code result. Missing usage and exact provider/tool cause remain unknown; no retry, override or prompt-causation claim."
+  },
+  {
+    "id": "glm-5.3-flash--recommendation--inventory-import--0",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "detail_sha256": "5e016e160eb8e5552d90465e731370d1c15b8326f087c5c6ff126f376ccdc2a4",
+    "classification": "genuine functional quoted-CSV failure after normal completion",
+    "observed": {
+      "attempted_calls": 12,
+      "changed_existing_files": [
+        "inventory/importer.py",
+        "inventory/cli.py"
+      ],
+      "forbidden_changes": [],
+      "functional_pass": false
+    },
+    "counterexample": {
+      "input": "item_id,qty\n\"b,c\",0\n",
+      "expected_imported_records": 1,
+      "expected_item_id": "b,c",
+      "expected_qty": 0,
+      "actual": "ValueError: malformed row: '\"b,c\",0'"
+    },
+    "decision": "Same unchanged criterion as both DeepSeek arms. Retain original failed grade; no override, retry, task/prompt tuning or single-case causation claim."
+  },
+  {
+    "id": "deepseek-v4.1-flash--recommendation--inventory-import--0",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "detail_sha256": "3c9a9326ca593e4968e40b478e94ba09b3e5ba2a617c5ea9bcbb62d1ba900975",
+    "classification": "genuine functional quoted-CSV failure after normal completion",
+    "observed": {
+      "attempted_calls": 11,
+      "changed_existing_files": [
+        "inventory/importer.py",
+        "inventory/cli.py"
+      ],
+      "forbidden_changes": [],
+      "functional_pass": false
+    },
+    "counterexample": {
+      "input": "item_id,qty\n\"b,c\",0\n",
+      "expected_imported_records": 1,
+      "expected_item_id": "b,c",
+      "expected_qty": 0,
+      "actual": "ValueError: malformed row: '\"b,c\",0'"
+    },
+    "decision": "Same unchanged criterion as both DeepSeek arms. Retain original failed grade; no override, retry, task/prompt tuning or single-case causation claim."
+  },
+  {
+    "id": "glm-5.3-flash--baseline--tree-report-cli--2",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "detail_sha256": "dc59e2a0e2264ed92f0145d1a285f58133722c6ae17791c369d035c62bf24829",
+    "classification": "subject generation-budget failure",
+    "observed": {
+      "attempted_calls": 3,
+      "last_output_tokens": 4096,
+      "functional_pass": false,
+      "changed_existing_files": [],
+      "forbidden_changes": []
+    },
+    "decision": "Retain original shared-budget operational failure and external saved-code grade. No retry, override or prompt-causation claim."
+  },
+  {
+    "id": "glm-5.3-flash--recommendation--inventory-import--2",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "detail_sha256": "cfb6393b1d63bdb7490161e08ed370d6c58423b601a1c70d1647230db254d9ee",
+    "classification": "subject generation-budget failure",
+    "observed": {
+      "attempted_calls": 4,
+      "last_output_tokens": 4096,
+      "functional_pass": false,
+      "changed_existing_files": [],
+      "forbidden_changes": []
+    },
+    "decision": "Retain original shared-budget operational failure and external saved-code grade. No retry, override or prompt-causation claim."
+  },
+  {
+    "id": "gemini-4-argon-contributor--recommendation--tree-report-cli--0",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "detail_sha256": "b79ff4fe305ce814042bc3f4e29be62935a82b9e0c8f6c3ad635040541a0e2e0",
+    "classification": "subject generation-budget failure",
+    "observed": {
+      "attempted_calls": 4,
+      "last_output_tokens": 4096,
+      "functional_pass": false,
+      "changed_existing_files": [],
+      "forbidden_changes": []
+    },
+    "decision": "Retain original shared-cap operational failure and external saved-code grade; no retry, override or prompt-causation claim."
+  },
+  {
+    "id": "deepseek-v4.1-flash--baseline--inventory-import--1",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "detail_sha256": "958b55bfaf648944803679d8711d6d9f1cb00cf79496bd374a9b4c47ec14b4bf",
+    "classification": "genuine functional quoted-CSV failure after normal completion",
+    "observed": {
+      "attempted_calls": 11,
+      "changed_existing_files": [
+        "inventory/importer.py",
+        "inventory/cli.py"
+      ],
+      "forbidden_changes": []
+    },
+    "counterexample": {
+      "input": "item_id,qty\n\"b,c\",0\n",
+      "expected_imported_records": 1,
+      "expected_item_id": "b,c",
+      "expected_qty": 0,
+      "actual": "ValueError: malformed row: '\"b,c\",0'"
+    },
+    "decision": "Original failed grade retained consistently across both prompt arms. No override, retry, task/prompt tuning or single-case prompt-causation claim."
+  },
+  {
+    "id": "glm-5.3-flash--recommendation--framed-client--0",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "detail_sha256": "5c88aad8e6d21c6c8733f5e6e033471aab157510d96a0bc61c087387e49506f9",
+    "classification": "subject call-limit failure with externally passing saved code",
+    "observed": {
+      "attempted_calls": 12,
+      "functional_pass": true,
+      "finished": false,
+      "changed_existing_files": [
+        "framing.py",
+        "client.py"
+      ],
+      "forbidden_changes": []
+    },
+    "decision": "Retain the failed agent completion despite passing external code tests. Shared12-call budget unchanged; no retry, override or single-case prompt-causation claim."
+  },
+  {
+    "id": "glm-5.3-flash--baseline--tree-report-cli--1",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "detail_sha256": "0552fb4466aedd34a01cfb21f9ae14ae7bb7d359b54d1df39f58f8133e42191d",
+    "classification": "subject generation-budget failure",
+    "observed": {
+      "attempted_calls": 4,
+      "last_output_tokens": 4096,
+      "functional_pass": false,
+      "changed_existing_files": [],
+      "forbidden_changes": []
+    },
+    "decision": "Retain original shared-cap operational failure and saved-code grade; no retry, override or prompt-causation claim."
+  },
+  {
+    "id": "glm-5.3-flash--baseline--inventory-import--2",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "detail_sha256": "a88893d656cf942374fd03b7b7e3a850f0511a1930000c073a67739b86e96dfc",
+    "classification": "subject generation-budget failure",
+    "observed": {
+      "attempted_calls": 4,
+      "last_output_tokens": 4096,
+      "functional_pass": false,
+      "changed_existing_files": [],
+      "forbidden_changes": []
+    },
+    "decision": "Retain original shared-cap operational failure and saved-code grade; no retry, override or prompt-causation claim."
+  },
+  {
+    "id": "deepseek-v4.1-flash--baseline--inventory-import--0",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "detail_sha256": "6092df4d9c206f39cb026e52ebf961eb99a74fdad76ff1b296de7e546a6cd600",
+    "classification": "genuine functional quoted-CSV failure after normal completion",
+    "observed": {
+      "attempted_calls": 10,
+      "changed_existing_files": [
+        "inventory/importer.py",
+        "inventory/cli.py"
+      ],
+      "forbidden_changes": []
+    },
+    "counterexample": {
+      "input": "item_id,qty\n\"b,c\",0\n",
+      "expected_imported_records": 1,
+      "expected_item_id": "b,c",
+      "expected_qty": 0,
+      "actual": "ValueError: line 2: expected exactly two fields"
+    },
+    "decision": "Retain unchanged original grade consistently across both arms under independently reviewed CSV criterion; no retry, override or prompt/task tuning."
+  },
+  {
+    "id": "gemini-4-argon-contributor--recommendation--tree-report-cli--1",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "detail_sha256": "960f820f397f315437a2cb0d4cc3df8998051b490389fc7df2fec94117ac4a4c",
+    "classification": "subject generation-budget failure",
+    "observed": {
+      "attempted_calls": 4,
+      "last_output_tokens": 4096,
+      "functional_pass": false,
+      "changed_existing_files": [],
+      "forbidden_changes": []
+    },
+    "decision": "Original shared-cap operational failure and saved-code grade retained; no retry, override or prompt-causation claim."
+  },
+  {
+    "id": "gemini-4-argon-contributor--baseline--inventory-import--1",
+    "fingerprint": "98999516c440ab9a2fe4803376083b58b1b7fc7c978487a115bd0be8a96f766d",
+    "detail_sha256": "9d1d7eb782717212faac02b3755e1a3c58b22dee7000364f3f094b96da60d14e",
+    "classification": "retained model request timeout before a saved repair",
+    "observed": {
+      "wall_seconds": 150.33,
+      "attempted_calls": 5,
+      "recorded_replies": 4,
+      "failure": "The request timed out.",
+      "changed_existing_files": [],
+      "functional_pass": false,
+      "forbidden_changes": []
+    },
+    "decision": "Original operational and saved-code failure retained. Failed fifth-request usage remains unknown. No retry, override or unsupported underlying provider/tool/prompt cause."
+  }
+]
