@@ -1,7 +1,7 @@
 ---
 title: LLM wiki pattern
 summary: Karpathy's idea file for agent-maintained knowledge bases.
-updated: 2026-10-17
+updated: 2026-10-20
 ---
 
 # LLM wiki pattern
@@ -21,7 +21,9 @@ Raw capture: [raw/2026-10-17-karpathy-llm-wiki.md](../raw/2026-10-17-karpathy-ll
 - `index.md` (catalog, read first) and `log.md` (append-only, greppable
   prefixes) are enough navigation up to a few hundred pages.
 - Humans abandon wikis because maintenance grows faster than value. LLMs make
-  maintenance nearly free.
+  maintenance easier to automate. The author's near-zero maintenance-cost
+  characterization is an intuition, not a measured inference-cost result.
+  Semantic ingestion and multi-page revisions still consume tokens.
 
 ## How we applied it
 
@@ -29,3 +31,6 @@ Raw capture: [raw/2026-10-17-karpathy-llm-wiki.md](../raw/2026-10-17-karpathy-ll
   and `decisions/` replace entity pages, and code paths are linked and
   link-checked.
 - Enforcement through hooks and skills: [Agent workflow](../concepts/agent-workflow.md).
+- The [long-term memory research](../designs/long-term-memory-research.md)
+  proposes a private compiled wiki view over native memory, with selective
+  synthesis and bounded retrieval instead of loading the full index each turn.

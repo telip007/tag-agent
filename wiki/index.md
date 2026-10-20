@@ -43,6 +43,8 @@ Start here. Conventions: [SCHEMA.md](SCHEMA.md). Timeline: [log.md](log.md).
 
 ## Designs
 
+- [Efficient long-term memory and selective dreaming](designs/long-term-memory-research.md): Research proposal for native evidence-backed memory, bounded hybrid retrieval, an inspectable wiki and optional incremental consolidation.
+
 - [Native context contract evaluation](designs/native-context-evaluation.md): Deterministic native fixtures compare tail recall, whole-input computation, byte admission and reversible request projection without claiming model or billing gains.
 
 - [Native context management implementation plan](designs/native-context-plan.md): Execution ledger for native output storage, retrieval, indexing, analysis, batching, compaction and diagnostics on the persistent session foundation.

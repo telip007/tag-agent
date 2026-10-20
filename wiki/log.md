@@ -600,3 +600,6 @@ PR #3 to main so its next exact CI can run without base conflicts.
 All planned native capabilities and documented exclusions are covered in PR #3
 against main. Exact feature CI at a8b47d3 passed 514 tests and 91.7% coverage on
 Swift 6.3.3; reconcile current status while retaining historical checkpoint evidence.
+
+## [2026-10-20] update | Long-term memory research
+Compared native automatic capture, bounded retrieval, compiled wiki views and selective dreaming against primary research. Proposal only; no runtime or provider changes.
