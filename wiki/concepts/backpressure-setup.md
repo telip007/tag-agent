@@ -41,6 +41,14 @@ strict settings and lint plugin; `Tests/SessionProbe` supplies child-process pro
 
 ## Gotchas
 
+- **Install the release product, using SwiftPM's resolved binary directory.**
+  `make install` builds only the `Tag` product with release optimization and
+  installs it as `tag` with executable permissions. `PREFIX` defaults to
+  `/usr/local`; `DESTDIR` adds a staging root for packaging. Both destination
+  paths and the result of `swift build -c release --show-bin-path` are quoted
+  so directories containing spaces work. See the [Makefile](../../Makefile)
+  and [setup instructions](../../README.md#setup).
+
 - **Share a noncopyable `Mutex` through a `Sendable` reference in task tests.**
   Swift 6.3 rejected `FileLockTests` when a nested `Task` directly captured
   a local `Mutex`, diagnosing a reference to a "mutable let" accessible

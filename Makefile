@@ -4,11 +4,14 @@
 #   make fix        auto-format
 #   make check      lint + build (warnings are errors) + tests + coverage gate
 #   make run        build and run Tag optimised, as users should run it
+#   make install    build optimised Tag and install it as $(PREFIX)/bin/tag
 
 SOURCES := Sources Package.swift $(wildcard Tests)
 MIN_COVERAGE ?= 80
+PREFIX ?= /usr/local
+DESTDIR ?=
 
-.PHONY: bootstrap fix format lint wiki-lint build test coverage check check-all sdk-check clean run
+.PHONY: bootstrap fix format lint wiki-lint build test coverage check check-all sdk-check clean run install
 
 bootstrap:
 	@command -v swiftlint >/dev/null || brew install swiftlint
@@ -34,6 +37,12 @@ build:
 # on an optimised one (wiki/concepts/terminal-ui.md#keeping-frames-cheap).
 run:
 	swift run -c release Tag
+
+install:
+	swift build -c release --product Tag
+	@bin_path="$$(swift build -c release --show-bin-path)" && \
+		install -d "$(DESTDIR)$(PREFIX)/bin" && \
+		install -m 755 "$$bin_path/Tag" "$(DESTDIR)$(PREFIX)/bin/tag"
 
 # Tag has no test target yet; this starts enforcing as soon as Tests/ exists.
 test:

@@ -603,3 +603,6 @@ Swift 6.3.3; reconcile current status while retaining historical checkpoint evid
 
 ## [2026-10-20] update | Long-term memory research
 Compared native automatic capture, bounded retrieval, compiled wiki views and selective dreaming against primary research. Proposal only; no runtime or provider changes.
+
+## [2026-10-20] update | Release executable installation
+Added make install to build the release Tag product and install it as tag, with configurable PREFIX and DESTDIR. Documented user-local installs and package staging.

@@ -120,6 +120,11 @@ make bootstrap   # SwiftLint, ripgrep, git hooks, submodule
 make run         # swift run -c release Tag
 ```
 
+To install the optimized executable as `/usr/local/bin/tag`, run `make install`.
+For a user-owned location, run `make install PREFIX="$HOME/.local"` and add
+`$HOME/.local/bin` to your `PATH`. `DESTDIR` can stage the install for packaging,
+for example `make install DESTDIR=/tmp/tag-stage`.
+
 The first start asks you to connect a provider: sign in with ChatGPT in the
 browser, or paste an OpenCode Go or OpenRouter API key. Keys can also come
 from `OPENCODE_API_KEY` and `OPENROUTER_API_KEY`. Credentials and settings
