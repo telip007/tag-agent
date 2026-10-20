@@ -10,6 +10,7 @@ the maintainer. See `wiki/decisions/0006-agents-build-the-harness.md`.
 
 - `Sources/Tag/`: the command-line entry point (argument parsing, terminal I/O).
 - `Sources/TagKit/`: the agent itself (loop, model access, tools).
+- `Sources/ModelKit/`: provider-neutral messages, model adapters, catalogues and sign-in.
 - `Packages/OpenRouter/`: the swift-openrouter SDK, a git submodule with its
   own `AGENTS.md`, rules and wiki. Work inside it follows *its* instructions.
 

@@ -64,7 +64,10 @@ enum ResponsesEvent: Sendable, Equatable {
         guard let input = json?["input_tokens"]?.intValue, let output = json?["output_tokens"]?.intValue else {
             return nil
         }
-        return Usage(inputTokens: input, outputTokens: output)
+        return Usage(
+            inputTokens: input, outputTokens: output,
+            cachedInputTokens: json?["input_tokens_details"]?["cached_tokens"]?.intValue,
+            cacheWriteInputTokens: json?["input_tokens_details"]?["cache_write_tokens"]?.intValue)
     }
 
     private static func failure(type: String, json: JSONValue, provider: ProviderID) -> ProviderError {

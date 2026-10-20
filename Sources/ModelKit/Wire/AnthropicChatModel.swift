@@ -127,7 +127,8 @@ public struct AnthropicChatModel: ChatModel {
     }
 
     /// The conversation as Messages turns: tool results go in a user turn,
-    /// consecutive ones merged, and the last turn is marked for caching.
+    /// consecutive ones merged. The last two user turns keep both the new
+    /// write boundary and the previous request's readable cache entry.
     static func messages(_ conversation: [Message]) -> [JSONValue] {
         var turns: [(role: String, content: [JSONValue])] = []
         for message in conversation {
@@ -152,9 +153,10 @@ public struct AnthropicChatModel: ChatModel {
                 }
             }
         }
-        if let last = turns.last, last.role == "user", case .object(var block)? = last.content.last {
+        for index in turns.indices.filter({ turns[$0].role == "user" }).suffix(2) {
+            guard case .object(var block)? = turns[index].content.last else { continue }
             block["cache_control"] = cache
-            turns[turns.count - 1].content[last.content.count - 1] = .object(block)
+            turns[index].content[turns[index].content.count - 1] = .object(block)
         }
         return turns.map { ["role": .string($0.role), "content": .array($0.content)] }
     }

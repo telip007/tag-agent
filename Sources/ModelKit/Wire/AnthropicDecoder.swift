@@ -38,6 +38,8 @@ struct AnthropicDecoder: WireDecoder {
     private var blocks: [Int: Block] = [:]
     private var order: [Int] = []
     private var inputTokens = 0
+    private var cachedInputTokens: Int?
+    private var cacheWriteInputTokens: Int?
     private var outputTokens = 0
     private var started = false
 
@@ -76,10 +78,14 @@ struct AnthropicDecoder: WireDecoder {
         guard let usage else {
             return
         }
-        let input = ["input_tokens", "cache_read_input_tokens", "cache_creation_input_tokens"]
-            .compactMap { usage[$0]?.intValue }
-        if !input.isEmpty, input.reduce(0, +) > 0 {
-            inputTokens = input.reduce(0, +)
+        if let input = usage["input_tokens"]?.intValue {
+            inputTokens = input
+        }
+        if let read = usage["cache_read_input_tokens"]?.intValue {
+            cachedInputTokens = read
+        }
+        if let written = usage["cache_creation_input_tokens"]?.intValue {
+            cacheWriteInputTokens = written
         }
         if let output = usage["output_tokens"]?.intValue {
             outputTokens = output
@@ -144,6 +150,10 @@ struct AnthropicDecoder: WireDecoder {
         let message = AssistantMessage(
             text: text.isEmpty ? nil : text, reasoning: reasoning.isEmpty ? nil : reasoning, replay: replay,
             toolCalls: toolCalls)
-        return ModelReply(message: message, usage: Usage(inputTokens: inputTokens, outputTokens: outputTokens))
+        let usage = Usage(
+            inputTokens: inputTokens + (cachedInputTokens ?? 0) + (cacheWriteInputTokens ?? 0),
+            outputTokens: outputTokens, cachedInputTokens: cachedInputTokens,
+            cacheWriteInputTokens: cacheWriteInputTokens)
+        return ModelReply(message: message, usage: usage)
     }
 }

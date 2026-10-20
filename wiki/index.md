@@ -9,7 +9,7 @@ Start here. Conventions: [SCHEMA.md](SCHEMA.md). Timeline: [log.md](log.md).
 - [Agent loop and tools](concepts/tools.md): How the agent loop runs tool calls, the five built-in tools, and where they differ from their Go originals.
 - [Terminal UI](concepts/terminal-ui.md): How the chat UI is built on Stipple: the design intent, the welcome cat, the agent's event seam, the observable session, the view and its hidden keys, why it runs on the main actor, and how it is tested.
 - [System prompt](concepts/system-prompt.md): How Tag's system prompt is built (sections in Swift, tool rules on each tool, a probed environment, AGENTS.md, the date on user messages) and the best practices behind it.
-- [Prompt caching](concepts/prompt-caching.md): What Tag does about OpenRouter prompt caching today, what it leaves unused, and the steps to use all of it.
+- [Prompt caching](concepts/prompt-caching.md): Provider-aware cache requests, stable conversation prefixes and reported cache reads and writes across all ModelKit adapters.
 - [Evaluation loop](concepts/evaluation-loop.md): A plan for measuring system prompt changes across frontier, cheap and open-weight models, so the prompt works as well on non-frontier models as on frontier ones. Not built yet.
 - [Models and providers](concepts/model-providers.md): How ModelKit connects Tag to OpenRouter, ChatGPT plans (Codex) and OpenCode Go: neutral messages, one adapter per wire format, the catalogue, sign-in, credentials and settings, and the gotchas from the providers' docs.
 - [OpenRouter SDK](concepts/openrouter-sdk.md): how Tag Agent consumes the swift-openrouter submodule and where its own docs live.
@@ -29,11 +29,15 @@ Start here. Conventions: [SCHEMA.md](SCHEMA.md). Timeline: [log.md](log.md).
 - [0011 Pixel-art mascot](decisions/0011-pixel-art-mascot.md): The cat is a pixel-art sprite in TagKit that greets an empty conversation; the logo and banner are drawn from it and a real rendered screen.
 - [0012 Model providers and user-chosen models](decisions/0012-model-providers.md): Tag talks to OpenRouter, ChatGPT plans (Codex) and OpenCode Go through a provider-neutral ModelKit module with one adapter per wire format, and the user picks the model; nothing is hard-coded.
 
+- [0013 Provider-aware prompt caching](decisions/0013-prompt-caching.md): Use native automatic caching and explicit opt-in boundaries where required, with observable provider-reported cache metrics and default retention.
+
 ## Designs
 
 - [Model picker design](designs/model-picker.md): The brainstormed design for choosing models: the agreed behaviour (defaults, onboarding, /model and quick switch) and the three picker mockups, of which the search-first overlay was chosen.
 
 - [Codex CLI route for ChatGPT plans](designs/codex-cli-route.md): The undocumented route the Codex CLI uses to reach ChatGPT plans (also Business workspaces, which refuse Tag's official sign-in): how it works, its risks, and the options; not built, decision open.
+
+- [Prompt caching implementation](designs/prompt-caching.md): Provider-aware cache requests, stable history boundaries and observable cache usage across all ModelKit formats.
 
 ## Sources
 

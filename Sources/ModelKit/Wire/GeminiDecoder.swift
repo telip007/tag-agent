@@ -55,7 +55,8 @@ struct GeminiDecoder: WireDecoder {
             usage = Usage(
                 inputTokens: metadata["promptTokenCount"]?.intValue ?? 0,
                 outputTokens: (metadata["candidatesTokenCount"]?.intValue ?? 0)
-                    + (metadata["thoughtsTokenCount"]?.intValue ?? 0))
+                    + (metadata["thoughtsTokenCount"]?.intValue ?? 0),
+                cachedInputTokens: metadata["cachedContentTokenCount"]?.intValue)
         }
         let content = chunk["candidates"]?.arrayValue?.first?["content"]?["parts"]?.arrayValue ?? []
         return content.flatMap { add($0) }

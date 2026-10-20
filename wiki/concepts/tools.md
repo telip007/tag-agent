@@ -1,7 +1,7 @@
 ---
 title: Agent loop and tools
 summary: How the agent loop runs tool calls, the five built-in tools, and where they differ from their Go originals.
-updated: 2026-10-18
+updated: 2026-10-20
 ---
 
 # Agent loop and tools
@@ -44,8 +44,8 @@ JSON input to a string ([ToolDefinition.swift](../../Sources/TagKit/ToolDefiniti
 A tool also carries a `summary` (a few words for the system prompt's tool
 list) and `guidelines` (rule lines for the system prompt), so a tool's rules
 come and go with the tool. Every request starts with the
-[system prompt](system-prompt.md), rendered once per session. There is no
-explicit [prompt caching](prompt-caching.md) yet.
+[system prompt](system-prompt.md), rendered once per selected model. Provider-aware
+[prompt caching](prompt-caching.md) keeps reusable request boundaries stable.
 What else the loop could borrow from a minimal, high-scoring agent is listed
 in [mini-swe-agent](../sources/mini-swe-agent.md#what-tag-can-borrow).
 
@@ -81,6 +81,9 @@ and fields dropped on narrow terminals
   falls back to the model id (with no context window) if that call fails.
 - **Context**: the `total_tokens` of the latest reply against the model's
   `context_length`. It grows with the conversation, tool results included.
+- **Cache**: provider-reported reads and writes from the latest completed reply, when available; see
+  [prompt caching](prompt-caching.md). Missing metrics are omitted, reported
+  zeros are shown, and counts clear with the conversation.
 - **Cost**: the running sum of `usage.cost` across the whole session.
 
 `Agent` keeps the token count and cost, updates them after every reply, and
@@ -192,3 +195,7 @@ refusal tells the model to ask the user instead. Why:
   instead of truncating. `ProcessRunner` maps that to a tool error.
 - **`ChatFunctionTool.value1` is optional** in the generated code (it is a
   `oneOf` wrapper), so reading a tool's name back needs `value1?.function.name`.
+
+Cache and usage snapshots also arrive as `.metrics` before inference and after
+every reply, including tool iterations. Unlike the ready-for-input `.status`
+event, a metrics refresh keeps the current activity and tool tray intact.

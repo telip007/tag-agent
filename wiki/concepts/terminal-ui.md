@@ -1,7 +1,7 @@
 ---
 title: Terminal UI
 summary: How the full-screen workspace is built on Stipple: the design history, the welcome cat, the agent's event seam, the observable session and its blocks, the panes and keys, why it runs on the main actor, and how it is tested.
-updated: 2026-10-19
+updated: 2026-10-20
 ---
 
 # Terminal UI
@@ -76,6 +76,8 @@ conversation and its totals and to wait for the next message instead. The
 events:
 
 - `.status(StatusLine)` before each prompt ([status line](tools.md#the-status-line)),
+- `.metrics(StatusLine)` before inference and after every reply, updating the
+  sidebar without ending activity or closing the tool tray,
 - `.thinking` before each model call,
 - `.reasoningDelta(String)` for each piece of the model's reasoning,
 - `.replyDelta(String)` for each piece of the model's text as it streams in,
@@ -179,7 +181,7 @@ handling; the parts are in
   README images are drawn from the same sprite
   ([0011](../decisions/0011-pixel-art-mascot.md)).
 - `SessionPanel` (30 columns, hidden below 90): the model, the folder, a
-  context gauge (`━`, turquoise, gold past 50%, red past 80%), tokens, cost and
+  context gauge (`━`, turquoise, gold past 50%, red past 80%), tokens, reported cache reads/writes, cost and
   session time, the files changed and the queued messages.
 - The input: a rounded box, gold while the agent waits (`ask anything`), gray
   while it works (`type ahead…`).

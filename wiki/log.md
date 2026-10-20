@@ -211,3 +211,15 @@ and retained every existing lint, warning and coverage gate.
 After the import fix, CI reached test compilation and Swift 6.3 rejected
 a nested task's direct capture of a noncopyable Mutex. A checked Sendable
 reference now owns the mutex; the ordering assertion and locking stay intact.
+
+## [2026-10-20] update | Prompt caching across providers
+Added OpenRouter opt-in boundaries, retained Anthropic previous-turn boundaries, and normalized optional cache reads/writes for every adapter. The status panel shows latest-request cache metrics; default retention and stable session routing are preserved. See [prompt caching](concepts/prompt-caching.md) and [0013](decisions/0013-prompt-caching.md).
+
+## [2026-10-20] update | Prompt caching validation
+`TAG_LIVE_TESTS=0 make check` passed: 304 tests and 91.5% line coverage at the unchanged 80% gate. Read-only review caught a missing router opt-in; the regression failed before its fix and the final full checks passed. Live cache hits and savings remain unmeasured. See [validation](designs/prompt-caching.md#verified-result).
+
+## [2026-10-20] update | Keep cache metrics current during tool loops
+Integrated main's shared Responses stream and fixed a review finding: metrics now refresh before inference and after every reply, without closing the tool tray or resetting activity. Regression tests cover missing/zero/changed counters and model switches, plus tray continuity.
+
+## [2026-10-20] update | Prompt caching documentation audit
+Documented cache metrics in the README, added ModelKit to the contributor module map, and corrected the loop page's outdated claim that explicit caching is not implemented. Clarified that cache metrics describe the latest completed reply and persist during failed or in-flight requests. Existing validation results remain historical; final integration checks are recorded separately.

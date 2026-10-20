@@ -301,12 +301,7 @@ struct SessionPanel: View {
     var body: some View {
         VStack(alignment: .leading) {
             if let status = session.status {
-                ModelSummary(selection: selection, fallback: status.model.name)
-                Text(status.folder).dim()
-                Text(" ")
-                gauge(status)
-                Text("\(status.contextUsage) tokens").dim()
-                Text("\(status.money) · \(Self.clock(session.elapsed))").dim()
+                summary(status)
             } else {
                 Text("connecting…").dim()
             }
@@ -331,6 +326,19 @@ struct SessionPanel: View {
                 }
             }
         }
+    }
+
+    @ViewBuilder
+    private func summary(_ status: StatusLine) -> some View {
+        ModelSummary(selection: selection, fallback: status.model.name)
+        Text(status.folder).dim()
+        Text(" ")
+        gauge(status)
+        Text("\(status.contextUsage) tokens").dim()
+        if let cache = status.cacheUsage {
+            Text(cache).dim()
+        }
+        Text("\(status.money) · \(Self.clock(session.elapsed))").dim()
     }
 
     /// `▰▰▰▱▱▱▱ 12%`, gold past half and red past 80%.

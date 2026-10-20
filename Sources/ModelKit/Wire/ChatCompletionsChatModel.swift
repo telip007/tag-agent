@@ -136,7 +136,9 @@ struct ChatCompletionsDecoder: WireDecoder {
             self.usage = Usage(
                 inputTokens: usage["prompt_tokens"]?.intValue ?? 0,
                 outputTokens: usage["completion_tokens"]?.intValue ?? 0,
-                cost: usage["cost"]?.doubleValue)
+                cost: usage["cost"]?.doubleValue,
+                cachedInputTokens: usage["prompt_tokens_details"]?["cached_tokens"]?.intValue,
+                cacheWriteInputTokens: usage["prompt_tokens_details"]?["cache_write_tokens"]?.intValue)
         }
         guard let delta = chunk["choices"]?.arrayValue?.first?["delta"] else {
             return []

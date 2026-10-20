@@ -56,8 +56,11 @@ in an empty conversation, and the same sprite draws the logo and the banner
 Tag runs full screen, with [Stipple](https://github.com/telip007/stipple). The
 conversation fills the left pane: your messages, replies, tool calls grouped
 into trays you can expand, and every file edit as a small diff. The panel on
-the right shows the model, how full its context window is, what the session
-has cost, how long it has run, and which files changed.
+the right shows the model, how full its context window is, cache reads and
+writes reported for the latest completed reply, what the session has cost, how long
+it has run, and which files changed. Missing cache metrics are omitted;
+reported zeros are shown. See [prompt caching](wiki/concepts/prompt-caching.md)
+for the provider policies and limits.
 
 | Key | What |
 | --- | --- |

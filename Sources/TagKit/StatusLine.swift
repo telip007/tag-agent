@@ -1,4 +1,5 @@
 public import Foundation
+public import ModelKit
 
 /// The single line printed above the prompt: where the agent is working,
 /// which model is answering, how full the context is and what the session
@@ -13,6 +14,21 @@ public struct StatusLine: Sendable, Equatable {
     /// Total cost of the session, in US dollars.
     public var cost: Double
 
+    /// Usage of the latest request, including optional cache counts.
+    public var usage: Usage?
+
+    /// Cache reads and writes when the provider reports them.
+    public var cacheUsage: String? {
+        var parts: [String] = []
+        if let read = usage?.cachedInputTokens {
+            parts.append("read \(Self.tokens(read))")
+        }
+        if let written = usage?.cacheWriteInputTokens {
+            parts.append("write \(Self.tokens(written))")
+        }
+        return parts.isEmpty ? nil : "cache " + parts.joined(separator: " · ")
+    }
+
     /// Creates a status line.
     ///
     /// - Parameters:
@@ -20,16 +36,19 @@ public struct StatusLine: Sendable, Equatable {
     ///   - model: The model answering.
     ///   - contextTokens: Tokens in the context after the latest reply.
     ///   - cost: Total cost of the session in US dollars.
-    public init(directory: URL, model: ModelDescription, contextTokens: Int = 0, cost: Double = 0) {
+    ///   - usage: Usage of the latest request.
+    public init(directory: URL, model: ModelDescription, contextTokens: Int = 0, cost: Double = 0, usage: Usage? = nil)
+    {
         self.directory = directory
         self.model = model
         self.contextTokens = contextTokens
         self.cost = cost
+        self.usage = usage
     }
 
     /// The rendered line, with fields separated by `·`.
     public var text: String {
-        [folder, model.name, context, money].joined(separator: " · ")
+        [folder, model.name, context, cacheUsage, money].compactMap { $0 }.joined(separator: " · ")
     }
 
     /// The working directory, with the home directory shortened to `~`.

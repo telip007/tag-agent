@@ -71,6 +71,8 @@ public final class ChatSession {
             openTray = nil
             finishReasoning()
             setActivity(nil)
+        case .metrics(let line):
+            status = line
         case .thinking:
             setActivity("thinking")
         case .reasoningDelta(let text):
@@ -96,15 +98,6 @@ public final class ChatSession {
             setActivity(nil)
         case .failure(let message, let recovery):
             reportFailure(message, recovery: recovery)
-        }
-    }
-
-    /// Expands a collapsed block or collapses an expanded one.
-    public func toggle(_ id: Int) {
-        if expanded.contains(id) {
-            expanded.remove(id)
-        } else {
-            expanded.insert(id)
         }
     }
 
@@ -316,4 +309,15 @@ private let clearCommand = "/clear"
 /// Whether `line` is ``clearCommand``, ignoring whitespace around it.
 private func isClearCommand(_ line: String) -> Bool {
     line.trimmingCharacters(in: .whitespaces) == clearCommand
+}
+
+extension ChatSession {
+    /// Expands a collapsed block or collapses an expanded one.
+    public func toggle(_ id: Int) {
+        if expanded.contains(id) {
+            expanded.remove(id)
+        } else {
+            expanded.insert(id)
+        }
+    }
 }

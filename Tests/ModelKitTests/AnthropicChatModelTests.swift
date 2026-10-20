@@ -69,7 +69,8 @@ struct AnthropicChatModelTests {
         #expect(reply.message.reasoning == "Let me look.")
         #expect(
             reply.message.toolCalls == [ToolCall(id: "toolu_1", name: "read_file", arguments: #"{"path":"a.txt"}"#)])
-        #expect(reply.usage == Usage(inputTokens: 100, outputTokens: 42))
+        #expect(
+            reply.usage == Usage(inputTokens: 100, outputTokens: 42, cachedInputTokens: 90, cacheWriteInputTokens: 0))
         let replayed = try #require(reply.message.replay.first)
         #expect(replayed.format == .anthropicMessages)
         #expect(
@@ -181,5 +182,37 @@ struct AnthropicChatModelTests {
         await #expect(throws: ProviderError.self) {
             try await empty.reply(to: [.user("hi")], tools: [], options: Fixtures.options()) { _ in }
         }
+    }
+}
+
+struct AnthropicCachingTests {
+    @Test func keepsThePreviousRequestBoundaryAcrossALargeToolBatch() throws {
+        let calls = (0..<25).map { ToolCall(id: "c\($0)", name: "read_file", arguments: "{}") }
+        let conversation: [Message] =
+            [.user("start"), .assistant(AssistantMessage(toolCalls: calls))]
+            + calls.map { .tool(callID: $0.id, name: $0.name, content: "result") }
+        let messages = AnthropicChatModel.messages(conversation)
+        #expect(messages[0]["content"]?.arrayValue?.last?["cache_control"] == ["type": "ephemeral"])
+        let results = try #require(messages.last?["content"]?.arrayValue)
+        #expect(results.count == 25)
+        #expect(results.last?["cache_control"] == ["type": "ephemeral"])
+        #expect(results.dropLast().allSatisfy { $0["cache_control"] == nil })
+    }
+
+    @Test func usesAtMostFourBreakpointsAndLeavesSignedBlocksUntouched() throws {
+        let signed: JSONValue = [["type": "thinking", "thinking": "hmm", "signature": "sig"]]
+        let replay = ReplayItem(format: .anthropicMessages, payload: signed)
+        let conversation: [Message] = [
+            .system("system"), .user("one"), .assistant(AssistantMessage(text: "ok")), .user("two"),
+            .assistant(AssistantMessage(replay: [replay])), .user("three"),
+        ]
+        let settings = AnthropicChatModel.Settings(model: "m", maxTokens: 100, thinking: .budget)
+        let body = AnthropicChatModel.body(
+            conversation, tools: [Fixtures.readTool], options: Fixtures.options(), settings: settings)
+        let messages = try #require(body["messages"]?.arrayValue)
+        #expect(messages[0]["content"]?.arrayValue?.last?["cache_control"] == nil)
+        #expect(messages[2]["content"]?.arrayValue?.last?["cache_control"] == ["type": "ephemeral"])
+        #expect(messages[4]["content"]?.arrayValue?.last?["cache_control"] == ["type": "ephemeral"])
+        #expect(messages[3]["content"] == signed)
     }
 }

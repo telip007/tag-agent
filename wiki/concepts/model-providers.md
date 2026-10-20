@@ -1,7 +1,7 @@
 ---
 title: Models and providers
 summary: How ModelKit connects Tag to OpenRouter, ChatGPT plans (Codex) and OpenCode Go: neutral messages, one adapter per wire format, the catalogue, sign-in, credentials and settings, and the gotchas from the providers' docs.
-updated: 2026-10-19
+updated: 2026-10-20
 ---
 
 # Models and providers
@@ -99,6 +99,10 @@ server-sent events.
   copy). models.dev's `provider.npm` gives each model's format. Every
   request carries Tag's `User-Agent` and `x-opencode-session`, added by an
   internal session wrapper.
+
+Cache request policy and per-format cache usage accounting are documented in
+[prompt caching](prompt-caching.md). All adapters retain optional cache reads
+and writes; the agent shows the latest completed reply's reported counts in its status panel.
 
 ## Credentials and settings
 

@@ -116,16 +116,28 @@ public struct Usage: Sendable, Equatable {
     /// usage reports none.
     public var cost: Double?
 
+    /// Input tokens read from cache, or `nil` when the provider didn't report them.
+    public var cachedInputTokens: Int?
+    /// Input tokens written to cache, or `nil` when the provider didn't report them.
+    public var cacheWriteInputTokens: Int?
+
     /// Creates usage figures.
     ///
     /// - Parameters:
     ///   - inputTokens: Tokens sent.
     ///   - outputTokens: Tokens written.
     ///   - cost: The cost in US dollars, when known.
-    public init(inputTokens: Int, outputTokens: Int, cost: Double? = nil) {
+    ///   - cachedInputTokens: Input tokens read from cache, when reported.
+    ///   - cacheWriteInputTokens: Input tokens written to cache, when reported.
+    public init(
+        inputTokens: Int, outputTokens: Int, cost: Double? = nil,
+        cachedInputTokens: Int? = nil, cacheWriteInputTokens: Int? = nil,
+    ) {
         self.inputTokens = inputTokens
         self.outputTokens = outputTokens
         self.cost = cost
+        self.cachedInputTokens = cachedInputTokens
+        self.cacheWriteInputTokens = cacheWriteInputTokens
     }
 
     /// Everything the context holds after the reply.

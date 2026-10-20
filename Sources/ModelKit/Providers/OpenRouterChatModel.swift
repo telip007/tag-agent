@@ -44,13 +44,14 @@ public struct OpenRouterChatModel: ChatModel {
             .function(name: $0.name, description: $0.description, parameters: $0.parameters)
         }
         var request = ChatRequest(
-            messages: conversation.map(chatMessage),
+            messages: cachedMessages(conversation, model: model),
             model: model,
             toolChoice: chatTools.isEmpty ? nil : .auto,
             tools: chatTools.isEmpty ? nil : chatTools,
         )
         request.reasoningEffort = options.reasoningEffort
-        request.sessionId = options.sessionID
+        request.sessionId = options.sessionID.isEmpty ? nil : String(options.sessionID.prefix(256))
+        request.cacheControl = .init(_type: .ephemeral)
         return request
     }
 
@@ -86,7 +87,10 @@ public struct OpenRouterChatModel: ChatModel {
             },
         )
         let usage = accumulator.usage.map {
-            Usage(inputTokens: $0.promptTokens, outputTokens: $0.completionTokens, cost: $0.cost)
+            Usage(
+                inputTokens: $0.promptTokens, outputTokens: $0.completionTokens, cost: $0.cost,
+                cachedInputTokens: $0.promptTokensDetails?.cachedTokens,
+                cacheWriteInputTokens: $0.promptTokensDetails?.cacheWriteTokens)
         }
         return ModelReply(message: message, usage: usage)
     }

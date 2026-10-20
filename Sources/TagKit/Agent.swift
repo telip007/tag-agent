@@ -5,6 +5,9 @@ import ModelKit
 public enum AgentEvent: Sendable, Equatable {
     /// The agent is about to ask for the next user message.
     case status(StatusLine)
+    /// Model, context and usage changed while the agent is busy. This does
+    /// not signal readiness or close an active tool tray.
+    case metrics(StatusLine)
     /// The agent is waiting for the model's next reply.
     case thinking
     /// The next piece of the model's reasoning, as it streams in.
@@ -112,12 +115,14 @@ public struct Agent {
 
             let active = model()
             state.follow(active)
+            output(.metrics(statusLine(state)))
             output(.thinking)
             guard let reply = await reply(from: active, state: state) else {
                 readUserInput = true
                 continue
             }
             state.record(reply)
+            output(.metrics(statusLine(state)))
             for call in reply.message.toolCalls {
                 state.conversation.append(.tool(callID: call.id, name: call.name, content: await execute(call)))
             }
@@ -137,6 +142,7 @@ public struct Agent {
             model: state.description,
             contextTokens: state.contextTokens,
             cost: state.cost,
+            usage: state.latestUsage,
         )
     }
 
@@ -205,6 +211,8 @@ struct ConversationState {
     var dater = UserMessageDater()
     /// Tokens the context held after the latest reply.
     private(set) var contextTokens = 0
+    /// Usage from the latest reply; absent metrics never inherit an old hit.
+    private(set) var latestUsage: Usage?
     /// What the conversation has cost so far, in US dollars.
     private(set) var cost = 0.0
     /// The conversation's id for providers that route or cache by session.
@@ -225,6 +233,7 @@ struct ConversationState {
         conversation = [.system(prompt(description))]
         dater = UserMessageDater()
         contextTokens = 0
+        latestUsage = nil
         cost = 0
         sessionID = UUID().uuidString
     }
@@ -237,12 +246,14 @@ struct ConversationState {
         }
         model = active.entry.ref
         description = active.description
+        latestUsage = nil
         conversation[0] = .system(prompt(description))
     }
 
     /// Adds the reply and its usage.
     mutating func record(_ reply: ModelReply) {
         conversation.append(.assistant(reply.message))
+        latestUsage = reply.usage
         if let usage = reply.usage {
             contextTokens = usage.totalTokens
             cost += usage.cost ?? 0

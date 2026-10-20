@@ -61,6 +61,33 @@ struct OpenRouterChatModelTests {
         #expect(assistant.toolCalls?.first?.function.name == "echo")
     }
 
+    @Test(arguments: ["deepseek/deepseek-v4.1-flash", "google/gemini-2.5-pro", "openai/gpt-5.4"])
+    func enablesAutomaticCachingAndOmitsAnEmptySession(model: String) throws {
+        let request = OpenRouterChatModel.request(
+            [.user("Hi")], tools: [], model: model, options: ReplyOptions(sessionID: ""))
+        let json = try JSONDecoder().decode(JSONValue.self, from: JSONEncoder().encode(request))
+        #expect(json["cache_control"] == ["type": "ephemeral"])
+        #expect(json["session_id"] == nil)
+        #expect(json["messages"]?.arrayValue?.first?["content"] == "Hi")
+    }
+
+    @Test(arguments: [
+        "anthropic/claude-sonnet-4.6", "~anthropic/claude-sonnet-latest", "qwen/qwen3-coder-plus",
+        "deepseek/deepseek-v3.2",
+        "openrouter/auto", "openrouter/auto-beta", "openrouter/pareto-code", "openrouter/free",
+    ])
+    func marksOptInProvidersHistory(model: String) throws {
+        let request = OpenRouterChatModel.request(
+            Fixtures.conversation, tools: [Fixtures.readTool], model: model, options: Fixtures.options())
+        let json = try JSONDecoder().decode(JSONValue.self, from: JSONEncoder().encode(request))
+        let messages = try #require(json["messages"]?.arrayValue)
+        #expect(messages[0]["content"]?.arrayValue?.last?["cache_control"] == ["type": "ephemeral"])
+        #expect(messages[1]["content"]?.arrayValue?.last?["cache_control"] == ["type": "ephemeral"])
+        #expect(messages[3]["content"] == [["type": "text", "text": "A"]])
+        #expect(messages[4]["content"]?.arrayValue?.last?["cache_control"] == ["type": "ephemeral"])
+        #expect(messages[4]["tool_call_id"] == "c2")
+    }
+
     @Test func onlyOpenRouterReplayItemsGoBack() {
         let foreign = ReplayItem(format: .responses, payload: ["type": "reasoning"])
         let message = Message.assistant(AssistantMessage(text: "x", replay: [foreign]))
