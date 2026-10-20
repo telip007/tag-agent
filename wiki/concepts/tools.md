@@ -176,6 +176,12 @@ refusal tells the model to ask the user instead. Why:
 
 ## Gotchas
 
+- **Context management is a proposed next layer.** Whole-file reads and
+  listings remain unbounded; process output limits and the first 50 search
+  lines are not durable evidence storage. The
+  [native context-management research](../designs/native-context-management.md)
+  maps these seams to bounded capture, exact retrieval and later session
+  continuity. None of that proposal is implemented yet.
 - **`MemberImportVisibility` and JSON literals.** Writing a schema as a
   `[String: JSONValue]` literal needs `import OpenRouter` in that file, even
   though `TagKit` already imports it elsewhere: the literal initialisers are

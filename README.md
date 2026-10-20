@@ -47,6 +47,20 @@ in an empty conversation, and the same sprite draws the logo and the banner
 | `edit_file` | replace one exact match in a file, or create a file |
 | `bash` | run a shell command in the working directory |
 | `code_search` | search with [ripgrep](https://github.com/BurntSushi/ripgrep) |
+| `read_output`, `search_output` | read exact ranges or find cited excerpts in retained session evidence |
+| `index_file`, `fetch_and_index` | retain bounded UTF-8 file or HTTP snapshots |
+| `analyze_output` | process an entire retained artifact through the installed shell using stdin |
+| `batch_execute` | capture ordered commands and answer queries within that batch |
+| `read_history`, `search_history` | retrieve canonical events from the active session |
+| `context_stats`, `context_doctor` | inspect measured volumes and read-only integrity checks |
+
+Session-backed tools retain large, failed or partial results before showing a
+bounded preview. Search finds selected evidence; whole-input analysis supplies
+all retained bytes to the command. Capture quotas and deadlines remain explicit.
+Use `index_file` then `analyze_output` to process a file without putting it in
+the prompt. Python, JavaScript or other installed interpreters can be invoked
+through the existing shell. See [native context](wiki/concepts/native-context.md)
+for limits and the [deterministic evaluation](wiki/designs/native-context-evaluation.md).
 
 > [!WARNING]
 > The agent edits files and runs shell commands in the directory you start it
@@ -69,6 +83,11 @@ for the provider policies and limits.
 | Ctrl-O, `/sessions` | search, preview and select saved sessions |
 | `/new`, `/clear` | create a session, keeping the previous history |
 | `/reference` | preview and attach excerpts from another session |
+| `/compact` | shorten the model context, preserving full history and exact retrieval |
+| `/compact off` | restore the full model context |
+| `/context` | show retained bytes, presented output bytes and last provider usage |
+| `/context doctor` | check history, evidence and indexes without changing data |
+| `/context off` | hide the local context report |
 | ↑ / ↓ | recall sent messages; ↓ past the newest restores your draft |
 | Esc | browse the conversation: ↑↓ to move, Enter to expand, c to copy |
 | Page Up / Down | scroll the conversation |
@@ -86,8 +105,8 @@ Use `tag --resume <id>` to open a saved session by full ID or unique prefix,
 or select one in the session navigator. Workspaces, including sibling worktrees,
 remain distinct. Opening a saved session waits for your next message. The session picker preserves drafts and offers title/content
 search, a conversation preview, Tab for all workspaces and Ctrl-R to rename.
-Explicit references are copied, bounded and cited; the agent has no automatic
-session-search tool. See [session storage](wiki/concepts/session-storage.md).
+Explicit references are copied, bounded and cited; the agent has no automatic discovery of other
+sessions. Native history search stays inside the active session. See [session storage](wiki/concepts/session-storage.md).
 
 Input needs an interactive terminal; piping messages on stdin is not
 supported.

@@ -24,6 +24,19 @@ extension SQLiteSessionStore {
         guard summary.nextSequence == Int64(entries.count),
             entries.enumerated().allSatisfy({ Int64($0.offset) == $0.element.sequence })
         else { throw SessionError.invalidEvent }
+        let latest = entries.last {
+            if case .contextProjection = $0.event { return true }
+            return false
+        }
+        if let latest, case .contextProjection(let projection) = latest.event {
+            guard summary.contextProjection == (projection.archiveID == nil ? nil : projection) else {
+                throw SessionError.invalidEvent
+            }
+            try ContextProjectionValidation.validate(
+                projection, session: id, at: latest.sequence, entries: entries, database: database)
+        } else if summary.contextProjection != nil {
+            throw SessionError.invalidEvent
+        }
         return SessionSnapshot(summary: summary, entries: entries)
     }
 

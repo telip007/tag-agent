@@ -10,6 +10,8 @@ private struct RecoveryState {
     mutating func apply(_ event: SessionEvent) throws {
         switch event {
         case .context: break
+        case .contextProjection:
+            guard pending.isEmpty, !requestPending, !turnPending else { throw SessionError.invalidEvent }
         case .user:
             guard pending.isEmpty else { throw SessionError.invalidEvent }
             turnPending = true

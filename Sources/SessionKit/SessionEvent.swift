@@ -14,6 +14,8 @@ public enum SessionEvent: Sendable, Equatable {
     case toolStarted(ToolCall)
     /// A committed tool result and presentation metadata.
     case toolFinished(SessionToolResult)
+    /// Explicit reversible request projection; canonical messages remain unchanged.
+    case contextProjection(SessionContextProjection)
     /// A visible failure and recovery guidance.
     case failure(SessionFailure)
 }
@@ -24,7 +26,7 @@ extension SessionEvent: Codable {
     }
 
     private enum Kind: String, Codable {
-        case context, user, inferenceStarted, assistant, toolStarted, toolFinished, failure
+        case context, user, inferenceStarted, assistant, toolStarted, toolFinished, failure, contextProjection
     }
 
     /// Decodes an explicit event tag; unknown kinds fail closed.
@@ -37,6 +39,10 @@ extension SessionEvent: Codable {
         case .assistant: self = .assistant(try values.decode(SessionAssistant.self, forKey: .value))
         case .toolStarted: self = .toolStarted(try values.decode(ToolCall.self, forKey: .value))
         case .toolFinished: self = .toolFinished(try values.decode(SessionToolResult.self, forKey: .value))
+        case .contextProjection:
+            let projection = try values.decode(SessionContextProjection.self, forKey: .value)
+            try projection.validate()
+            self = .contextProjection(projection)
         case .failure: self = .failure(try values.decode(SessionFailure.self, forKey: .value))
         }
     }
@@ -51,6 +57,7 @@ extension SessionEvent: Codable {
         case .assistant(let value): try encode(value, kind: .assistant, into: &values)
         case .toolStarted(let value): try encode(value, kind: .toolStarted, into: &values)
         case .toolFinished(let value): try encode(value, kind: .toolFinished, into: &values)
+        case .contextProjection(let value): try encode(value, kind: .contextProjection, into: &values)
         case .failure(let value): try encode(value, kind: .failure, into: &values)
         }
     }

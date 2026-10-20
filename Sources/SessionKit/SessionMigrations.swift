@@ -9,7 +9,7 @@ enum SessionMigrations {
         defer { flock(lock.fileDescriptor, LOCK_UN) }
         try validate(queue)
         let version = try queue.read { try Int.fetchOne($0, sql: "PRAGMA user_version") ?? 0 }
-        if version > 0, version < 3 { try backup(queue, directory: directory, version: version) }
+        if version > 0, version < 5 { try backup(queue, directory: directory, version: version) }
         var migrator = DatabaseMigrator()
         migrator.registerMigration("sessions-v1") { database in
             try database.execute(sql: schema)
@@ -29,6 +29,8 @@ enum SessionMigrations {
             }
             try SessionSearchIndex.rebuild(database)
         }
+        migrator.registerMigration("sessions-v4-outputs", migrate: OutputMigration.migrate)
+        migrator.registerMigration("sessions-v5-output-search", migrate: OutputIndex.migrate)
         try migrator.migrate(queue)
     }
 
@@ -51,9 +53,13 @@ enum SessionMigrations {
     private static func validate(_ queue: DatabaseQueue) throws {
         try queue.read { database in
             let version = try Int.fetchOne(database, sql: "PRAGMA user_version") ?? 0
-            guard version <= 3 else { throw SessionError.unsupportedVersion(version) }
+            guard version <= 5 else { throw SessionError.unsupportedVersion(version) }
             if version > 0 {
-                let expected = Array(["sessions-v1", "sessions-v2-search", "sessions-v3-literal"].prefix(version))
+                let expected = Array(
+                    [
+                        "sessions-v1", "sessions-v2-search", "sessions-v3-literal", "sessions-v4-outputs",
+                        "sessions-v5-output-search",
+                    ].prefix(version))
                 let applied = try String.fetchAll(
                     database, sql: "SELECT identifier FROM grdb_migrations ORDER BY identifier")
                 guard applied == expected else { throw SessionError.invalidEvent }

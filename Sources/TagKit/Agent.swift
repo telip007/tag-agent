@@ -51,12 +51,14 @@ public struct Agent {
     public enum InferenceError: LocalizedError {
         case emptyReply
         case duplicateToolCallIDs
+        case oversizedToolBatch
 
         /// What went wrong.
         public var errorDescription: String? {
             switch self {
             case .emptyReply: "The model sent an empty reply."
             case .duplicateToolCallIDs: "The model sent duplicate tool-call IDs. No tools were run."
+            case .oversizedToolBatch: "The model requested too many tool calls at once. No tools were run."
             }
         }
     }
@@ -68,6 +70,7 @@ public struct Agent {
     let input: () async -> AgentInput?
     let output: (AgentEvent) -> Void
     let journal: AgentJournal?
+    let context: NativeContext?
 
     /// Creates an agent.
     ///
@@ -80,6 +83,7 @@ public struct Agent {
     ///     the status line.
     ///   - now: The clock that dates user messages.
     ///   - journal: Durable history and awaited storage boundaries, when enabled.
+    ///   - context: Native session-bound output admission and retrieval, when enabled.
     ///   - output: Receives what happens in the conversation, for display.
     ///   - input: Reads what the user does at the prompt, or `nil` to end the session.
     public init(
@@ -88,16 +92,23 @@ public struct Agent {
         environment: SessionEnvironment,
         now: @escaping () -> Date = Date.init,
         journal: AgentJournal? = nil,
+        context: NativeContext? = nil,
         output: @escaping (AgentEvent) -> Void,
         input: @escaping () async -> AgentInput?,
     ) {
         self.model = model
-        self.tools = tools
+        let context = context?.withExecution(tools)
+        self.tools =
+            (context?.tools ?? [])
+            + tools.filter {
+                context == nil || !NativeContext.managedNames.contains($0.name)
+            }
         self.environment = environment
         self.now = now
         self.output = output
         self.input = input
         self.journal = journal
+        self.context = context
     }
 
     /// Runs the conversation until ``input`` returns `nil`. A failed model
@@ -105,7 +116,10 @@ public struct Agent {
     /// agent waits for the next message.
     public func run() async throws {
         var state =
-            journal.map { ConversationState(active: model(), prompt: systemPrompt, snapshot: $0.snapshot) }
+            journal.map {
+                ConversationState(
+                    active: model(), prompt: systemPrompt, snapshot: $0.snapshot, projectionEnabled: context != nil)
+            }
             ?? ConversationState(active: model(), prompt: systemPrompt)
         var savedContext = journal?.snapshot.summary.context
         try await synchronize(model(), state: &state, saved: &savedContext)
@@ -137,8 +151,10 @@ public struct Agent {
             state.record(reply)
             if let text = reply.message.text, !text.isEmpty { output(.reply(text)) }
             output(.metrics(statusLine(state)))
+            let budget = min(
+                NativeContext.messageBudget, NativeContext.groupBudget / max(1, reply.message.toolCalls.count))
             for call in reply.message.toolCalls {
-                let result = try await execute(call)
+                let result = try await execute(call, budget: budget)
                 state.conversation.append(.tool(callID: call.id, name: call.name, content: result))
             }
             readUserInput = reply.message.toolCalls.isEmpty
@@ -184,7 +200,8 @@ public struct Agent {
     private func runInference(active: ActiveModel, state: ConversationState) async throws -> ModelReply {
         let options = ReplyOptions(reasoningEffort: active.effort, sessionID: state.sessionID)
         let tools = tools.map(\.spec)
-        let result = try await active.chatModel.reply(to: state.conversation, tools: tools, options: options) { delta in
+        let result = try await active.chatModel.reply(to: state.requestConversation, tools: tools, options: options) {
+            delta in
             switch delta {
             case .text(let text): output(.replyDelta(text))
             case .reasoning(let text): output(.reasoningDelta(text))
@@ -196,38 +213,12 @@ public struct Agent {
         guard message.text?.isEmpty == false || !message.toolCalls.isEmpty else {
             throw InferenceError.emptyReply
         }
+        guard context == nil || message.toolCalls.count <= NativeContext.maximumCalls else {
+            throw InferenceError.oversizedToolBatch
+        }
         guard Set(message.toolCalls.map(\.id)).count == message.toolCalls.count else {
             throw InferenceError.duplicateToolCallIDs
         }
         return result
-    }
-
-    /// Runs a tool call. Failures become the tool's result, so the model can
-    /// see what went wrong and try again.
-    private func execute(_ call: ToolCall) async throws -> String {
-        try Task.checkCancellation()
-        try await journal?.append(.toolStarted(call))
-        try Task.checkCancellation()
-        output(.toolStarted(name: call.name, arguments: call.arguments))
-        let start = ContinuousClock.now
-        let result = await result(of: call)
-        let milliseconds = Int64((ContinuousClock.now - start) / .milliseconds(1))
-        try await journal?.append(
-            .toolFinished(
-                SessionToolResult(
-                    call: call, output: result.content, failed: result.failed, durationMilliseconds: milliseconds)))
-        output(.toolFinished(name: call.name, arguments: call.arguments, output: result.content, failed: result.failed))
-        return result.content
-    }
-
-    private func result(of call: ToolCall) async -> (content: String, failed: Bool) {
-        guard let tool = tools.first(where: { $0.name == call.name }) else {
-            return ("error: tool not found", true)
-        }
-        do {
-            return (try await tool.function(call.arguments), false)
-        } catch {
-            return ("error: \(error.localizedDescription)", true)
-        }
     }
 }

@@ -227,6 +227,11 @@ Integrated main's shared Responses stream and fixed a review finding: metrics no
 ## [2026-10-20] update | Prompt caching documentation audit
 Documented cache metrics in the README, added ModelKit to the contributor module map, and corrected the loop page's outdated claim that explicit caching is not implemented. Clarified that cache metrics describe the latest completed reply and persist during failed or in-flight requests. Existing validation results remain historical; final integration checks are recorded separately.
 
+## [2026-10-20] ingest | Native context-management research
+Pinned Context Mode source inspection and eight primary papers, mapped to
+Tag tool admission, exact retrieval, cache-aware compaction and staged
+evaluation. Research only; no runtime implementation or adoption decision.
+
 ## [2026-10-20] update | Persistent session design
 Proposed transactional storage, reliable continuation, session switching and
 explicit user references; deferred proactive memory retrieval. Researched GRDB,
@@ -303,6 +308,37 @@ The first PR run compiled but its test runner aborted. The concurrent process fi
 Clarified that saved sessions bypass first-run onboarding and require an explicit model choice when their saved model is unavailable; synchronized the terminal-UI index summary.
 Rechecked refreshed benchmark values and input fingerprint. The CI allocator compatibility hypothesis remains unconfirmed pending exact remote verification.
 
+## [2026-10-20] update | Begin native context implementation
+Integrated the committed persistent-session foundation and planned durable
+output evidence, retrieval, analysis, indexing, batching and working-context
+management. Other worktrees and uncommitted work remain separate.
+
+## [2026-10-20] update | Retain exact session output evidence
+Added scoped immutable output storage, SHA-256 provenance, Unicode-safe byte
+pagination, quotas and a backed-up v4 migration. Full make check passed:
+417 tests and 92.2% coverage; retrieval and agent integration remain in progress.
+
+## [2026-10-20] update | Retrieve retained output evidence
+Added a derived v5 chunk/FTS5 index with literal fallback, provenance-bearing
+excerpts and shared text budgets. A reproduced split-identifier miss is
+covered by Unicode-safe overlap; existing v4 blobs are backfilled.
+
+## [2026-10-20] update | Validate native evidence retrieval
+Full make check passed with 424 tests and 92.3% coverage. Literal fallback,
+Porter stemming, exact offsets, v4 backfill and cross-process migration
+checks are green; capture/admission integration remains the next task.
+
+## [2026-10-20] update | Native capture and bounded admission
+Connected session-scoped exact evidence to Agent dispatch, structured shell/file
+capture and bounded read/search tools. Added group budgets, partial-output
+status and lifecycle regressions. Full make check passed: 443 tests, 91.8%
+coverage; exact remote verification remains outstanding.
+
+## [2026-10-20] update | Native file and web indexing
+Added session-bound index_file/fetch_and_index with bounded references,
+protected file capture and real streaming HTTP checks. Regressions preserve
+UTF-8 BOMs and reject invalid partial scalars. Full make check passed:
+457 tests, 91.8% coverage, unchanged strict checks.
 ## [2026-10-20] update | Prompt research and next-action benchmark
 Added a source-backed staged experiment, six candidate policies and a native-tool decision screen with synthetic development/holdout fixtures. Production prompt unchanged; full coding trajectories remain required.
 
@@ -486,6 +522,23 @@ covers immediate and delayed task termination without changing application code
 or increasing its timeout bounds. Benchmark results retain their measured input
 fingerprint; the executed storage/UI workload and implementation are unchanged.
 
+## [2026-10-20] update | Refresh persistent-session dependency
+Integrated the published PR #2 head 39a44d7, preserving startup/ownership fixes,
+main's prompt-evaluation archive and both branches' wiki history. Native
+context changes remain isolated above that base. Integrated full make check
+passed: 470 tests, 91.4% coverage, unchanged strict checks.
+
+## [2026-10-20] update | Native full-artifact analysis and ordered batches
+Added scoped, hash-verified stdin analysis and ordered capture/query batches
+with durable manifests. Execution reuses the installed native bash policy;
+no-shell and custom-policy bypass regressions now pass. Full make check
+passed: 486 tests, 91.5% coverage, unchanged strict checks.
+
+## [2026-10-20] update | Explicit reversible context compaction
+Added /compact and restore-full controls, versioned same-session checkpoints,
+canonical history read/search and fixed request prefixes. Full user input,
+failed groups and retained provider replay remain intact. Full make check
+passed: 504 tests, 91.6% coverage, unchanged strict checks.
 ## [2026-10-20] update | Capture quit failure boundary diagnostics
 
 The subsequent exact CI run failed before the save-error condition, so the
@@ -511,3 +564,39 @@ before releasing the lock and verifies the previous draft remains unchanged.
 This complements deterministic UI error recovery with bounded contention failure
 coverage. The focused check passes; the PR's subsequent full checks report the
 current test total separately from the earlier integrated checkpoint.
+
+## [2026-10-20] update | Native context diagnostics and contract evaluation
+Added read-only context_stats/context_doctor and local /context reports, with
+separate retained/presented bytes and provider usage. Deterministic fixtures
+exercise tail failures, full-input sums, group budgets, projection, scope and
+partial recovery; documented upstream mapping and decision 0016.
+
+## [2026-10-20] update | Independent native context review fixes
+Propagate post-effect spool I/O failures as fail-stop storage errors across
+capture, analysis and batch dispatch. Validate exact deterministic chunk layouts
+in doctor, including partial loss and overlap; add regressions for both findings.
+
+## [2026-10-20] update | Native context CI integration investigation
+Normalize URLSession and harness deadline errors after a deterministic regression;
+use child-state barriers in process deadline fixtures while preserving production
+limits. Improve diagnostics for the unresolved remote byte-analysis mismatch.
+
+## [2026-10-20] update | Isolate the analysis byte probe from CI backtrace diagnostics
+The next remote diagnostic showed correct input hex plus Swift runtime stderr
+from inherited SWIFT_BACKTRACE. Reproduced the environment counterfactual locally;
+remove that setting only from the fixture command, preserving production capture.
+
+## [2026-10-20] update | Measure the fetch deadline before the test actor resumes
+Keep the same deadline and elapsed bound in a concurrent observation, excluding
+shared main-actor resumption. Also verify request cancellation before fixture cleanup;
+the preceding CI confirmed the exact-byte analysis fix.
+
+## [2026-10-20] update | Align native context with merged session foundation
+PR #2 landed on main with a tree identical to the integrated foundation.
+Join that published history while preserving the native source delta; retarget
+PR #3 to main so its next exact CI can run without base conflicts.
+
+## [2026-10-20] update | Close native context implementation and feature verification
+All planned native capabilities and documented exclusions are covered in PR #3
+against main. Exact feature CI at a8b47d3 passed 514 tests and 91.7% coverage on
+Swift 6.3.3; reconcile current status while retaining historical checkpoint evidence.

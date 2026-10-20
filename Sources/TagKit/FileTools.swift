@@ -26,6 +26,10 @@ extension ToolDefinition {
             struct Input: Decodable { var path: String }
             let input = try decodeInput(json, as: Input.self)
             return try FileTools(workingDirectory: workingDirectory, protected: protected).read(input.path)
+        }.capturing { json in
+            struct Input: Decodable { var path: String }
+            let input = try decodeInput(json, as: Input.self)
+            return try await FileTools(workingDirectory: workingDirectory, protected: protected).captureRead(input.path)
         }
     }
 
@@ -52,6 +56,11 @@ extension ToolDefinition {
             struct Input: Decodable { var path: String? }
             let input = try decodeInput(json, as: Input.self)
             return try FileTools(workingDirectory: workingDirectory, protected: protected).list(input.path ?? ".")
+        }.capturing { json in
+            struct Input: Decodable { var path: String? }
+            let input = try decodeInput(json, as: Input.self)
+            return try await FileTools(workingDirectory: workingDirectory, protected: protected)
+                .captureList(input.path ?? ".")
         }
     }
 

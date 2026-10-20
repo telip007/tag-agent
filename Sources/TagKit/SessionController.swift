@@ -19,6 +19,8 @@ public final class SessionController {
     public var draft = SessionDraft()
     /// Accepted inputs restored for explicit review, never automatically dispatched.
     public internal(set) var pendingForReview: [PendingInput] = []
+    /// A local context report, never added to model history.
+    public internal(set) var contextReport: String?
     /// Why execution is unavailable, when inspecting another workspace or writer.
     public internal(set) var readOnlyReason: String?
     /// A storage failure pauses dispatch until explicit retry.
@@ -104,6 +106,7 @@ public final class SessionController {
         let agent = Agent(
             model: { [selection] in selection.current ?? first }, tools: tools, environment: environment,
             journal: AgentJournal(store: store, snapshot: snapshot),
+            context: NativeContext(store: store, sessionID: id, workingDirectory: environment.workingDirectory),
             output: { [weak self] in self?.receive($0, sessionID: id) }, input: session.nextMessage)
         agentTask = Task { [weak self] in
             do { try await agent.run() } catch { self?.handleFailure(error, sessionID: id) }

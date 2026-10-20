@@ -126,6 +126,13 @@ final class WorkspaceEditor {
             }
         case .unreference: controller.draft.references = []
         case .pending: try controller.reviewPending()
+        case .context(let action):
+            if action == "off" {
+                controller.contextReport = nil
+            } else {
+                try await controller.showContext(doctor: action == "doctor")
+            }
+        case .compact(let enabled): try await controller.setCompaction(enabled)
         case .retry: try await controller.retry()
         case .invalid(let usage): throw SessionControlError.readOnly(usage)
         }

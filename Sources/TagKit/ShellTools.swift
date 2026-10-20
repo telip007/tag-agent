@@ -1,5 +1,6 @@
 public import Foundation
 import OpenRouter
+import Subprocess
 
 // The two tools from Geoffrey Huntley's "how-to-build-a-coding-agent" workshop
 // that the original tutorial doesn't have: bash and code_search. See
@@ -33,7 +34,12 @@ extension ToolDefinition {
                 "bash", ["-c", input.command], in: workingDirectory, mergingErrors: true,
             )
             return ShellTools.bashResult(result)
-        }
+        }.capturing { json in
+            struct Input: Decodable { var command: String }
+            let input = try decodeInput(json, as: Input.self)
+            try protected.check(command: input.command)
+            return try await ShellTools.capture("bash", ["-c", input.command], in: workingDirectory)
+        }.withContextExecutor(ContextCommandExecutor(directory: workingDirectory, protected: protected))
     }
 
     /// `code_search`: searches file contents with ripgrep.
@@ -67,6 +73,19 @@ extension ToolDefinition {
             }
             let result = try await ShellTools.run(ripgrep, input.ripgrepArguments, in: workingDirectory)
             return try ShellTools.searchResult(result)
+        }.capturing { json in
+            let input = try decodeInput(json, as: CodeSearchInput.self)
+            guard !input.pattern.isEmpty else { throw ToolError("pattern is required") }
+            if let path = input.path {
+                try protected.check(path.hasPrefix("/") ? URL(filePath: path) : workingDirectory.appending(path: path))
+            }
+            var outcome = try await ShellTools.capture(ripgrep, input.ripgrepArguments, in: workingDirectory)
+            // rg 1 means no match, provided execution and capture completed normally.
+            if outcome.exitCode == 1, outcome.complete {
+                outcome.failed = false
+                outcome.content = "No matches found"
+            }
+            return outcome
         }
     }
 
@@ -138,6 +157,14 @@ enum ShellTools {
             throw ToolError(
                 "output is larger than \(ProcessRunner.outputLimit) bytes; narrow the command, e.g. with head or grep"
             )
+        }
+    }
+
+    static func capture(_ program: String, _ arguments: [String], in directory: URL) async throws -> ToolOutcome {
+        do { return try await ProcessCapture.run(program, arguments, in: directory) } catch let error as SubprocessError
+            where error.code == .executableNotFound
+        {
+            throw ToolError("\(program) is not installed")
         }
     }
 
